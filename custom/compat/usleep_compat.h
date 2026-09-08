@@ -34,7 +34,7 @@ static int usleep_compat(unsigned long usec) {
     return ret;
 }
 
-#ifndef HAVE_USLEEP
+#ifndef COMPAT_USLEEP_COMPAT
 #define usleep usleep_compat
 #endif
 

@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <stddef.h>
 
-#if !defined(HAVE_STRTOIMAX) && !defined(strtoimax)
+#if !defined(COMPAT_STRTOIMAX_COMPAT) && !defined(strtoimax)
 
 #define strtoimax my_strtoimax
 #define strtoumax my_strtoumax

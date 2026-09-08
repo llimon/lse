@@ -37,7 +37,7 @@ static inline wchar_t *wcsstr_compat(const wchar_t *haystack, const wchar_t *nee
     return NULL;
 }
 
-#ifndef HAVE_WCSSTR
+#ifndef COMPAT_WCSSTR_COMPAT
 #define wcsstr wcsstr_compat
 #endif
 

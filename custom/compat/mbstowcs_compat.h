@@ -8,7 +8,7 @@
 #include <string.h>
 #include <errno.h>
 
-#ifndef HAVE_MBSTATE_T
+#ifndef COMPAT_MBSTATE_T_COMPAT
 typedef struct {
     int __opaque[4];
 } mbstate_t;
@@ -106,11 +106,11 @@ static inline size_t mbstowcs_compat(wchar_t *dest, const char *src, size_t n) {
 }
 
 /* Optional macro overrides for legacy source patches */
-#ifndef HAVE_MBSTOWCS
+#ifndef COMPAT_MBSTOWCS_COMPAT
 #define mbstowcs mbstowcs_compat
 #endif
 
-#ifndef HAVE_MBROTWEC
+#ifndef COMPAT_MBROTWEC_COMPAT
 #define mbrtowc mbrtowc_compat
 #endif
 

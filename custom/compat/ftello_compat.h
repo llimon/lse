@@ -15,11 +15,11 @@ typedef long long offset_t;
  */
 extern offset_t llseek(int fd, offset_t offset, int whence);
 
-#ifndef HAVE_FTELLO
+#ifndef COMPAT_FTELLO_COMPAT
 #define ftello my_ftello
 #endif
 
-#ifndef HAVE_FSEEKO
+#ifndef COMPAT_FSEEKO_COMPAT
 #define fseeko my_fseeko
 #endif
 

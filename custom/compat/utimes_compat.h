@@ -29,7 +29,7 @@ static inline int utimes_compat(const char *path, const struct timeval times[2])
     return utime(path, &new_times);
 }
 
-#ifndef HAVE_UTIMES
+#ifndef COMPAT_UTIMES_COMPAT
 #define utimes utimes_compat
 #endif
 
