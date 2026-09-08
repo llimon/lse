@@ -240,7 +240,7 @@ redo_libs_helper()
 	if [ -L ${backref}${archlibdir}/lib$f.so ]; then
 	    # File exists and is a symlink, determine linktarget
 	    # The linktarget is the soname of the library
-	    linktarget=$(elfdump -d ${backref}${archlibdir}/lib$f.so | awk '/SONAME/ { print $4 }')
+	    linktarget=$(gobjdump -p ${backref}${archlibdir}/lib$f.so | awk '/SONAME/ { print $2 }')
 	    # Remove the old symlink
 	    ${__rm} -f ${backref}${archlibdir}/lib$f.so
 	    # Create new .so file, note we link not to the full version
@@ -258,7 +258,8 @@ redo_libs_helper()
 	    if [ -L lib$f.so ]; then
 		# File exists and is a symlink, determine linktarget
 		# The linktarget is the soname of the library
-		linktarget=$(elfdump -d lib$f.so | awk '/SONAME/ { print $4 }')
+		#linktarget=$(elfdump -d lib$f.so | awk '/SONAME/ { print $4 }')
+		linktarget=$(gobjdump -p lib$f.so | awk '/SONAME/ { print $2 }')
 		# Relocate linktarget to main libdir
 		mvif $linktarget ${backref}/..${archlibdir}
 		# Remove the old symlink
