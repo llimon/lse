@@ -26,7 +26,7 @@ gl_cv_func_vsnprintf_directive_n=yes
 gl_cv_func_printf_directive_n=yes
 "
 # disabling generation of .so binaries; We don't need that stuff for sudo and makes it a little leaner for resource contrained workstations.
-configure_args+=(--enable-static --with-static-sudoers --disable-poll --disable-hardening --sysconfdir=/usr/tgcware/etc --with-man --with-all-insults)
+configure_args+=(--enable-static --disable-shared --enable-static-sudoers --disable-poll --disable-hardening --sysconfdir=/usr/tgcware/etc --with-man --with-all-insults)
 
 export no_configure=1
 

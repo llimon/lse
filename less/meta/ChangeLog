@@ -1,6 +1,6 @@
 CHANGELOG
 ---------
-* Fri Sep 5 2025 Luis Limon - 530-2 
+* Thu Sep 3 2026 Luis Limon - 530-2
 - compile with -lw (wide) for solaris 2.5.1 support
 
 * Sun Mar 24 2019 Tom G. Christensen <swpkg@jupiterrise.com> - 530-1

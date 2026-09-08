@@ -16,10 +16,10 @@ patch[0]=libssh2-1.9.0-missing-stdint_h.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 export PATH=$PATH:/usr/tgcware/sbin
+export LIBS="-lgcc_s -lsnprintf"
 configure_args+=(--disable-examples-build --disable-static --disable-docker-tests)
+
 
 reg prep
 prep()

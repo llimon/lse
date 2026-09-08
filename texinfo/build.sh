@@ -15,9 +15,6 @@ source[0]=ftp://ftp.sunet.se/pub/gnu/texinfo/$topdir-$version.tar.xz
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
-# Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 
 reg prep
 prep()
@@ -28,6 +25,7 @@ prep()
 reg build
 build()
 {
+    LIBS="$LIBS -lpthread"
     generic_build
 }
 

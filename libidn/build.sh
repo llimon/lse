@@ -16,8 +16,6 @@ source[0]=https://mirrors.kernel.org/gnu/libidn/$topdir-$version.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 configure_args+=(--disable-static --with-libiconv-prefix=$prefix --with-libintl-prefix=$prefix)
 
 reg prep

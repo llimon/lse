@@ -15,9 +15,6 @@ source[0]=http://prdownloads.sourceforge.net/expect/$topdir$version.tar.gz
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
-# Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 
 configure_args=(--prefix=$prefix --mandir=$prefix/$_mandir --with-tcl=${prefix}/${_libdir} --with-tclinclude=${prefix}/${_includedir} --enable-shared)
 make_check_target=test

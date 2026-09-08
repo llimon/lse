@@ -75,15 +75,15 @@ install()
     [ "$_os" = "sunos57" ] && ${__cp} contrib/Solaris-7/prngd.conf.solaris-7 ${stagedir}${prefix}/${_sysconfdir}/prngd/prngd.conf
 
     # Install initscript
-    ${__cp} $metadir/prngd.init ${stagedir}/${_sysconfdir}/init.d/tgc_prngd
-    chmod 755 ${stagedir}/${_sysconfdir}/init.d/tgc_prngd
-    (setdir ${stagedir}/${_sysconfdir}/rc0.d; ${__ln} -sf ../init.d/tgc_prngd K05tgc_prngd)
-    (setdir ${stagedir}/${_sysconfdir}/rc1.d; ${__ln} -sf ../init.d/tgc_prngd K05tgc_prngd)
-    (setdir ${stagedir}/${_sysconfdir}/rcS.d; ${__ln} -sf ../init.d/tgc_prngd K05tgc_prngd)
-    (setdir ${stagedir}/${_sysconfdir}/rc2.d; ${__ln} -sf ../init.d/tgc_prngd S95tgc_prngd)
+    ${__cp} $metadir/prngd.init ${stagedir}/${_sysconfdir}/init.d/lse_prngd
+    chmod 755 ${stagedir}/${_sysconfdir}/init.d/lse_prngd
+    (setdir ${stagedir}/${_sysconfdir}/rc0.d; ${__ln} -sf ../init.d/lse_prngd K05lse_prngd)
+    (setdir ${stagedir}/${_sysconfdir}/rc1.d; ${__ln} -sf ../init.d/lse_prngd K05lse_prngd)
+    (setdir ${stagedir}/${_sysconfdir}/rcS.d; ${__ln} -sf ../init.d/lse_prngd K05lse_prngd)
+    (setdir ${stagedir}/${_sysconfdir}/rc2.d; ${__ln} -sf ../init.d/lse_prngd S95lse_prngd)
 
     # Adjust prngd path in initscript
-    ${__gsed} -i "/^PRNGD_BIN/s|=.*|=${prefix}/${_sbindir}/prngd|" ${stagedir}/${_sysconfdir}/init.d/tgc_prngd
+    ${__gsed} -i "/^PRNGD_BIN/s|=.*|=${prefix}/${_sbindir}/prngd|" ${stagedir}/${_sysconfdir}/init.d/lse_prngd
 
     doc 00DESIGN 00README 00README.gatherers ChangeLog
 

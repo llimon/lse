@@ -28,7 +28,7 @@ ac_overrides="ac_cv_func_vsnprintf=yes
   gl_cv_func_snprintf_posix=yes
   gl_cv_func_vsnprintf_zerosize_bug=no
 "
-configure_args=(--disable-shared --prefix "$prefix")
+configure_args+=(--disable-shared)
 
 topsrcdir=mpfr-${real_version}
 

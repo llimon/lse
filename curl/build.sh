@@ -17,9 +17,10 @@ patch[0]=curl-7.68.0-socklen_t.patch
 # OpenSSH 8.8 disabled sha1 rsa out of the box
 patch[1]=curl-7.82.0-modern-openssh.patch
 # No stdint.h
-patch[2]=curl-8.2.0-no-stdint-h.patch
-patch[3]=curl-8.3.0-no-stdint_h.patch
-patch[4]=curl-8.8.0-no-stdint_h.patch
+#patch[2]=curl-8.2.0-no-stdint-h.patch
+#patch[3]=curl-8.3.0-no-stdint_h.patch
+#patch[4]=curl-8.8.0-no-stdint_h.patch
+path[2]=include-stdint-h.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
@@ -27,13 +28,8 @@ patch[4]=curl-8.8.0-no-stdint_h.patch
 # Global settings
 
 
-export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/dns_rfc2553_compat.h  -include $prefix/include/compat/ftello_compat.h -include $prefix/include/compat/snprintf_compat.h"
-export LDFLAGS="$LDFLAGS -lsnprintf -lsocket -lnsl"
 export PKG_CONFIG=pkgconf
 
-# Prefer the X/Open feature set to get utimes() defined
-export CC="gcc -D__EXTENSIONS__ -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1"
-configure_args+=(--enable-static=no --with-openssl --enable-http --enable-ftp --enable-file --disable-ldap --enable-manual --enable-cookies --with-libidn2 --with-libssh2 --with-nghttp2 --with-ca-bundle=${prefix}/${_sysconfdir}/curl-ca-bundle.pem --disable-threaded-resolver)
 
 reg prep
 prep()
@@ -47,6 +43,14 @@ prep()
 reg build
 build()
 {
+    export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/dns_rfc2553_compat.h  -include $prefix/include/compat/ftello_compat.h -include $prefix/include/compat/snprintf_compat.h"
+    export LDFLAGS="$LDFLAGS -lsnprintf -lsocket -lnsl"
+    # Prefer the X/Open feature set to get utimes() defined
+    export CC="gcc -D__EXTENSIONS__ -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1"
+    CONFIG_SHELL=$prefix/bin/bash
+    SHELL=$prefix/bin/bash
+
+    configure_args+=(--enable-static=no --with-openssl --enable-http --enable-ftp --enable-file --disable-ldap --enable-manual --enable-cookies --with-libidn2 --with-libssh2 --with-nghttp2 --with-ca-bundle=${prefix}/${_sysconfdir}/curl-ca-bundle.pem --disable-threaded-resolver)
     generic_build
 }
 

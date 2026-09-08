@@ -18,7 +18,7 @@ source[0]=http://zlib.net/$topdir-$version.tar.gz
 # Global settings
 configure_args=(--shared --prefix=$prefix)
 export LDSHARED="gcc -shared -R ${prefix}/${_libdir} -Wl,-h,libz.so.1"
-export LDFLAGS="-lgcc_s"
+export LDFLAGS="$LDFLAGS -lgcc_s"
 shortroot=1
 
 reg prep

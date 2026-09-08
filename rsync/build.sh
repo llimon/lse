@@ -19,9 +19,10 @@ patch[3]=0004-Missing-include-for-my_strdup.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib -lgcc_s -lsnprintf"
+export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/snprintf_compat.h"
+export LDFLAGS="$LIBS -lgcc_s -lsnprintf"
 export CC="gcc -D__EXTENSIONS__"
+export LIBS="$LIBS -lsnprintf"
 configure_args+=(--with-included-popt --disable-ipv6 --disable-xxhash --disable-zstd --disable-lz4)
 
 reg prep

@@ -17,8 +17,6 @@ source[0]=https://cmake.org/files/v2.8/$topdir-$version.tar.gz
 
 # Global settings
 LD_OPTIONS="-R/usr/tgcware/lib"
-LDFLAGS="-L/usr/tgcware/lib -R/usr/tgcware/lib"
-CFLAGS="-I/usr/tgcware/include"
 CXXFLAGS="-I/usr/tgcware/include"
 CC=gcc
 CXX=g++

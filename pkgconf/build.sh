@@ -20,8 +20,9 @@ patch[3]=0004-Re-add-sys-stat.h-to-stdinc.h.patch
 
 # Global settings
 topsrcdir=${topdir}-${topdir}-$version
-export CPPFLAGS="-I$prefix/include"
+export CPPFLAGS="-I$prefix/include -DHAVE_STDINT_H -include $prefix/include/compat/snprintf_compat.h"
 export LDFLAGS="-L$prefix/lib -R$prefix/lib"
+export LIBS="$LIBS -lgcc_s -lsnprintf"
 configure_args+=(--docdir=$prefix/$_vdocdir)
 
 reg prep

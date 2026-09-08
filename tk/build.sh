@@ -16,8 +16,7 @@ source[0]=${topdir}${version}-src.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib -lgcc_s"
+export LIBS="$LIBS -lgcc_s"
 configure_args=(--prefix=$prefix --mandir=$prefix/$_mandir --disable-symbols --enable-man-symlinks --with-tcl=${prefix}/${_libdir})
 topsrcdir=$topdir$version
 

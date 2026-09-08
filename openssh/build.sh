@@ -64,7 +64,7 @@ install()
     ${__mkdir} -p ${stagedir}/var/empty/sshd
 
     # Install initscript
-    ${__cp} $srcdir/sshd.init ${stagedir}/${_sysconfdir}/init.d/lse_sshd
+    ${__gcp} -v $patchdir/sshd.init ${stagedir}/${_sysconfdir}/init.d/lse_sshd
     chmod 755 ${stagedir}/${_sysconfdir}/init.d/lse_sshd
     (setdir ${stagedir}/${_sysconfdir}/rc0.d; ${__ln} -sf ../init.d/lse_sshd K02lse_sshd)
     (setdir ${stagedir}/${_sysconfdir}/rc1.d; ${__ln} -sf ../init.d/lse_sshd K02lse_sshd)

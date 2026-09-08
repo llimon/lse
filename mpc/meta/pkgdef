@@ -7,7 +7,7 @@ pkgdesc="C library for the arithmetic of complex numbers"
 pkgver="$pkgver"
 files(-,root,bin)
 default_docs
-$_libdir/*.so.*
+#$_libdir/*.so.*
 $_infodir
 
 [mpc-devel]
@@ -18,7 +18,7 @@ pkgvendor="http://multiprecision.org/"
 pkgdesc="Files needed for developing with mpc"
 pkgver="$pkgver"
 files(-,root,bin)
-$_libdir/*.so
+#$_libdir/*.so
 $_libdir/*.a
 $_includedir/mpc.h
 

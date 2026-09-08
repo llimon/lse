@@ -32,6 +32,10 @@ build()
 {
     setup_tools
     ${__mkdir} -p ${srcdir}/$objdir
+    export CONFIG_SHELL=/usr/bin/ksh
+    export LDFLAGS="$LDFLAGS -lgcc_s"
+    configure_args+=( --with-gmp=/usr/tgcware --with-local-prefix=/usr/tgcware --with-mpfr=/usr/tgcware --enable-obsolete --with-stage1-ldflags="-static-libgcc $LDFLAGS" --with-boot-ldflags="-statidc-libgcc $LDFLAGS"
+    )
     generic_build ../$objdir
 }
 

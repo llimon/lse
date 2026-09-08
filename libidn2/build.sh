@@ -16,8 +16,6 @@ source[0]=http://www.mirrorservice.org/sites/ftp.gnu.org/gnu/libidn/$topdir-$ver
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 configure_args+=(--disable-static --with-libiconv-prefix=$prefix --with-libintl-prefix=$prefix)
 
 reg prep
@@ -29,11 +27,55 @@ prep()
     ${__gsed} -i 's/examples//' Makefile.in
 }
 
+# `reg build
+# `build()
+# `{
+# `    #export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/getprogname_compat.h"
+# `    ac_overrides="ac_cv_func_getprogname=yes \
+# `                  ac_cv_prog_cc_c11=no \
+# `                  gl_cv_compiler_c11_supported=no"
+# `
+# `
+# `    #make_build_opts="$make_build_opts MAKE=\"$MAKE\" CPPFLAGS=\"$CPPFLAGS -include $prefix/include/compat/getprogname_compat.h\""
+# `    make_build_opts="$mke_build_opts CPPFLAGS=\"$CPPFLAGS -include $prefix/include/compat/getprogname_compat.h\""
+# `    echo make_build_opts="$make_build_opts"
+# `exit
+# `    generic_build
+# `}
+
+
+run_configure()
+{
+    local my_ac_overrides="$platform_ac_overrides $ac_overrides"
+    setdir ${srcdir}/${topsrcdir}/$1
+
+    local acvar
+    for acvar in $my_ac_overrides; do
+        export $acvar
+    done
+    echo $__configure "${configure_args[@]}"
+    $__configure "${configure_args[@]}"
+}
+
+
 reg build
 build()
 {
-    generic_build
+    export CFLAGS="$CFLAGS -std=gnu99" 
+    export LIBS="$LIBS -lgcc_s"
+    ac_overrides="ac_cv_func_getprogname=yes \
+                  ac_cv_prog_cc_c11=no \
+                  gl_cv_compiler_c11_supported=no"
+
+    run_configure
+    #${__make} CPPFLAGS="$CPPFLAGS -include config.h -include ${prefix}/include/compat/getprogname_compat.h" 
+    ${__make} CC="${CC:-gcc} -include config.h -include ${prefix}/include/compat/getprogname_compat.h" ${make_build_opts}
+
+
 }
+
+
+
 
 reg check
 check()

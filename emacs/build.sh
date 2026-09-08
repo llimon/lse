@@ -16,8 +16,6 @@ source[0]=ftp://ftp.heanet.ie/pub/gnu/$topdir/$topdir-$version.tar.xz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 basic_args=("${configure_args[@]}")
 
 reg prep

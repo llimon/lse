@@ -10,15 +10,15 @@ version=2.5.0
 pkgver=1
 source[0]=https://github.com/libexpat/libexpat/releases/download/R_2_5_0/${topdir}-${version}.tar.lz
 # If there are no patches, simply comment this
-patch[0]=expat-2.4.8-no-stdint_h.patch
-patch[1]=expat-2.5.0-no-strtof.patch
+#patch[0]=expat-2.4.8-no-stdint_h.patch
+patch[0]=expat-2.5.0-no-strtof.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export LDFLAGS="-L/usr/tgcware/lib -R/usr/tgcware/lib -lgcc_s"
-export CPPFLAGS="-I/usr/tgcware/include"
+export LDFLAGS="$LDFLAGS -lgcc_s"
+export CPPFLAGS="$CPPFLAGS -I/usr/tgcware/include"
 
 reg prep
 prep()
@@ -42,7 +42,7 @@ reg install
 install()
 {
     generic_install DESTDIR
-    doc COPYING Changes README.md AUTHORS doc/reference.html doc/expat.png doc/style.css
+    doc COPYING Changes README.md AUTHORS doc/reference.html doc/style.css
     ${__rm} -rf ${stagedir}${prefix}/share/doc/expat
 
     compat expat 2.1.0 1 1

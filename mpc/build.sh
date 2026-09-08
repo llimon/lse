@@ -16,8 +16,6 @@ source[0]=http://multiprecision.org/mpc/download/$topdir-$version.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 
 reg prep
 prep()
@@ -28,6 +26,7 @@ prep()
 reg build
 build()
 {
+    configure_args+=(--disable-shared)
     generic_build
 }
 

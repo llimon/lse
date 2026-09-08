@@ -16,8 +16,6 @@ source[0]=https://github.com/${topdir}/${topdir}/releases/download/v${version}/$
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 configure_args+=(--disable-static --enable-lib-only)
 make_build_target="V=1"
 # No python deps from packaged scripts

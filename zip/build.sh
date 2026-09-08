@@ -16,8 +16,7 @@ patch[0]=zip-3.0-use-gcc-as-cpp.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-LDFLAGS="-L$prefix/lib -R$prefix/lib -lbz2"
-CPPFLAGS="-I$prefix/include"
+LDFLAGS="$LDFLAGS  -lbz2 -lw"
 shortroot=1
 __configure="make"
 make_build_target="-f unix/Makefile generic_gcc"
