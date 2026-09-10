@@ -16,10 +16,16 @@ source[0]=https://cmake.org/files/v2.8/$topdir-$version.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-LD_OPTIONS="-R/usr/tgcware/lib"
-CXXFLAGS="-I/usr/tgcware/include"
+LD_OPTIONS="$LDFLAGS -lposix4 -lw"
+#CXXFLAGS="$CXXFLAGS -fpermissive -D__EXTENSIONS__ -I/usr/tgcware/include -include $prefix/include/compat/usleep_compat.h -DHAVE_WCSLEN=1 -DHAVE_WCSCPY=1 -DHAVE_WCHAR_H=1"
+CXXFLAGS="$CXXFLAGS -fpermissive -D__EXTENSIONS__ -I/usr/tgcware/include -include $prefix/include/compat/usleep_compat.h" 
+CFLAGS="$CFLAGS -DKWSYS_SHARED_FORWARD_LDPATH=\\\"LD_LIBRARY_PATH\\\""
+CXXFLAGS="$CXXFLAGS -DKWSYS_SHARED_FORWARD_LDPATH=\\\"LD_LIBRARY_PATH\\\""
+echo "CFLAGS=$CFLAGS"
+echo "CXXFLAGS=$CXXFLAGS"
+export CFLAGS CXXFLAGS
 CC=gcc
-CXX=g++
+CXX="g++"
 export LD_OPTIONS LDFLAGS CFLAGS CXXFLAGS CC CXX
 configure_args=(--prefix=$prefix --docdir=$_docdir/${topdir}-2.8 --mandir=share)
 configure_args+=(--system-curl --system-expat --system-zlib --system-bzip2)
@@ -35,6 +41,9 @@ prep()
 reg build
 build()
 {
+    setdir source
+#    ${__gsed} -i 's/#ifndef HAVE_WCSLEN/#if 0 \/* Solaris 2.5.1 patch *\/ /g' Utilities/cmlibarchive/libarchive/archive_entry.c
+#    ${__gsed} -i 's/#ifndef HAVE_WCSCPY/#if 0 \/* Solaris 2.5.1 patch *\/ /g' Utilities/cmlibarchive/libarchive/archive_entry.c
     generic_build
 }
 
