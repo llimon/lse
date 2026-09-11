@@ -1,0 +1,17 @@
+[libidn2]
+pkgname="${pkgprefix}groff"
+name="$topdir - GNU groff"
+pkgcat="application"
+pkgvendor="https://www.gnu.org/software/groff/"
+pkgdesc="Typesetting system that reads plain text input that includes formatting commands to produce output in PostScript, PDF, HTML, or DVI formats or for display to a terminal."
+pkgver="$pkgver"
+files(-,root,bin)
+default_docs
+$_bindir/groff
+$_bindir/grog
+$_bindir/nroff
+$_bindir/troff
+$_infodir
+$_mandir/man1
+$_sharedir/locale/*/LC_MESSAGES/${topdir}.mo
+
