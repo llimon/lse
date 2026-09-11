@@ -10,11 +10,12 @@ version=1.0.2u
 pkgver=8
 source[0]=https://openssl.org/source/$topdir-$version.tar.gz
 # If there are no patches, simply comment this
-patch[0]=openssl-1.0.2u-cve-2020-1971.patch
-patch[1]=openssl-1.0.2u-cve-2021-23840.patch
-patch[2]=openssl-1.0.2u-cve-2021-23841.patch
-patch[3]=openssl-1.0.2u-cve-2021-3712.patch
-patch[4]=openssl-1.0.2u-cve-2022-0778.patch
+patch[0]=static-plugins.patch
+patch[1]=openssl-1.0.2u-cve-2020-1971.patch
+patch[2]=openssl-1.0.2u-cve-2021-23840.patch
+patch[3]=openssl-1.0.2u-cve-2021-23841.patch
+patch[4]=openssl-1.0.2u-cve-2021-3712.patch
+patch[5]=openssl-1.0.2u-cve-2022-0778.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
@@ -28,7 +29,7 @@ shortver=102
 pname=openssl${shortver}
 make_check_target="test"
 __configure="./Configure"
-configure_args=(--prefix=$prefix --openssldir=${prefix}/${_sharedir}/ssl${shortver} zlib shared)
+configure_args=(--prefix=$prefix --openssldir=${prefix}/${_sharedir}/ssl${shortver} zlib shared no-dynamic-engine)
 if [ "$arch" = "sparc" ]; then
     configure_args+=(solaris-sparc${gcc_arch}-gcc)
 else
@@ -57,7 +58,8 @@ prep()
     ${__gsed} -i 's/mv8/mcpu=v8/g' Configure
 
     ${__gsed} -i "/^CFLAG=/s;CFLAG=;CFLAG=-I${prefix}/include;" Makefile
-    ${__gsed} -i "/EX_LIBS/s;-lz;-L${prefix}/lib -R${prefix}/lib -lz;" Makefile
+    ${__gsed} -i "/EX_LIBS/s;-lz;-L${prefix}/lib -R${prefix}/lib -lz -lgcc_s;" Makefile
+
 }
 
 reg build
@@ -67,6 +69,13 @@ build()
 
     echo $__configure "${configure_args[@]}"
     $__configure "${configure_args[@]}"
+
+	 # Patch crypto so that it does not generate MAXLEN lines and break ar
+	${__gsed} -i '/^\$(LIB):/!b;n;c\\trm -f $(LIB)\n\tfind . -name "*.o" | xargs -n 50 $(AR) $(LIB)\n\ttest -z "$(FIPSLIBDIR)" || $(AR) $(LIB) $(FIPSLIBDIR)fipscanister.o\n\t$(RANLIB) $(LIB) || echo Never mind.' crypto/Makefile
+    # Only patch apps/Makefile if it hasn't been duplicated yet
+    if ! grep -q "\-lssl.*\-lssl" apps/Makefile; then
+        ${__gsed} -i 's/LIBRARIES=\(.*\)/LIBRARIES=\1 -L.. -lssl -L.. -lcrypto/' apps/Makefile
+    fi
 
     ${__make} SHARED_LDFLAGS="-shared -R${prefix}/${_libdir}" depend
     ${__make} SHARED_LDFLAGS="-shared -R${prefix}/${_libdir}"
