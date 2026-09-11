@@ -1,0 +1,28 @@
+[ntp]
+pkgname="${pkgprefix}${topdir}"
+name="$topdir - ntp package contains a client and server to keep the time synchronized between various computers over a network"
+pkgcat="application"
+pkgvendor="https://www.ntp.org/"
+pkgdesc="The ntp package contains a client and server to keep the time synchronized between various computers over a network. This package is the official reference implementation of the NTP protocol"
+pkgver="$pkgver"
+files(755,root,sys)
+dir $_sysconfdir
+dir $_sysconfdir/init.d
+dir $_sysconfdir/rc0.d
+dir $_sysconfdir/rc1.d
+dir $_sysconfdir/rc2.d
+dir $_sysconfdir/rcS.d
+dir usr
+dir usr/tgcware
+${_sysconfdir}/*/*lse_ntpd
+#
+files(644,root,sys)
+$lprefix/$_sysconfdir/ntp.conf
+$lprefix/$_sysconfdir/ntp.drift
+#
+files(-,root,bin)
+$lprefix/$_bindir
+$lprefix/$_sbindir
+$lprefix/$_libdir
+$lprefix/$_mandir
+$lprefix/$_docdir

@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# /etc/init.d/inetntp - Start/Stop NTP Daemon on Solaris
+#
+
+NTPD=/usr/tgcware/bin/ntpd
+NTPCONF=/usr/tgcware/etc/ntp.conf
+PIDFILE=/var/run/ntpd.pid
+
+case "$1" in
+'start')
+	if [ -f $NTPD -a -f $NTPCONF ]; then
+		echo "Starting NTP daemon..."
+		$NTPD -p $PIDFILE -c $NTPCONF
+	else
+		echo "NTP setup incomplete. Check $NTPD and $NTPCONF"
+		exit 1
+	fi
+	;;
+
+'stop')
+	if [ -f $PIDFILE ]; then
+		echo "Stopping NTP daemon..."
+		kill `cat $PIDFILE`
+		rm -f $PIDFILE
+	else
+		# Fallback process search for Solaris 2.5.1
+		pid=`/usr/bin/ps -ef | /usr/bin/grep ntpd | /usr/bin/grep -v grep | /usr/bin/awk '{print $2}'`
+		if [ -n "$pid" ]; then
+			echo "Stopping NTP daemon (PID $pid)..."
+			kill $pid
+		else
+			echo "NTP daemon not running."
+		fi
+	fi
+	;;
+
+'restart')
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+
+*)
+	echo "Usage: $0 { start | stop | restart }"
+	exit 1
+	;;
+esac
+
+exit 0

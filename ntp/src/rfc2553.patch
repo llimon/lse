@@ -1,0 +1,76 @@
+diff -ruN a/include/ntp_rfc2553.h b/include/ntp_rfc2553.h
+--- a/include/ntp_rfc2553.h	2011-08-03 21:13:43.000000000 +0000
++++ b/include/ntp_rfc2553.h	2026-08-26 16:59:39.546723933 +0000
+@@ -76,6 +76,9 @@
+ #include <netdb.h>
+ #include <isc/net.h>
+ 
++/* Force our clean 16-byte IPv4 multi-host resolver on Solaris 2.5.1 */
++#include "compat/dns_rfc2553_compat.h"
++
+ #include "ntp_types.h"
+ 
+ 
+@@ -163,16 +166,16 @@
+ # define in6_addr in_addr6
+ #endif
+ 
+-struct addrinfo {
+-	int	ai_flags;	/* AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST */
+-	int	ai_family;	/* PF_xxx */
+-	int	ai_socktype;	/* SOCK_xxx */
+-	int	ai_protocol;	/* 0 or IPPROTO_xxx for IPv4 and IPv6 */
+-	size_t	ai_addrlen;	/* length of ai_addr */
+-	char	*ai_canonname;	/* canonical name for hostname */
+-	struct	sockaddr *ai_addr;	/* binary address */
+-	struct	addrinfo *ai_next;	/* next structure in linked list */
+-};
++// struct addrinfo {
++// 	int	ai_flags;	/* AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST */
++// 	int	ai_family;	/* PF_xxx */
++// 	int	ai_socktype;	/* SOCK_xxx */
++// 	int	ai_protocol;	/* 0 or IPPROTO_xxx for IPv4 and IPv6 */
++// 	size_t	ai_addrlen;	/* length of ai_addr */
++// 	char	*ai_canonname;	/* canonical name for hostname */
++// 	struct	sockaddr *ai_addr;	/* binary address */
++// 	struct	addrinfo *ai_next;	/* next structure in linked list */
++// };
+ 
+ /*
+  * Error return codes from getaddrinfo()
+@@ -193,12 +196,12 @@
+ #define	EAI_MAX		14
+ 
+ 
+-int	getaddrinfo (const char *, const char *,
+-			 const struct addrinfo *, struct addrinfo **);
+-int	getnameinfo (const struct sockaddr *, u_int, char *,
+-			 size_t, char *, size_t, int);
+-void	freeaddrinfo (struct addrinfo *);
+-char	*gai_strerror (int);
++//int	getaddrinfo (const char *, const char *,
++//			 const struct addrinfo *, struct addrinfo **);
++//int	getnameinfo (const struct sockaddr *, u_int, char *,
++//			 size_t, char *, size_t, int);
++//void	freeaddrinfo (struct addrinfo *);
++//char	*gai_strerror (int);
+ 
+ /*
+  * Constants for getnameinfo()
+diff -ruN a/libntp/ntp_rfc2553.c b/libntp/ntp_rfc2553.c
+--- a/libntp/ntp_rfc2553.c	2009-12-08 23:36:37.000000000 +0000
++++ b/libntp/ntp_rfc2553.c	2026-08-26 17:00:02.230998930 +0000
+@@ -66,6 +66,7 @@
+  */
+ 
+ #include <config.h>
++#if 0
+ 
+ #include <sys/types.h>
+ #include <ctype.h>
+@@ -439,3 +440,5 @@
+ }
+ 
+ #endif /* !ISC_PLATFORM_HAVEIPV6 */
++
++#endif
