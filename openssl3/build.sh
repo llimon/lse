@@ -10,12 +10,8 @@ version=3.0.15
 pkgver=2
 source[0]=https://github.com/openssl/openssl/releases/download/${topdir}-${version}/${topdir}-${version}.tar.gz
 # If there are no patches, simply comment this
-#patch[0]=0001-Fix-fallback-for-missing-getaddrinfo.patch
 patch[0]=0002-Include-sys-atomic.h-directly-on-Solaris.patch
-#patch[1]=0003-Provide-socklen_t-on-Solaris-2.6.patch
-#patch[3]=0005-Handle-missing-stdint.h-on-older-Solaris.patch
-#patch[4]=0006-Handle-missing-strtoumax.patch
-patch[3]=0007-Use-target-CPU-choice-on-SPARC.patch
+patch[1]=0007-Use-target-CPU-choice-on-SPARC.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
@@ -95,7 +91,7 @@ install()
 {
     clean stage
     setdir source
-    ${__make} DESTDIR=$stagedir install
+    ${__make} DESTDIR=${stagedir} install_sw install_docs
     # Make .sos writable
     chmod 755 ${stagedir}${prefix}/${_libdir}/*.so.*
     chmod 755 ${stagedir}${prefix}/${_libdir}/engines-3/*.so
