@@ -46,11 +46,11 @@ configure_args=(
     no-threads
     no-asm
     
-    # 1. Environment overrides MUST be explicitly named key-values
-    CFLAGS="$compat_cflags"
-    CPPFLAGS="$compat_cflags"
-    LDFLAGS="-L$prefix/lib -R$prefix/lib -lposix4 -lgcc_s"
-    EX_LIBS="$prefix/lib/libsnprintf.a"
+    CFLAGS="$CFLAGS $compat_cflags"
+    CPPFLAGS="$CPPFLAGS $compat_cflags"
+    # OpenSSL 3.0 uses LDLIBS for extra library linkages
+    LDFLAGS="$LDFLAGS"
+    LDLIBS="$LIBS -lsnprintf"
 )
 
 # 2. Target architecture MUST be appended AT THE VERY END
