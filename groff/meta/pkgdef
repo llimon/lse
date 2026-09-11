@@ -1,4 +1,4 @@
-[libidn2]
+[groff]
 pkgname="${pkgprefix}groff"
 name="$topdir - GNU groff"
 pkgcat="application"
@@ -6,12 +6,58 @@ pkgvendor="https://www.gnu.org/software/groff/"
 pkgdesc="Typesetting system that reads plain text input that includes formatting commands to produce output in PostScript, PDF, HTML, or DVI formats or for display to a terminal."
 pkgver="$pkgver"
 files(-,root,bin)
-default_docs
+# Core binaries and wrappers
 $_bindir/groff
 $_bindir/grog
-$_bindir/nroff
-$_bindir/troff
+$_bindir/addftinfo
+$_bindir/afmtodit
+$_bindir/eqn2graph
+$_bindir/gchem
+$_bindir/gdiffmk
+$_bindir/geqn
+$_bindir/ggrn
+$_bindir/gindxbib
+$_bindir/glookbib
+$_bindir/gneqn
+$_bindir/gnroff
+$_bindir/gpic
+$_bindir/grap2graph
+$_bindir/grefer
+$_bindir/grodvi
+$_bindir/groffer
+$_bindir/grolbp
+$_bindir/grolj4
+$_bindir/gropdf
+$_bindir/grops
+$_bindir/grotty
+$_bindir/gsoelim
+$_bindir/gtbl
+$_bindir/gtroff
+$_bindir/hpftodit
+$_bindir/lkbib
+$_bindir/mmroff
+$_bindir/pdfmom
+$_bindir/pdfroff
+$_bindir/pfbtops
+$_bindir/pic2graph
+$_bindir/post-grohtml
+$_bindir/pre-grohtml
+$_bindir/preconv
+$_bindir/roff2dvi
+$_bindir/roff2html
+$_bindir/roff2pdf
+$_bindir/roff2ps
+$_bindir/roff2text
+$_bindir/roff2x
+$_bindir/tfmtodit
+# Support libraries, groffer helpers, and site tmacs
+$_libdir/groff
+# Shared device fonts, macro sets, and internal support data
+$_sharedir/groff
+# Documentation & examples (matches groff-1.22 and groff-1.22.1)
+$_sharedir/doc/groff-1.22*
+# Man pages and Info docs
 $_infodir
 $_mandir/man1
-$_sharedir/locale/*/LC_MESSAGES/${topdir}.mo
-
+$_mandir/man5
+$_mandir/man7

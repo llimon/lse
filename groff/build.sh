@@ -16,7 +16,7 @@ source[0]=http://www.mirrorservice.org/sites/ftp.gnu.org/gnu/libidn/$topdir-$ver
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-configure_args+=(--with-libiconv-prefix=$prefix)
+configure_args+=(--with-libiconv-prefix=$prefix --without-doc)
 
 reg prep
 prep()
@@ -74,8 +74,22 @@ check()
 reg install
 install()
 {
+    #local stage_doc_dir="${stage_dir}${prefix}/share/doc/groff-1.22"
+
+    # Pre-create staging directories so contrib/mom doesn't choke on missing paths
+    #mkdir -p "${stage_doc_dir}/pdf"
+    #mkdir -p "${stage_doc_dir}/examples/mom"
+    #make_install_target="install pdfdocdir=\$(docdir)/examples/mom"
+
+    # Empty MOM_PDFDOCFILES in Makefile.sub so it doesn't attempt to install/link PDFs
+    setdir source
+    sed -e 's/^MOM_PDFDOCFILES =.*/MOM_PDFDOCFILES =/' \
+        contrib/mom/Makefile.sub > contrib/mom/Makefile.sub.tmp \
+        && mv contrib/mom/Makefile.sub.tmp contrib/mom/Makefile.sub
+
     generic_install DESTDIR
-    doc AUTHORS COPYING* NEWS README.md
+
+    doc COPYING* NEWS README TODO LICENSES
 }
 
 reg pack
