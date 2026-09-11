@@ -16,8 +16,8 @@ source[0]=http://prdownloads.sourceforge.net/infozip/${topdir}60.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-LDFLAGS="-L$prefix/lib -R$prefix/lib -lbz2"
-CPPFLAGS="-I$prefix/include -D_USE_BZIP2"
+LDFLAGS="$LDFLAGS -lbz2"
+CPPFLAGS="$CPPFLAGS -D_USE_BZIP2"
 shortroot=1
 __configure="make"
 make_build_target="-f unix/Makefile generic_gcc"
