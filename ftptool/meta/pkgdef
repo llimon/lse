@@ -1,0 +1,11 @@
+[ftptool]
+pkgname="${pkgprefix}$ftpt"
+name="$topdir - XView ftp browsing and download utility"
+pkgcat="utilities"
+pkgvendor="https://www.ibiblio.org/pub/X11/contrib/utilities/"
+pkgdesc="ftptool is a usefull tool for browsing and manipulating files in ftp servers"
+pkgver="$pkgver"
+files(-,root,bin)
+openwin/bin/*
+openwin/share/man/man1/*
+openwin/lib

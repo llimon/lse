@@ -1,0 +1,19 @@
+[xterm-sixel]
+pkgname="${pkgprefix}xterm"
+name="$topdir - Modern xterm with colors, libsixel and other goodies."
+pkgcat="application"
+pkgvendor="https://xterm.dev/"
+pkgdesc="XTerm is the standard terminal emulator application for the X Window System (X.org)"
+pkgver="$pkgver"
+files(755,root,sys)
+#dir $_sysconfdir
+dir usr
+dir usr/tgcware
+#${_sysconfdir}/*/*lse_ntpd
+#
+files(-,root,bin)
+$lprefix/$_bindir
+$lprefix/$_sbindir
+$lprefix/$_libdir
+$lprefix/$_mandir
+$lprefix/$_docdir
