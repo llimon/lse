@@ -31,7 +31,7 @@ pkgcat="application"
 pkgvendor="http://www.vim.org"
 pkgdesc="An improved almost compatible version of Vi, build with small features, for resource constrained systems"
 pkgver="$pkgver"
-files(0,root,bin)
+files(-,root,bin)
 $_bindir/vim-small
 
 [vim-motif]

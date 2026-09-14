@@ -14,7 +14,6 @@ version=${basever}.${patchlevel}
 pkgver=2
 source[0]="https://github.com/vim/vim/archive/v${basever}.${repo_pl}.tar.gz#/${topdir}-${version}.tar.gz"
 # If there are no patches, simply comment this
-#patch[0]=vim-8.2.4804-socklen_t.patch
 patch[0]=sol2.5.1.patch
 
 # Source function library
