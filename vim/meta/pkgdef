@@ -24,6 +24,16 @@ $_mandir/man1/view*
 $_mandir/man1/vim*
 $_mandir/man1/xxd*
 
+[vim-small]
+pkgname="${pkgprefix}${topdir}sml"
+name="Vim - VIsual editor iMproved *SMALL*"
+pkgcat="application"
+pkgvendor="http://www.vim.org"
+pkgdesc="An improved almost compatible version of Vi, build with small features, for resource constrained systems"
+pkgver="$pkgver"
+files(0,root,bin)
+$_bindir/vim-small
+
 [vim-motif]
 pkgname="${pkgprefix}${topdir}mtf"
 name="Vim - Vi IMproved"
