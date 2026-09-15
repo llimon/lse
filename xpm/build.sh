@@ -20,10 +20,12 @@ source[0]=https://fossies.org/linux/misc/old/${topdir}-${version}.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
+export CPPFLAGS="$CPPFLAGS -I/usr/openwin/include -I. -Ilib -I../lib"
+export LDFLAGS="-R/usr/openwin/lib -L/usr/openwin/lib"
+
 topsrcdir=${topdir}-${version}
 #configure_args+=()
 
-#topsrcdir="${topdir}${version}"
 
 reg prep
 prep()
@@ -32,54 +34,37 @@ prep()
     
     setdir source
 
+    ${__mkdir} lib/X11
+    ${__cp} lib/*.h lib/X11
 
 	 ${__imake} -I/usr/openwin/lib/config -DTOPDIR=. -DCURDIR=. || echo "error running imake " 
     ${__make} Makefiles
 
+    cat << EOF >> lib/mapfile
+libXpm.so.3.4 {
+    global:
+        Xpm*;
+    local:
+        *;
+};
+EOF
 
-   for make_file in Makefile sxpm/Makefile cxpm/Makefile lib/Makefile; do
-		echo "Patching ${make_file}"
-
-# 1. Override INCROOT so -I$(INCROOT) expands to /usr/openwin/share/include
-        ${__gsed} -i "s|\(INCROOT[[:space:]]*=\).*|\1 /usr/openwin/share/include|" "${make_file}"
-
-        # 2. Hardcode TOP_INCLUDES directly (handles both literal -I$(INCROOT) and raw paths)
-    	  ${__gsed} -i "s|\(TOP_INCLUDES[[:space:]]*=\).*|\1 -I/usr/openwin/share/include|" ${make_file}
-
-        # 3. Catch-all regex for any stray -I/include or -I/usr/openwin/include references
-        ${__gsed} -i "s|-I/include|-I/usr/openwin/share/include|g" "${make_file}"
-        ${__gsed} -i "s|-I/usr/openwin/include|-I/usr/openwin/share/include|g" "${make_file}"
-
-
-      # Fix compiler and preprocesor
-    	${__gsed} -i "s|\( CC[[:space:]]*=\).*|\1 gcc |" ${make_file}
     	${__gsed} -i "s|\(PREPROCESSCMD[[:space:]]*=\).*|\1 gcc -E \$(STD_CPP_DEFINES) |" ${make_file}
 
-      # Strip Sun Studio flags (-xF, -xO4, etc.) and set GCC options
-      ${__gsed} -i 's/-xF//g' "${make_file}"
-      ${__gsed} -i 's/-xO[0-9]//g' "${make_file}"
-    	#${__gsed} -i 's|-kPIC|-fPIC|g' Makefile
-    	${__gsed} -i "s|\(CCOPTIONS[[:space:]]*=\).*|\1 -std=gnu99|" ${make_file}
-
-      # Fix Position Independent Code flags for GCC
-    	${__gsed} -i "s|\(PICFLAGS[[:space:]]*=\).*|\1 -fPIC|" ${make_file}
-    	${__gsed} -i "s|\(CXXPICFLAGS[[:space:]]*=\).*|\1 -fPIC|" ${make_file}
-
-      # Fix instalation paths
-    	${__gsed} -i "s|\(BINDIR[[:space:]]*=\).*|\1 $stagedir/usr/tgcware/openwin/bin|" ${make_file}
-    	${__gsed} -i "s|\(MANPATH[[:space:]]*=\).*|\1 $stagedir/usr/tgcware/openwin/share/man/man1|" ${make_file}
-    	#${__gsed} -i "s|\(BUILDINCDIR[[:space:]]*=\).*|\1 $stagedir/usr/tgcware/openwin/include|" ${make_file}
-    	${__gsed} -i "s|\(XPMINCDIR[[:space:]]*=\).*|\1 $stagedir/usr/tgcware/openwin/include|" ${make_file}
-    	${__gsed} -i "s|\(XPMLIBDIR[[:space:]]*=\).*|\1 $stagedir/usr/tgcware/openwin/lib|" ${make_file}
-	done
-    
 }
 
 reg build
 build()
 {
 	 no_configure=1
-    generic_build
+    setdir source
+    ${__make}  \
+        CC=gcc PREPROCESSCMD="$CPPFLAGS" \
+        SHLIBLDFLAGS="-G -z text" \
+        CDEBUGFLAGS="-g" \
+        EXTRA_LDOPTIONS="$LDFLAGS" \
+        OPENWINHOME="/usr/openwin" \
+        PICFLAGS="-fPIC" CCOPTIONS="-std=gnu99 ${GCC_MCPU}" 
 }
 
 reg check
@@ -93,11 +78,28 @@ install()
 {
 	
 	setdir source
-   DESTDIR=${stagedir}
+   clear stage
+
+   export PATH=/usr/openwin/bin:$PATH
+   DESTDIR=${stagedir}/openwin
+   BINDIR=/usr/openwin/bin
    mkdir -p $DESTDIR
 	echo "destdir $DESTDIR"
-   make install
-   make install.man
+   ${__make} install \
+      DESTDIR="${stagedir}/${prefix}/openwin" \
+      BINDIR="/usr/openwin/bin" \
+      SHLIBLDFLAGS="-G -z text" \
+      XPMBINDIR="/bin" \
+      SHELL="/usr/tgcware/bin/bash"
+
+   ${__make} install.man \
+      DESTDIR="${stagedir}/${prefix}/openwin" \
+      BINDIR="/usr/openwin/bin" \
+      SHLIBLDFLAGS="-G -z text" \
+      XPMBINDIR="${stagedir}/${prefix}/bin" \
+      SHELL="/usr/tgcware/bin/bash"
+   setdir stage
+   grm -v -d openwin
 
 }
 

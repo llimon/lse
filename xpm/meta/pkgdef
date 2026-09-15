@@ -1,0 +1,16 @@
+[libxpm]
+pkgname="${pkgprefix}${topdir}"
+name="$topdir - XPM (X PixMap) is a format for storing/retrieving X pixmaps to/from files"
+pkgcat="libraries"
+pkgvendor="https://www.ibiblio.org/pub/X11/contrib/utilities/"
+pkgdesc="XPM (X PixMap) is a format for storing/retrieving X pixmaps to/from files"
+pkgver="$pkgver"
+files(-,root,bin)
+openwin/bin/*
+openwin/share/man/man1/*
+openwin/lib/*
+openwin/include/X11/*
+openwin/man
+openwin/man/mann
+openwin/man/mann/cxpm.n
+openwin/man/mann/sxpm.n
