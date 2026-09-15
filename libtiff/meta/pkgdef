@@ -1,0 +1,18 @@
+[libtiff]
+pkgname="${pkgprefix}l${topdir}"
+name="$topdir - software provides support for the Tag Image File Format (TIFF)"
+pkgcat="library"
+pkgvendor="https://download.gnome.org/sources/"
+pkgdesc="The LibTIFF software provides support for the Tag Image File Format (TIFF), a widely used format for storing image data."
+pkgver="$pkgver"
+files(-,root,bin)
+default_docs
+$_bindir/*
+$_libdir/libtiff*
+$_libdir/pkgconfig/libtiff*
+$_includedir/*
+$_sharedir/man/*
+$_sharedir/gtk-doc/html/tiff/*
+$_sharedir/locale/*
+$_docdir/*
+

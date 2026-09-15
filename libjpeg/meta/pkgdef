@@ -1,0 +1,13 @@
+[libjpeg]
+pkgname="${pkgprefix}l${topdir}"
+name="$topdir - Libjpeg is a widely used C library for reading and writing JPEG image files."
+pkgcat="library"
+pkgvendor="https://www.ijg.org"
+pkgdesc="Libjpeg is a widely used C library for reading and writing JPEG image files. It was developed by Tom Lane and the Independent JPEG Group (IJG) during the 1990"
+pkgver="$pkgver"
+files(-,root,bin)
+$_bindir/*
+$_libdir/libjpeg*
+$_includedir/*
+$_sharedir/man/*
+$_docdir/jpeg-9b/*

@@ -10,12 +10,12 @@ dir var
 dir usr
 dir $lprefix
 files(755,root,sys)
-#dir var/run
+dir var/run
 files(775,root,sys)
 dir var/adm
 files(711,root,root)
 dir var/adm/sudo
-#dir var/run/sudo
+dir var/run/sudo
 files(700,root,root)
 dir var/adm/sudo/lectured
 files(750,root,root)
@@ -29,14 +29,14 @@ $lprefix/$_bindir/sudoedit
 $lprefix/$_bindir/sudoreplay
 $lprefix/$_bindir/cvtsudoers
 $lprefix/$_sbindir/visudo
-files(755,root,root)
+dir $lprefix/libexec
 dir $lprefix/libexec/sudo
 files(644,root,root)
-#$lprefix/libexec/sudo/*.so
-#$lprefix/libexec/sudo/libsudo_util.so.*
+$lprefix/libexec/sudo/libsudo_util.so.*
 $lprefix/libexec/sudo/*.la
 files(-,root,bin)
 default_docs
 $lprefix/$_includedir
 $lprefix/$_mandir
-#$lprefix/share/locale/*/LC_MESSAGES/sudo*
+$lprefix/share/locale/*
+$lprefix/relnotes/*
