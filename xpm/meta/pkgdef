@@ -10,7 +10,5 @@ openwin/bin/*
 openwin/share/man/man1/*
 openwin/lib/*
 openwin/include/X11/*
-openwin/man
-openwin/man/mann
-openwin/man/mann/cxpm.n
-openwin/man/mann/sxpm.n
+openwin/man/*
+
