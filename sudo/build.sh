@@ -90,6 +90,7 @@ install()
     ${__rm} -f ${stagedir}${prefix}/etc/sudoers
     #${__rm} -f ${stagedir}${prefix}/relnotes/sudo*
 #lprefix/relnotes/sudo-1.8.32-1/sudo.txt
+    validate_staged_files ${stagedir} "/usr/tgcware/bin/sudo"
 }
 
 reg pack
