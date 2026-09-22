@@ -49,21 +49,16 @@ install()
     clean stage
     setdir source
     
-    # 1. Run the default install into the staging directory
+    # Run the default install into the staging directory
     ${__make} DESTDIR=${stagedir} install
 
-    # 2. Create the compat directory inside the staged include folder
-    ${__mkdir} -p ${stagedir}${prefix}/include/compat
 
-    # 3. Move the header into the compat folder
-    # (Renaming it to snprintf_compat.h to perfectly match your Git config.mak)
-    ${__mv} ${stagedir}${prefix}/include/snprintf.h ${stagedir}${prefix}/include/compat/snprintf_compat.h
-
-    # 4. Tell the framework we already ran 'make install' and to just package it
     custom_install=1
     generic_install DESTDIR
+
+    set stage
+    ${__rm} -v $prefix/lib/*.so
     
-    # 5. Install the documentation
     doc ChangeLog NEWS README INSTALL LICENSE.txt
 }
 
