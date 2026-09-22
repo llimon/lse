@@ -16,6 +16,7 @@ patch[0]=binutils-2.25-use-strtod-instead-of-strtold.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
+gnu_link [ ld ]
 configure_args+=(--disable-werror --program-prefix=g)
 
 reg prep
