@@ -62,6 +62,11 @@ $iprefix/man/?a?1/cpp.1
 $iprefix/man/?a?1/gcov.1
 $iprefix/man/?a?7/*.7
 $_vdocdir
+# symlinks
+$iprefix/lib/libgcc_s.so
+$iprefix/lib/libssp.so
+lib/libgcc_s.so
+lib/libssp.so
 
 [gcc-gnat]
 pkgname="${pkgprefix}g${abbrev_majorminor}gn"
@@ -180,6 +185,7 @@ lib/$libsubdir/${arch}-${vendor}-solaris*/$version/libstdc++.*
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/libsupc++.*
 libexec/gcc/${arch}-${vendor}-solaris*/$version/cc1plus
 $iprefix/man/man1/g++.1
+$iprefix/lib/libstdc++.so
 
 [gcc-objc]
 pkgname="${pkgprefix}g${abbrev_majorminor}ob"
@@ -191,6 +197,7 @@ files(-,root,bin)
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/objc
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/libobjc.*
 libexec/gcc/${arch}-${vendor}-solaris*/$version/cc1obj
+lib/libobjc.so
 
 [gcc-objc++]
 pkgname="${pkgprefix}g${abbrev_majorminor}ox"
@@ -215,6 +222,7 @@ lib/$libsubdir/${arch}-${vendor}-solaris*/$version/libgfortran.*
 libexec/gcc/${arch}-${vendor}-solaris*/$version/f951
 $iprefix/man/?a?1/gfortran.1
 $iprefix/info/gfortran.info*
+$iprefix/lib/libgfortran.so
 
 [libgcc_s1]
 pkgname="${pkgprefix}lgcc1"
@@ -235,6 +243,7 @@ pkgdesc="Runtime support library for C++"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libstdc++.so.6*
+lib/libstdc++.so
 
 [libobjc2]
 pkgname="${pkgprefix}lobjc2"
@@ -255,6 +264,7 @@ pkgdesc="Runtime support library for Fortran"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libgfortran.so.3*
+lib/libgfortran.so
 
 [libgnat43]
 pkgname="${pkgprefix}lgna${abbrev_majorminor}"
@@ -286,4 +296,5 @@ pkgdesc="Runtime support library for OpenMP"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libgomp.so.1*
+lib/libgomp.so
 

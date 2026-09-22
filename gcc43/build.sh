@@ -11,6 +11,7 @@ pkgver=2
 source[0]=ftp://ftp.sunet.se/pub/gnu/gcc/releases/$topdir-$version/$topdir-$version.tar.bz2
 ## If there are no patches, simply comment this
 patch[0]=gcc-4.3.6-libffi-unwind.patch
+patch[1]=sol-ld-fixes.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
@@ -33,9 +34,26 @@ build()
     setup_tools
     ${__mkdir} -p ${srcdir}/$objdir
     export CONFIG_SHELL=/usr/bin/ksh
-    export LDFLAGS="$LDFLAGS -lgcc_s"
-    configure_args+=( --with-gmp=/usr/tgcware --with-local-prefix=/usr/tgcware --with-mpfr=/usr/tgcware --enable-obsolete --with-stage1-ldflags="-static-libgcc $LDFLAGS" --with-boot-ldflags="-statidc-libgcc $LDFLAGS"
+
+    echo "GCC_ARCH: $gcc_arch"
+	 [[ "$gcc_arch" == "" ]] && exit
+
+    # v7 requires explicit -lgcc_s
+    if [[ "$gcc_arch" == *"v7"* ]]; then
+        export LDFLAGS="$LDFLAGS -lgcc_s"
+    fi
+
+    # Append stage1/boot flags using the computed LDFLAGS
+    export configure_args+=( 
+       --with-stage1-ldflags="-static-libgcc $LDFLAGS" 
+      --with-boot-ldflags="-static-libgcc $LDFLAGS"
+       --enable-sjlj-exceptions
     )
+    echo "--------------------------------"
+    echo "Build Parameters to configure"
+	 printf '<%s>\n' "${configure_args[@]}"
+    echo "--------------------------------"
+
     generic_build ../$objdir
 }
 
@@ -58,6 +76,8 @@ install()
     # Place share/docs in the regular location
     prefix=$topinstalldir
     doc COPYING* MAINTAINERS NEWS
+    # Make sure we got our goodies
+    validate_gcc_installation
 }
 
 reg check
