@@ -1,0 +1,12 @@
+[minicom]
+pkgname="${pkgprefix}micom"
+name="$topdir - minicom is a menu-driven, text-based terminal emulator and serial communication program."
+pkgcat="system"
+pkgvendor="https://alioth-archive.debian.org/releases/minicom/Source/2.7.1/"
+pkgdesc="Minicom is a menu-driven, text-based terminal emulator and serial communication program for Unix-like systems, used to interact with devices like routers, modems, and embedded systems via serial ports."
+pkgver="$pkgver"
+files(-,root,bin)
+default_docs
+$_bindir/*
+$_sharedir/man/*
+$_sharedir/locale/*

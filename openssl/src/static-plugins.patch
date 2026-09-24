@@ -1,0 +1,25 @@
+diff -ruN a/Makefile.shared b/Makefile.shared
+--- a/Makefile.shared	2026-09-08 08:03:39.290002000 +0000
++++ b/Makefile.shared	2026-09-08 08:07:04.810003000 +0000
+@@ -370,8 +370,8 @@
+ 		($(CC) -v 2>&1 | grep gcc) > /dev/null && MINUSZ='-Wl,-z,'; \
+ 		SHLIB=lib$(LIBNAME).so; \
+ 		SHLIB_SUFFIX=; \
+-		ALLSYMSFLAGS="$${MINUSZ}allextract"; \
+-		NOALLSYMSFLAGS="$${MINUSZ}defaultextract"; \
++		ALLSYMSFLAGS=""; \
++		NOALLSYMSFLAGS=""; \
+ 		SHAREDFLAGS="$(CFLAGS) $(SHARED_LDFLAGS) -h $$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX -Wl,-Bsymbolic"; \
+ 	fi; \
+ 	$(LINK_SO_O)
+@@ -384,8 +384,8 @@
+ 		($(CC) -v 2>&1 | grep gcc) > /dev/null && MINUSZ='-Wl,-z,'; \
+ 		SHLIB=lib$(LIBNAME).so; \
+ 		SHLIB_SUFFIX=;\
+-		ALLSYMSFLAGS="$${MINUSZ}allextract"; \
+-		NOALLSYMSFLAGS="$${MINUSZ}defaultextract"; \
++		ALLSYMSFLAGS=""; \
++		NOALLSYMSFLAGS=""; \
+ 		SHAREDFLAGS="$(CFLAGS) $(SHARED_LDFLAGS) -h $$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX -Wl,-Bsymbolic"; \
+ 	fi; \
+ 	$(LINK_SO_A)

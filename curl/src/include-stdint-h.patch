@@ -1,0 +1,12 @@
+diff -ruN a/lib/vssh/ssh.h b/lib/vssh/ssh.h
+--- a/lib/vssh/ssh.h	2026-09-03 01:57:15.730477000 +0000
++++ b/lib/vssh/ssh.h	2026-09-03 08:02:04.300483000 +0000
+@@ -23,7 +23,7 @@
+  * SPDX-License-Identifier: curl
+  *
+  ***************************************************************************/
+-
++#include <stdint.h>
+ #include "curl_setup.h"
+ 
+ #if defined(USE_LIBSSH2)

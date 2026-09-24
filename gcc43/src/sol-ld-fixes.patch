@@ -1,0 +1,26 @@
+diff -ruN a/gcc-4.3.6/gcc/config/sol2.h b/gcc-4.3.6/gcc/config/sol2.h
+--- a/gcc-4.3.6/gcc/config/sol2.h	2007-08-02 03:49:31.000000000 +0000
++++ b/gcc-4.3.6/gcc/config/sol2.h	2026-09-08 11:20:30.980949000 +0000
+@@ -139,7 +139,7 @@
+ /* This should be the same as in svr4.h, except with -R added.  */
+ #undef  LINK_SPEC
+ #define LINK_SPEC \
+-  "%{h*} %{v:-V} \
++  "-disable-new-dtags %{h*} %{v:-V} \
+    %{b} \
+    %{static:-dn -Bstatic} \
+    %{shared:-G -dy %{!mimpure-text:-z text}} \
+@@ -147,6 +147,13 @@
+    %(link_arch) \
+    %{Qy:} %{!Qn:-Qy}"
+ 
++/* Force v7 default and prevent C++ weak symbol deadlock on sun4c */
++#undef CC1_SPEC
++#define CC1_SPEC "%{!mcpu=*:-mcpu=v7}"
++
++#undef CC1PLUS_SPEC
++#define CC1PLUS_SPEC "%(cc1_options) -fno-weak -fno-implicit-templates"
++
+ /* The Solaris linker doesn't understand constructor priorities.  (The
+    GNU linker does support constructor priorities, so GNU ld
+    configuration files for Solaris override this setting.)  */

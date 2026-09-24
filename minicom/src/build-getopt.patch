@@ -1,0 +1,12 @@
+diff -ruN a/lib/Makefile.in b/lib/Makefile.in
+--- a/lib/Makefile.in	2026-09-08 03:03:36.154478000 +0000
++++ b/lib/Makefile.in	2026-09-08 07:56:03.576985000 +0000
+@@ -99,7 +99,7 @@
+ am__v_AR_1 = 
+ libport_a_AR = $(AR) $(ARFLAGS)
+ libport_a_DEPENDENCIES = @LIBOBJS@
+-am_libport_a_OBJECTS =
++am_libport_a_OBJECTS = getopt.$(OBJEXT)
+ libport_a_OBJECTS = $(am_libport_a_OBJECTS)
+ AM_V_P = $(am__v_P_@AM_V@)
+ am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)

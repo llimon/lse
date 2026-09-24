@@ -1,0 +1,19 @@
+[libpng]
+pkgname="${pkgprefix}lipng"
+name="$topdir - libpng is the official PNG reference library."
+pkgcat="system"
+pkgvendor="https://download.gnome.org/sources/"
+pkgdesc="libpng is the official PNG reference library. It supports almost all PNG features, is extensible, and has been extensively tested for over 30 years."
+pkgver="$pkgver"
+files(-,root,bin)
+default_docs
+$_bindir/libpng-config
+$_bindir/libpng12-config
+$_libdir/libpng.*
+$_libdir/libpng12.*
+$_libdir/pkgconfig/libpng.pc
+$_libdir/pkgconfig/libpng12.pc
+$_includedir/*
+$_sharedir/man/*
+#$_sharedir/gtk-doc/html/libpng/*
+
