@@ -14,7 +14,13 @@
 #include <sys/types.h>
 
 /* Native 64-bit offset type present on all Solaris 2.x releases */
-typedef long long offset_t;
+#if defined(SOLARIS2) || defined(__solaris__) || defined(__SVR4)
+  /* Native 64-bit offset type present on all Solaris 2.x releases */
+  typedef long long offset_t;
+#else
+  /* SunOS 4.1.x (BSD 4.3): stdio and UFS use 32-bit long offsets */
+  typedef long offset_t;
+#endif
 
 /*
  * Native SunOS kernel system call. Guaranteed to exist in libc.so.1

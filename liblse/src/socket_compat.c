@@ -10,13 +10,20 @@
 #include <string.h>
 #include <errno.h> 
 
+
 #if defined(__GNUC__)
-#  if defined(__ELF__) || defined(__solaris__)
+#  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
+     /* ELF systems: Use pragma weak */
 #    pragma weak inet_ntop
 #    pragma weak inet_pton
+#  elif defined(__aout__) || defined(sun) || defined(__sunos__)
+     /* SunOS 4 / a.out systems: Standard declarations without weak attributes */
+     const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
+     int         inet_pton(int af, const char *src, void *dst);
 #  else
+     /* Fallback for other GCC platforms supporting weak attributes */
      const char *inet_ntop(int af, const void *src, char *dst, socklen_t size) __attribute__((weak));
-     int inet_pton(int af, const char *src, void *dst) __attribute__((weak));
+     int         inet_pton(int af, const char *src, void *dst)                __attribute__((weak));
 #  endif
 #endif
 

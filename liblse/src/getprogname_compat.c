@@ -10,15 +10,21 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
-#  include <sys/procfs.h>
 
 #if defined(__GNUC__)
-#  if defined(__ELF__) || defined(__solaris__)
+#  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
+#    include <sys/procfs.h>
+     /* ELF systems: Use pragma weak */
 #    pragma weak getprogname
 #    pragma weak setprogname
+#  elif defined(__aout__) || defined(sun) || defined(__sunos__)
+     /* SunOS 4 / a.out systems: Standard declarations without weak attributes */
+     const char *getprogname(void);
+     void        setprogname(const char *name);
 #  else
-     const char *getprogname(void) __attribute__((weak));
-     void setprogname(const char *name) __attribute__((weak));
+     /* Fallback for other GCC platforms supporting weak attributes */
+     const char *getprogname(void)      __attribute__((weak));
+     void        setprogname(const char *name) __attribute__((weak));
 #  endif
 #endif
 

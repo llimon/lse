@@ -35,23 +35,32 @@
 #endif
 
 #if defined(__GNUC__)
-#  if defined(__ELF__) || defined(__solaris__)
+#  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
+     /* ELF systems: Use pragma weak */
 #    pragma weak snprintf
 #    pragma weak vsnprintf
 #    pragma weak asprintf
 #    pragma weak vasprintf
 #    pragma weak asnprintf
 #    pragma weak vasnprintf
+#  elif defined(__aout__) || defined(sun) || defined(__sunos__)
+     /* SunOS 4 / a.out systems: Standard declarations without weak attributes */
+     int snprintf(char *str, size_t str_m, const char *fmt, ...);
+     int vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap);
+     int asprintf(char **ptr, const char *fmt, ...);
+     int vasprintf(char **ptr, const char *fmt, va_list ap);
+     int asnprintf(char **ptr, size_t str_m, const char *fmt, ...);
+     int vasnprintf(char **ptr, size_t str_m, const char *fmt, va_list ap);
 #  else
-     int snprintf(char *str, size_t str_m, const char *fmt, ...) __attribute__((weak));
-     int vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) __attribute__((weak));
-     int asprintf(char **ptr, const char *fmt, ...) __attribute__((weak));
-     int vasprintf(char **ptr, const char *fmt, va_list ap) __attribute__((weak));
-     int asnprintf(char **ptr, size_t str_m, const char *fmt, ...) __attribute__((weak));
+     /* Fallback for other GCC platforms supporting weak attributes */
+     int snprintf(char *str, size_t str_m, const char *fmt, ...)          __attribute__((weak));
+     int vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap)  __attribute__((weak));
+     int asprintf(char **ptr, const char *fmt, ...)                       __attribute__((weak));
+     int vasprintf(char **ptr, const char *fmt, va_list ap)              __attribute__((weak));
+     int asnprintf(char **ptr, size_t str_m, const char *fmt, ...)        __attribute__((weak));
      int vasnprintf(char **ptr, size_t str_m, const char *fmt, va_list ap) __attribute__((weak));
 #  endif
 #endif
-
 #include <sys/types.h>
 #include <string.h>
 #include <stdlib.h>

@@ -12,6 +12,36 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#if defined(__GNUC__)
+#  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
+     /* ELF systems: Use pragma weak */
+#    pragma weak freeaddrinfo
+#    pragma weak gai_strerror
+#    pragma weak getaddrinfo
+#    pragma weak getnameinfo
+#  elif defined(__aout__) || defined(sun) || defined(__sunos__)
+     /* SunOS 4 / a.out systems: Standard declarations without weak attributes */
+     void  freeaddrinfo(struct addrinfo *res);
+     char *gai_strerror(int ecode);
+     int   getaddrinfo(const char *nodename, const char *servname,
+                       const struct addrinfo *hints,
+                       struct addrinfo **res);
+     int   getnameinfo(const struct sockaddr *sa, socklen_t salen,
+                       char *host, size_t hostlen,
+                       char *serv, size_t servlen, int flags);
+#  else
+     /* Fallback for other GCC platforms supporting weak attributes */
+     void  freeaddrinfo(struct addrinfo *res) __attribute__((weak));
+     char *gai_strerror(int ecode)            __attribute__((weak));
+     int   getaddrinfo(const char *nodename, const char *servname,
+                       const struct addrinfo *hints,
+                       struct addrinfo **res) __attribute__((weak));
+     int   getnameinfo(const struct sockaddr *sa, socklen_t salen,
+                       char *host, size_t hostlen,
+                       char *serv, size_t servlen, int flags) __attribute__((weak));
+#  endif
+#endif
+
 /* Free linked list */
 void freeaddrinfo(struct addrinfo *res) {
     struct addrinfo *p, *next;

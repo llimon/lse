@@ -6,12 +6,18 @@
 #include <math.h>
 
 #if defined(__GNUC__)
-#  if defined(__ELF__) || defined(__solaris__)
+#  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
+     /* ELF systems: Use pragma weak */
 #    pragma weak isinf_float
 #    pragma weak isinf_double
+#  elif defined(__aout__) || defined(sun) || defined(__sunos__)
+     /* SunOS 4 / a.out systems: Standard declarations without weak attributes */
+     int isinf_float(float x);
+     int isinf_double(double x);
 #  else
-     int isinf_float(float x)  __attribute__((weak));
-     int isinf_double(double x) __attribute__((weak));
+     /* Fallback for other GCC platforms supporting weak attributes */
+     int isinf_float(float x)   __attribute__((weak));
+     int isinf_double(double x)  __attribute__((weak));
 #  endif
 #endif
 

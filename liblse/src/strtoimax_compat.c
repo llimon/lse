@@ -8,10 +8,17 @@
 #include <errno.h>
 
 #if defined(__GNUC__)
-#  if defined(__ELF__) || defined(__solaris__)
+#  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
+     /* ELF systems: Use pragma weak for dynamic symbol overrides */
 #    pragma weak strtoimax
 #    pragma weak strtoumax
+#  elif defined(__aout__) || defined(sun) || defined(__sunos__)
+     /* SunOS 4 / a.out systems: Weak symbols are unsupported by the linker.
+      * Provide standard prototype declarations without weak attributes. */
+     intmax_t  strtoimax(const char *nptr, char **endptr, int base);
+     uintmax_t strtoumax(const char *nptr, char **endptr, int base);
 #  else
+     /* Fallback for other GCC platforms supporting weak attributes */
      intmax_t  strtoimax(const char *nptr, char **endptr, int base)  __attribute__((weak));
      uintmax_t strtoumax(const char *nptr, char **endptr, int base) __attribute__((weak));
 #  endif

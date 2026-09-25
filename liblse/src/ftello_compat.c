@@ -11,12 +11,18 @@
 #include <errno.h>
 
 #if defined(__GNUC__)
-#  if defined(__ELF__) || defined(__solaris__)
+#  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
+     /* ELF systems: Use pragma weak */
 #    pragma weak ftello
 #    pragma weak fseeko
+#  elif defined(__aout__) || defined(sun) || defined(__sunos__)
+     /* SunOS 4 / a.out systems: Standard declarations using off_t */
+     off_t ftello(FILE *stream);
+     int   fseeko(FILE *stream, off_t offset, int whence);
 #  else
-     offset_t ftello(FILE *stream) __attribute__((weak));
-     int fseeko(FILE *stream, offset_t offset, int whence) __attribute__((weak));
+     /* Fallback for other GCC platforms supporting weak attributes */
+     off_t ftello(FILE *stream)                           __attribute__((weak));
+     int   fseeko(FILE *stream, off_t offset, int whence) __attribute__((weak));
 #  endif
 #endif
 
