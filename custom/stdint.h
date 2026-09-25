@@ -1,7 +1,7 @@
 #ifndef _STDINT_H
 #define _STDINT_H
 
-/* Custom C99 stdint.h for Solaris 2.5.1 / SPARC V8 (32-bit) */
+/* Custom C99 stdint.h for SunOS 4.1.x & Solaris 2.x / SPARC V8 (32-bit) */
 
 #ifdef _MSC_VER
     #if defined(_M_AMD64)
@@ -10,19 +10,23 @@
       typedef unsigned long uintptr_t;
     #endif
 
-    typedef __int8            int8_t;
-    typedef __int16           int16_t;
-    typedef __int32           int32_t;
-    typedef __int64           int64_t;
-    typedef unsigned __int8   uint8_t;
-    typedef unsigned __int16  uint16_t;
-    typedef unsigned __int32  uint32_t;
-    typedef unsigned __int64  uint64_t;
+    typedef __int8           int8_t;
+    typedef __int16          int16_t;
+    typedef __int32          int32_t;
+    typedef __int64          int64_t;
+    typedef unsigned __int8  uint8_t;
+    typedef unsigned __int16 uint16_t;
+    typedef unsigned __int32 uint32_t;
+    typedef unsigned __int64 uint64_t;
 #elif defined(__GNUC__)
 
     #include <sys/types.h>
-    #include <sys/synch.h>
     #include <limits.h>
+
+    /* Include sys/synch.h ONLY on Solaris 2.x / SVR4 (SunOS 4 lacks this header) */
+    #if defined(SOLARIS2) || defined(__solaris__) || defined(__SVR4)
+    #  include <sys/synch.h>
+    #endif
 
     #if defined(__UINTPTR_TYPE__)
         typedef __UINTPTR_TYPE__ uintptr_t;
@@ -143,7 +147,17 @@
     #define UINT32_MAX         4294967295U
     #endif
 
-    /* 64-bit limits (linked to system limits.h definitions) */
+    /* 64-bit limits with fallbacks for limits.h */
+    #ifndef LLONG_MAX
+    #define LLONG_MAX          9223372036854775807LL
+    #endif
+    #ifndef LLONG_MIN
+    #define LLONG_MIN          (-LLONG_MAX - 1LL)
+    #endif
+    #ifndef ULLONG_MAX
+    #define ULLONG_MAX         18446744073709551615ULL
+    #endif
+
     #ifndef INT64_MAX
     #define INT64_MAX          LLONG_MAX
     #endif

@@ -73,5 +73,17 @@
 
 #endif
 
+/* C99 string-to-intmax conversion prototypes */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern intmax_t  strtoimax(const char *nptr, char **endptr, int base);
+extern uintmax_t strtoumax(const char *nptr, char **endptr, int base);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* _SPARC32_INTTYPE_H */
