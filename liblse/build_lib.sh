@@ -13,6 +13,7 @@ TARGET="$1"
 CC="gcc"
 OS_TYPE=`uname -s`
 CFLAGS="-O2 -mcpu=v7 -I."
+LDFLAGS="-lgcc_s"
 
 # Configure explicit source arrays and library names based on target
 if [ "$TARGET" = "-build-lsecompat" ]; then
@@ -77,6 +78,6 @@ ar rcs "$LIB_A" *.o
 
 # Shared library link step (injects -lsocket -lnsl only for liblsenet)
 #$CC -shared -static-libgcc -Wl,-assert,pure-text -o "$LIB_SO" *.o $EXTRA_LIBS || exit 1
-$CC -shared -static-libgcc -Wl,-z,text -o "$LIB_SO" *.o $EXTRA_LIBS || exit 1
+$CC -shared -static-libgcc  -Wl,-z,text -o "$LIB_SO" *.o $EXTRA_LIBS || exit 1
 
 echo "Successfully built both $LIB_A and $LIB_SO for$LIB_BASE"
