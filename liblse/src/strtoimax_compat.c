@@ -1,11 +1,13 @@
-#include "strtoimax_compat.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <inttypes.h>
+#include <stdint.h>
 #include <limits.h>
 #include <ctype.h>
 #include <errno.h>
+#include "strtoimax_compat.h"
 
 #if defined(__GNUC__)
 #  if defined(__ELF__) || defined(__solaris__) || defined(SOLARIS2)
@@ -29,6 +31,10 @@ intmax_t strtoimax(const char *nptr, char **endptr, int base) {
     uintmax_t acc = 0;
     int sign = 1;
     int any = 0;
+    uintmax_t maxval = (sign < 0) ? ((uintmax_t)INTMAX_MAX + 1ULL)
+                                  : (uintmax_t)INTMAX_MAX;
+    uintmax_t cutoff = maxval / (uintmax_t)base;
+    uintmax_t cutlim = maxval % (uintmax_t)base;
 
     if ((base < 0 || base == 1 || base > 36) && base != 0) {
         if (endptr) *endptr = (char *)nptr;
@@ -59,10 +65,6 @@ intmax_t strtoimax(const char *nptr, char **endptr, int base) {
         base = (s[0] == '0') ? 8 : 10;
     }
 
-    uintmax_t maxval = (sign < 0) ? ((uintmax_t)INTMAX_MAX + 1ULL)
-                                  : (uintmax_t)INTMAX_MAX;
-    uintmax_t cutoff = maxval / (uintmax_t)base;
-    uintmax_t cutlim = maxval % (uintmax_t)base;
 
     while (*s) {
         unsigned char ch = (unsigned char)*s;
@@ -102,6 +104,8 @@ uintmax_t strtoumax(const char *nptr, char **endptr, int base) {
     uintmax_t acc = 0;
     int sign = 1;
     int any = 0;
+    uintmax_t cutoff = UINTMAX_MAX / (uintmax_t)base;
+    uintmax_t cutlim = UINTMAX_MAX % (uintmax_t)base;
 
     if ((base < 0 || base == 1 || base > 36) && base != 0) {
         if (endptr) *endptr = (char *)nptr;
@@ -132,8 +136,6 @@ uintmax_t strtoumax(const char *nptr, char **endptr, int base) {
         base = (s[0] == '0') ? 8 : 10;
     }
 
-    uintmax_t cutoff = UINTMAX_MAX / (uintmax_t)base;
-    uintmax_t cutlim = UINTMAX_MAX % (uintmax_t)base;
 
     while (*s) {
         unsigned char ch = (unsigned char)*s;
