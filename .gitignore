@@ -4,11 +4,13 @@
 **/stage/*
 **/*.log
 **/TGS*
+**/core
 **/meta/pkginfo.*
 **/meta/depend.*
 **/meta/sums.*
 **/meta/files.*
 **/meta/prototype.*
+**/meta/compver.*
 distfiles/*
 srcfiles/*
 distfiles

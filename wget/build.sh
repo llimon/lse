@@ -15,9 +15,16 @@ patch[0]=getprogname.patch
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
-# Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib -lgcc_s -lsnprintf"
+#-include $prefix/include/compat/strtoimax_compat.h \
+    #-include $prefix/include/compat/dlfcn_compat.h"
+compat_cflags=" -include $prefix/include/compat/dns_rfc2553_compat.h \
+    -include $prefix/include/compat/socket_compat.h \
+    -include $prefix/include/compat/snprintf_compat.h"
+
+
+# Global settings extention / overrides
+export LIBS="$LIBS -lsnprintf -lgcc_s"
+#export CPPFLAGS="$CPPFLAGS $compat_cflags" 
 configure_args+=(--with-ssl=openssl --with-libssl-prefix=$prefix)
 
 reg prep
@@ -29,7 +36,24 @@ prep()
 reg build
 build()
 {
-    generic_build
+#    generic_build
+
+    export CFLAGS="$CFLAGS -std=gnu99"
+    export CXXFLAGS="$CXXFLAGS -fpermissive"
+    export LIBS="$LIBS -lsnprintf -lgcc_s"
+    ac_overrides="ac_cv_func_getprogname=yes \
+                  ac_cv_prog_cc_c11=no \
+                  gl_cv_compiler_c11_supported=no \
+                  ac_cv_func_vsnprintf=yes \
+                  ac_cv_func_snprintf=yes \
+                  gl_cv_func_vsnprintf_posix=yes \
+                  gl_cv_func_snprintf_posix=yes \
+                  gl_cv_func_vsnprintf_zerosize_bug=no"
+
+    run_configure
+    currdir = $PWD
+    ${__make} CC="${CC:-gcc}  -include ${prefix}/include/compat/snprintf_compat.h -include ${prefix}/include/compat/getprogname_compat.h" ${make_build_opts}
+
 }
 
 reg check

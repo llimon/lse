@@ -16,7 +16,7 @@ if [ "$TARGET" = "-build-lsecompat" ]; then
     out_file="lsecompat.h"
     guard_macro="LSECOMPAT_MASTER_H"
 
-    HEADER_FILES="strtoimax_compat.h ftello_compat.h snprintf_compat.h dlfn_compat.h getprogname_compat.hmap_compat.h math_compat.h mbstowcs_compat.h usleep_compat.h utimes_compat.h vterm_compat.h wcsstr_compat.h"
+    HEADER_FILES="strtoimax_compat.h ftello_compat.h snprintf_compat.h dlfn_compat.h getprogname_compat.h map_compat.h math_compat.h mbstowcs_compat.h usleep_compat.h utimes_compat.h vterm_compat.h wcsstr_compat.h"
 else
     out_file="lsenet.h"
     guard_macro="LSENET_MASTER_H"

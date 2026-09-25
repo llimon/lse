@@ -13,6 +13,7 @@ patch[0]=libiconv-getprogname.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
+   make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h" )
 
 gnu_link iconv
 
@@ -21,16 +22,17 @@ prep()
 {
     generic_prep
     setdir source
-    ${__gsed} -i 's|^#! /bin/sh|#!/usr/tgcware/bin/bash|' configure
+    ${__gsed} -i 's|^#! /bin/sh|#!/usr/local/lse/bin/bash|' configure
 }
 
 reg build
 build()
 {
     # Global settings
-    export LDFLAGS="$LDFLAGS -lgcc_s"
+    export LDFLAGS="$LDFLAGS"
+    LDFLAGS="$LDFLAGS -llsecompat" 
     # Should use bash for libtool
-    export CONFIG_SHELL=/usr/tgcware/bin/bash
+    export CONFIG_SHELL=/usr/local/lse/bin/bash
     configure_args+=(--enable-extra-encodings)
     gl_cv_func_getprogname_is_buggy=yes generic_build
 }

@@ -16,3 +16,11 @@ LSEmc       Midnight Commander
 LSEftptool  Graphical/Text FTP Tool
 LSEw3m      W3M Text Web Browser
 LSEntp      NTP Daemon / Time Synchronization
+
+mportant: Multiple GCC Version Coexistence & Installation Order
+
+LSE supports coexisting multi-version GCC toolchains (e.g., GCC 3.4.6, GCC 4.2.4, GCC 4.3.6). Compiler binaries and version-specific static libraries reside in distinct paths under /usr/tgcware/gcc<ver>/ and /usr/tgcware/lib/gcc/<triplet>/<ver>/.
+
+However, core shared runtime packages (LSElgcc1, LSElstdc6, LSElgfrt3, etc.) share common SONAME paths in /usr/tgcware/lib/.
+
+Rule: When installing multiple GCC toolchain versions on the same system, always install the packages in order from oldest GCC version to newest GCC version. This ensures the shared runtime library packages are cleanly upgraded to the newest ABI version without dropping exported symbols required by newer binaries.

@@ -23,8 +23,9 @@ export SHELL=$prefix/bin/bash
 export LD_OPTIONS="-R$prefix/lib"
 #export AR="$prefix/bin/gar"
 #export RANLIB=$prefix/bin/granlib
-export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/snprintf_compat.h"
-export LIBS="$LIBS -lsnprintf"
+export LDFLAGS="$LDFLAGS -pthread"
+export CXXFLAGS="$CXXFLAGS -pthread"
+export LIBS="$LIBS -llsecompat "
 ac_overrides="ac_cv_func_vsnprintf=yes
   ac_cv_func_snprintf=yes 
   gl_cv_func_vsnprintf_posix=yes 

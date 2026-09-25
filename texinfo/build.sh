@@ -25,7 +25,8 @@ prep()
 reg build
 build()
 {
-    LIBS="$LIBS -lpthread"
+    export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/snprintf_compat.h"
+    export LIBS="$LIBS -lsnprintf -lpthread"
     generic_build
 }
 

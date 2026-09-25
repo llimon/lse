@@ -5,7 +5,7 @@
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS (Goes to .h)
  * ==================================================================== */
 
-#include <stdio.h>
+#include <stdio.h> /* KEEP */
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>

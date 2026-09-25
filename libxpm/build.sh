@@ -90,14 +90,14 @@ install()
       BINDIR="/usr/openwin/bin" \
       SHLIBLDFLAGS="-G -z text" \
       XPMBINDIR="/bin" \
-      SHELL="/usr/tgcware/bin/bash"
+      SHELL="/usr/local/lse/bin/bash"
 
    ${__make} install.man \
       DESTDIR="${stagedir}/${prefix}/openwin" \
       BINDIR="/usr/openwin/bin" \
       SHLIBLDFLAGS="-G -z text" \
       XPMBINDIR="${stagedir}/${prefix}/bin" \
-      SHELL="/usr/tgcware/bin/bash"
+      SHELL="/usr/local/lse/bin/bash"
    setdir stage
    grm -v -d openwin
 

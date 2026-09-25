@@ -58,7 +58,7 @@ prep()
     ${__gsed} -i 's/mv8/mcpu=v8/g' Configure
 
     ${__gsed} -i "/^CFLAG=/s;CFLAG=;CFLAG=-I${prefix}/include;" Makefile
-    ${__gsed} -i "/EX_LIBS/s;-lz;-L${prefix}/lib -R${prefix}/lib -lz -lgcc_s;" Makefile
+    ${__gsed} -i "/EX_LIBS/s;-lz;-L${prefix}/lib -R${prefix}/lib -lz -llsecompat;" Makefile
 
 }
 
@@ -70,12 +70,12 @@ build()
     echo $__configure "${configure_args[@]}"
     $__configure "${configure_args[@]}"
 
-	 # Patch crypto so that it does not generate MAXLEN lines and break ar
-	${__gsed} -i '/^\$(LIB):/!b;n;c\\trm -f $(LIB)\n\tfind . -name "*.o" | xargs -n 50 $(AR) $(LIB)\n\ttest -z "$(FIPSLIBDIR)" || $(AR) $(LIB) $(FIPSLIBDIR)fipscanister.o\n\t$(RANLIB) $(LIB) || echo Never mind.' crypto/Makefile
-    # Only patch apps/Makefile if it hasn't been duplicated yet
-    if ! grep -q "\-lssl.*\-lssl" apps/Makefile; then
-        ${__gsed} -i 's/LIBRARIES=\(.*\)/LIBRARIES=\1 -L.. -lssl -L.. -lcrypto/' apps/Makefile
-    fi
+    # 1. Patch crypto/Makefile to prevent command-line max length overflow breaking ar
+    ${__gsed} -i '/^\$(LIB): \$(LIBOBJ)/!b;n;c\\trm -f $(LIB)\n\tfind . -name "*.o" | xargs -n 50 $(AR) $(LIB)\n\ttest -z "$(FIPSLIBDIR)" || $(AR) $(LIB) $(FIPSLIBDIR)fipscanister.o\n\t$(RANLIB) $(LIB) || echo Never mind.' crypto/Makefile
+
+    # 2. Fix single-pass Solaris ld failures in apps/ and test/ by enforcing a 2-pass archive scan
+    ${__gsed} -i 's|LIBDEPS=" $$LIBRARIES $(EX_LIBS)"|LIBDEPS="$(EX_LIBS) -L.. -lssl -L.. -lcrypto -L.. -lssl -L.. -lcrypto"|g' apps/Makefile
+    ${__gsed} -i 's|LIBDEPS=" $$LIBRARIES $(EX_LIBS)"|LIBDEPS="$(EX_LIBS) -L.. -lssl -L.. -lcrypto -L.. -lssl -L.. -lcrypto"|g' test/Makefile
 
     ${__make} SHARED_LDFLAGS="-shared -R${prefix}/${_libdir}" depend
     ${__make} SHARED_LDFLAGS="-shared -R${prefix}/${_libdir}"

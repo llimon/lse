@@ -30,7 +30,7 @@ prep()
 {
     generic_prep
     setdir source
-    ${__gsed} -i 's|^#! /bin/sh|#!/usr/tgcware/bin/bash|' configure
+    ${__gsed} -i 's|^#! /bin/sh|#!/usr/local/lse/bin/bash|' configure
 
 
 }

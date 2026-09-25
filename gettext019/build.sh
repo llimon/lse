@@ -15,8 +15,11 @@ source[0]=https://mirrors.kernel.org/gnu/gettext/$topdir-$version.tar.lz
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
-export LIBS="-liconv -lgcc_s -lpthread"
+export LIBS="-liconv -llsecompat  -lpthread"
 configure_args+=(--with-libiconv-prefix=$prefix --disable-java --disable-native-java --disable-openmp)
+make_build_opts=( \
+    CXXFLAGS="-I/usr/local/lse/include -O2 -mcpu=v7 -include /usr/local/lse/include/lse/snprintf_compat.h" \
+ )
 
 gnu_link autopoint envsubst gettext gettext.sh gettextize msgattrib msgcat msgcmp msgcomm msgconv msgen msgexec msgfilter msgfmt msggrep msginit msgmerge msgunfmt msguniq ngettext recode-sr-latin xgettext
 

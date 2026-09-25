@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <netdb.h>
+#include <netdb.h> 
 #include <sys/types.h>
 #include <stdint.h>
-#include <sys/socket.h>
-#include <compat/socket_compat.h>
+#include <sys/socket.h> 
+#include <compat/socket_compat.h> /* KEEP */
 #include <netinet/in.h>
 #include <arpa/inet.h>
 

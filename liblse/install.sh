@@ -21,6 +21,7 @@ sudo cp *.h /usr/local/lse/include/lse/
 
 # Master umbrella header
 sudo cp lsecompat.h /usr/local/lse/include/
+sudo cp lsenet.h /usr/local/lse/include/
 
 # Temporary transitional symlink for old scripts
 sudo ln -s /usr/local/lse/include/lse /usr/local/lse/include/compat

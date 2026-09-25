@@ -58,7 +58,7 @@ install()
     ${__rmdir} ${stagedir}${prefix}/var/games/emacs
     ${__rmdir} ${stagedir}${prefix}/var/games
     ${__rmdir} ${stagedir}${prefix}/var
-    ${__gsed} -i 's|/usr/bin/perl|/usr/tgcware/bin/perl|' ${stagedir}${prefix}/${_bindir}/grep-changelog
+    ${__gsed} -i 's|/usr/bin/perl|/usr/local/lse/bin/perl|' ${stagedir}${prefix}/${_bindir}/grep-changelog
     custom_install=1
     generic_install
     docs_for emacs-common etc/NEWS COPYING BUGS README

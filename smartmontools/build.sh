@@ -16,8 +16,6 @@ patch[0]=smartmontools-6.4-cxx-fix.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 ac_overrides="ac_cv_func_regcomp=no"
 configure_args+=(--docdir=$prefix/$_vdocdir --with-initscriptdir=$prefix/$_vdocdir --with-working-snprintf=no)
 

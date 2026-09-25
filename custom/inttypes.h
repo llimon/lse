@@ -73,7 +73,5 @@
 
 #endif
 
-/* Load compatibility helpers from /usr/tgcware/include/compat/ */
-#include <compat/strtoimax_compat.h>
 
 #endif /* _SPARC32_INTTYPE_H */

@@ -18,8 +18,13 @@ $guard =~ s/[^A-Z0-9_]/_/g;
 
 print $h_out "#ifndef $guard\n#define $guard\n\n";
 print $h_out "#include <sys/types.h>\n";
-print $h_out "#include <sys/socket.h>\n";
-print $h_out "#include <netdb.h>\n\n";
+
+# inject networking headers ONLY for liblsenet components
+#if ($base_name eq 'socket_compat' || $base_name eq 'dns_rfc2553_compat') {
+#    print $h_out "#include <sys/socket.h>\n";
+#    print $h_out "#include <netdb.h>\n";
+#}
+print $h_out "\n";
 
 print $c_out "#include \"$header_file\"\n";
 print $c_out "#include <stdio.h>\n";
@@ -44,7 +49,24 @@ while (my $line = <$fh>) {
         $line =~ s/^static\s+inline\s+//;
         print $c_out $line;
     } else {
-        print $h_out $line;
+        # Escape hatch to force a header into the .h file
+        if ($line =~ /\/\*\s*KEEP\s*\*\//) {
+            print $h_out $line;
+        }
+        # Intercept system includes in the header section to prevent header pollution during -include
+        if ($line =~ /^\s*#\s*include\s+<([^>]+)>/) {
+            my $header_name = $1;
+            # Allow safe type headers into the exported .h
+            if ($header_name =~ /^(stddef\.h|sys\/types\.h|stdarg\.h|stdint\.h|inttypes\.h)$/) {
+                print $h_out $line;
+            } else {
+                # Push standard library headers (stdio.h, stdlib.h, string.h, etc.) to the .c implementation
+                print $c_out $line;
+            }
+        } else {
+            # Print normal typedefs, macros, and function prototypes to the .h header
+            print $h_out $line;
+        }
     }
 }
 

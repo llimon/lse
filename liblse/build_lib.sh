@@ -16,12 +16,6 @@ CFLAGS="-O2 -mcpu=v7 -I."
 
 # Configure explicit source arrays and library names based on target
 if [ "$TARGET" = "-build-lsecompat" ]; then
-
-dns_rfc2553_compat.c  luis.c             snprintf_compat.c   usleep_compat.c
-ftello_compat.c       math_compat.c      socket_compat.c     utimes_compat.c
-getprogname_compat.c  mbstowcs_compat.c  strtoimax_compat.c  wcsstr_compat.c
-
-
     LIB_BASE="liblsecompat"
     SRC_FILES="strtoimax_compat.c ftello_compat.c snprintf_compat.c getprogname_compat.c mbstowcs_compat.c wcsstr_compat.c  usleep_compat.c utimes_compat.c math_compat.c"
     EXTRA_LIBS=""
@@ -82,6 +76,7 @@ echo "=== Packaging $LIB_A and$LIB_SO ==="
 ar rcs "$LIB_A" *.o
 
 # Shared library link step (injects -lsocket -lnsl only for liblsenet)
-$CC -shared -static-libgcc -Wl,-assert,pure-text -o "$LIB_SO" *.o $EXTRA_LIBS || exit 1
+#$CC -shared -static-libgcc -Wl,-assert,pure-text -o "$LIB_SO" *.o $EXTRA_LIBS || exit 1
+$CC -shared -static-libgcc -Wl,-z,text -o "$LIB_SO" *.o $EXTRA_LIBS || exit 1
 
 echo "Successfully built both $LIB_A and $LIB_SO for$LIB_BASE"

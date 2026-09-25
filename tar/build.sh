@@ -10,17 +10,17 @@ version=1.30
 pkgver=1
 source[0]=ftp://ftp.sunet.se/pub/gnu/tar/$topdir-$version.tar.bz2
 # If there are no patches, simply comment this
-patch[0]=getprogname.patch
-patch[1]=ftello-fix.patch
+#patch[0]=getprogname.patch
+#patch[1]=ftello-fix.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
-# Global settings
-#export CFLAGS="-D_FILE_OFFSET_BITS=64"
 
 # solaris 2.5.1 does not have ftello
 #configure_args+=(--disable-largefile)
+LIBS="$LIBS -llsecompat"
+make_build_opts=( _pls "CPPFLAGS=\"\$CPPFLAGS -include $prefix/include/lsecompat.h\" ${make_build_opts}" )
 
 gnu_link tar
 

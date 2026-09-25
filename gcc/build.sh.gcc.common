@@ -80,10 +80,26 @@ langs="--enable-languages=c,c++,objc,fortran,ada,obj-c++"
 # No obj-c++ for gcc < 4.1
 [ $abbrev_majorminor -lt 41 ] && langs=${langs%%,obj-c++}
 
+sunlinker="--without-gnu-ld --with-ld=/usr/ccs/bin/ld"
+gnulinker="--with-gnu-ld --with-ld=/usr/local/lse/bin/gld"
 # Use Solaris ld by default
-linker="--without-gnu-ld --with-ld=/usr/ccs/bin/ld"
+#linker=sunlinker
+# Under Solaris 2.5.1, Sun ld cannot link c++ binaries and we need to switch to gnu linker.
+# Is probably better we keep All linking on gnu ld by default.
+linker=$gnulinker
+
+# Extract the linker executable path from the string flag
+target_ld=$(echo "$linker" | sed -n 's/.*--with-ld=\([^ ]*\).*/\1/p')
+
+if [ ! -x "$target_ld" ]; then
+    echo "ERROR: Configured linker binary '$target_ld' does not exist or is not executable!"
+    exit 1
+fi
+[ $abbrev_majorminor -lt 42 ] && linker=$gnulinker
+[ $abbrev_majorminor -lt 43 ] && linker=$gnulinker
+
 # GNU assembler
-gnuassembler="--with-gnu-as --with-as=/usr/tgcware/bin/gas"
+gnuassembler="--with-gnu-as --with-as=/usr/local/lse/bin/gas"
 # Solaris assembler
 sunassembler="--without-gnu-as --with-as=/usr/ccs/bin/as"
 # For gcc < 3.4 we must use the Solaris assembler or the ada frontend will
@@ -94,6 +110,7 @@ sunassembler="--without-gnu-as --with-as=/usr/ccs/bin/as"
 # On sparc gcc 4.3.6 fails comparison between stage2 and stage3 when using the
 # GNU assembler so for sparc we always use the Solaris assembler
 [ "$build_arch" = "sparc" ] && assembler=$sunassembler
+
 
 # For gcc 4.0 we need to explicitly disable COMDAT group support
 # since configure fails to check if ld also supports it (and it does not)
@@ -110,13 +127,21 @@ withmpfr="--with-mpfr=$lprefix"
 # Assemble a default configure_args
 configure_args=($global_config_args $gxxinclude $pthreads "${hostlibs[@]}" $linker $assembler $langs $gcc_cpu)
 
+# When mixing sunassembler and gnu ld, GCC assumes ,.symver are supported.
+# Force disable symvers to keep Sun as happy.
+if [[ "$build_arch" == "sparc" && "$linker" == *"--with-gnu-ld"* && "$assembler" == "$sunassembler" ]]; then
+    configure_args+=(--disable-symvers)
+fi
+
 # Set a build vendor for gcc > 4.2
-gccbugurl=http://jupiterrise.com/tgcware
+gccbugurl=http://lsext.org/bugs
 gccpkgversion="$pkgdirdesig ${version}-${pkgver}"
 [ $abbrev_majorminor -gt 42 ] && configure_args+=(--with-pkgversion="$gccpkgversion" --with-bugurl=$gccbugurl)
 
+# GCC 4.1+ requires --enable-obsolete for legacy targets like solaris2.5.1
 # Solaris 2.6 support was marked obsolete in gcc 4.3.x
-[ $abbrev_majorminor -eq 43 -a "$gnu_os_ver" = "2.6" ] && configure_args=(--enable-obsolete "${configure_args[@]}")
+# parameter is harmless if not needed
+[ $abbrev_majorminor -ge 41 ] && configure_args+=(--enable-obsolete)
 
 # Default
 objdir=all_native
@@ -208,15 +233,15 @@ redo_libs_helper()
     local backref="../../.."
 
     if [ -n "$gccarchlibdir" ]; then
-	gccarchlibdir="/${gccarchlibdir}"
-	# Need one more backref when using gccarchlibdir
-	backref="../../../.."
+       gccarchlibdir="/${gccarchlibdir}"
+       # Need one more backref when using gccarchlibdir
+       backref="../../../.."
     fi
     [ -n "$archlibdir" ] && archlibdir="/${archlibdir}"
 
     mvif()
     {
-	[ -r "$1" ] && mv "$1" "$2"
+       [ -r "$1" ] && mv "$1" "$2"
     }
 
     # Lots of rearranging to do to make multiple gcc versions coexist
@@ -226,55 +251,67 @@ redo_libs_helper()
     FULLPATH=${stagedir}${lprefix}/lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}
     setdir $FULLPATH
     for f in libg2c.a libfrtbegin.a libgfortran.a libgfortran.spec libgomp.a \
-	    libgomp.spec libffi.a libiberty.a libstdc++.a libsupc++.a \
-	    libssp.a libssp_nonshared.a libobjc.a libquadmath.a libgo.a \
-	    libgobegin.a libitm.a libitm.spec libiberty.a libgfortranbegin.a \
-	    libatomic.a
+       libgomp.spec libffi.a libiberty.a libstdc++.a libsupc++.a \
+       libssp.a libssp_nonshared.a libobjc.a libquadmath.a libgo.a \
+       libgobegin.a libitm.a libitm.spec libiberty.a libgfortranbegin.a \
+       libatomic.a
     do
-	mvif ${backref}${archlibdir}/$f $FULLPATH
+       mvif ${backref}${archlibdir}/$f $FULLPATH
     done
     # Relocate .so files
     for f in g2c ffi gcc_s gcc_s_sparcv9 gfortran gomp objc ssp stdc++ \
-	    quadmath go itm atomic
+       quadmath go itm atomic
     do
-	if [ -L ${backref}${archlibdir}/lib$f.so ]; then
-	    # File exists and is a symlink, determine linktarget
-	    # The linktarget is the soname of the library
-	    linktarget=$(gobjdump -p ${backref}${archlibdir}/lib$f.so | awk '/SONAME/ { print $2 }')
-	    # Remove the old symlink
-	    ${__rm} -f ${backref}${archlibdir}/lib$f.so
-	    # Create new .so file, note we link not to the full version
-	    # since we want to cheat and allow newer compilers to upgrade
-	    # them as long as the soversion is matching
-	    ${__ln_s} ${backref}${archlibdir}/$linktarget lib$f.so
-	fi
+       local target_so="${backref}${archlibdir}/lib$f.so"
+       # File exists and is a symlink, determine linktarget
+       if [ -L "$target_so" ] || [ -f "$target_so" ]; then
+           # The linktarget is the soname of the library
+           # Extract SONAME
+           linktarget=$(gobjdump -p "$target_so" 2>/dev/null | awk '/SONAME/ { print $2 }')
+
+           # Fallback to dump -L if gobjdump is missing or fails
+           if [ -z "$linktarget" ]; then
+               linktarget=$(dump -L "$target_so" 2>/dev/null | awk '/SONAME/ { print $3 }')
+           fi
+           if [ -n "$linktarget" ]; then
+               ${__rm} -f lib$f.so
+               ${__ln_s} ${backref}${archlibdir}/$linktarget lib$f.so
+           else
+               echo "FATAL ERROR: Failed to extract SONAME from $target_so" >&2
+               exit 1
+           fi
+       fi
     done
 
     # For Ada
     if [ -d $FULLPATH/adalib ]; then
-	cd $FULLPATH/adalib
-	for f in gnarl gnat
-	do
-	    if [ -L lib$f.so ]; then
-		# File exists and is a symlink, determine linktarget
-		# The linktarget is the soname of the library
-		#linktarget=$(elfdump -d lib$f.so | awk '/SONAME/ { print $4 }')
-		linktarget=$(gobjdump -p lib$f.so | awk '/SONAME/ { print $2 }')
-		# Relocate linktarget to main libdir
-		mvif $linktarget ${backref}/..${archlibdir}
-		# Remove the old symlink
-		${__rm} -f lib$f.so
-		# Create new symlinks to linktarget
-		${__ln_s} ${backref}/..${archlibdir}/$linktarget lib$f.so
-		${__ln_s} ${backref}/..${archlibdir}/$linktarget $linktarget
-	    fi
-	done
+       cd $FULLPATH/adalib
+       for f in gnarl gnat
+       do
+          if [ -L lib$f.so ]; then
+              # File exists and is a symlink, determine linktarget
+              # The linktarget is the soname of the library
+              #linktarget=$(elfdump -d lib$f.so | awk '/SONAME/ { print $4 }')
+              linktarget=$(gobjdump -p lib$f.so | awk '/SONAME/ { print $2 }')
+              # Fallback to dump -L if gobjdump is missing or fails
+              if [ -z "$linktarget" ]; then
+                  linktarget=$(dump -L "$target_so" 2>/dev/null | awk '/SONAME/ { print $3 }')
+              fi
+              # Relocate linktarget to main libdir
+              mvif $linktarget ${backref}/..${archlibdir}
+              # Remove the old symlink
+              ${__rm} -f lib$f.so
+              # Create new symlinks to linktarget
+              ${__ln_s} ${backref}/..${archlibdir}/$linktarget lib$f.so
+              ${__ln_s} ${backref}/..${archlibdir}/$linktarget $linktarget
+          fi
+       done
 
-	# Ada will not work without these symlinks
-	mkdir -p ${stagedir}${prefix}/lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}
-	cd ${stagedir}${prefix}/lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}
-	${__ln_s} ${backref}/../../lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}/adainclude .
-	${__ln_s} ${backref}/../../lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}/adalib .
+       # Ada will not work without these symlinks
+       mkdir -p ${stagedir}${prefix}/lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}
+       cd ${stagedir}${prefix}/lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}
+       ${__ln_s} ${backref}/../../lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}/adainclude .
+       ${__ln_s} ${backref}/../../lib/$libsubdir/${build_arch}-${vendor}-solaris${gnu_os_ver}/${version}${gccarchlibdir}/adalib .
     fi
 }
 
@@ -291,4 +328,93 @@ redo_libs()
     esac
 }
 
+validate_gcc_installation()
+{
+    local target_prefix="${build_arch}-${vendor}-solaris${gnu_os_ver}"
+   
+ 
+    # Versioned paths ($prefix) for binaries and compiler guts
+    local gcc_bindir="${prefix}/gcc${abbrev_majorminor}/${_bindir}"
+    local gcc_libdir="${lprefix}/lib/gcc/${target_prefix}/${version}"
+    local gcc_libexecdir="${lprefix}/libexec/gcc/${target_prefix}/${version}"
+    local ada_dir="${gcc_libdir}/adalib"
+
+    
+    # Unversioned path ($lprefix) for shared system libraries
+    local sys_libdir="${lprefix}/lib"
+
+    echo "=== Validating Staged GCC & GNAT Installation ==="
+
+    # 1. Validate versioned binaries ($prefix) and shared libraries ($lprefix)
+    validate_staged_files ${stagedir} \
+        "${gcc_bindir}/cpp" \
+        "${gcc_bindir}/g++" \
+        "${gcc_bindir}/gcc" \
+        "${gcc_bindir}/gccbug" \
+        "${gcc_bindir}/gcov" \
+        "${gcc_bindir}/gfortran" \
+        "${gcc_bindir}/gnat" \
+        "${gcc_bindir}/gnatbind" \
+        "${gcc_bindir}/gnatbl" \
+        "${gcc_bindir}/gnatchop" \
+        "${gcc_bindir}/gnatclean" \
+        "${gcc_bindir}/gnatfind" \
+        "${gcc_bindir}/gnatkr" \
+        "${gcc_bindir}/gnatlink" \
+        "${gcc_bindir}/gnatls" \
+        "${gcc_bindir}/gnatmake" \
+        "${gcc_bindir}/gnatname" \
+        "${gcc_bindir}/gnatprep" \
+        "${gcc_bindir}/gnatxref" \
+        "${gcc_libexecdir}/cc1" \
+        "${gcc_libexecdir}/cc1plus" \
+        "${gcc_libexecdir}/cc1objplus" \
+        "${gcc_libexecdir}/cc1obj" \
+        "${gcc_libexecdir}/gnat1" \
+        "${ada_dir}/libgnat.a" \
+        "${ada_dir}/libgnarl.a" \
+        "${lprefix}/lib/libstdc++.so.*" \
+        "${lprefix}/lib/libobjc.so.*" \
+        "${lprefix}/lib/libgomp.so.*" \
+        "${lprefix}/lib/libgnarl-* \
+        "${lprefix}/lib/libgcc_s.so.* \
+        "${lprefix}/lib/libgfortran.so.* \
+        "${lprefix}/lib/libgnat-* 
+        #"${lprefix}/libssp.so.
+
+    # Verify symlinks inside the GCC versioned bin directory
+    setdir "${stagedir}${gcc_bindir}"
+    for link in c++ gnat gnatmake ${target_prefix}-gcc ${target_prefix}-g++; do
+        if [ -L "$link" ]; then
+            # Extract target path
+            target=$(readlink "$link" 2>/dev/null || ls -l "$link" | awk '{print $NF}')
+            
+            # If target is an absolute path (/usr/tgcware/...), prepend stagedir to check if it exists in staging
+            case "$target" in
+                /*) check_path="${stagedir}${target}" ;;
+                 *) check_path="${stagedir}${gcc_bindir}/${target}" ;;
+            esac
+    
+            if [ ! -f "$check_path" ] && [ ! -L "$check_path" ]; then
+                echo "ERROR: Symlink target missing in staging: $link -> $target (checked $check_path)" >&2
+                exit 1
+            fi
+        fi
+    done
+    # Verify Ada symlinks inside adalib pointing to $lprefix/lib
+    setdir ${stagedir}${ada_dir}
+    for lib in libgnat.so libgnarl.so; do
+        if [ -L "$lib" ]; then
+            if [ ! -e "$lib" ]; then
+                echo "ERROR: Dead Ada symlink in staging: ${ada_dir}/$lib -> $(readlink $lib)"
+                exit 1
+            fi
+        else
+            echo "ERROR: Missing Ada shared library symlink: ${ada_dir}/$lib"
+            exit 1
+        fi
+    done
+    
+    echo "=== Staging Validation Passed Successfully ==="
+}
 # vim: set sw=4 sts=4 et ft=sh : #
