@@ -18,8 +18,6 @@ source[0]=https://www.sqlite.org/2018/sqlite-autoconf-${shortver}.tar.gz
 
 # Global settings
 export CFLAGS="-O2 -g -DSQLITE_HOMEGROWN_RECURSIVE_MUTEX -D__EXTENSIONS__"
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
 configure_args+=(--disable-static)
 topsrcdir=sqlite-autoconf-${shortver}
 
