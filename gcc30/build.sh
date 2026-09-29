@@ -21,7 +21,7 @@ source[0]=ftp://ftp.sunet.se/pub/gnu/gcc/releases/$topdir-$version/$topdir-$vers
 # Global settings
 
 # This compiler is bootstrapped with gcc 2.95.3
-export PATH=/usr/tgcware/gcc29/bin:$PATH
+export PATH=/usr/local/lse/gcc29/bin:$PATH
 
 reg prep
 prep()

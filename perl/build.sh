@@ -20,7 +20,7 @@ make_check_target="test"
 __configure="sh Configure"
 [ "$arch" = "sparc" ] && arch_name="sun4-solaris"
 [ "$arch" = "i386" ] && arch_name="i86pc-solaris"
-configure_args=(-Dcc=gcc -Doptimize='-O2' -Darchname=${arch_name} -Dprefix=$prefix -Dmyhostname=localhost -Dcf_by="Tom G. Christensen" -Dcf_email=swpkg@jupiterrise.com -Dperladmin=root@localhost -Dinstallprefix=${stagedir}${prefix} -Dman3ext=3pm -Uinstallusrbinperl -Dpager=/usr/bin/more -Dlocincpth=/usr/tgcware/include -Dloclibpth=/usr/tgcware/lib -des -Dinc_version_list='5.16.3')
+configure_args=(-Dcc=gcc -Doptimize='-O2' -Darchname=${arch_name} -Dprefix=$prefix -Dmyhostname=localhost -Dcf_by="Tom G. Christensen" -Dcf_email=swpkg@jupiterrise.com -Dperladmin=root@localhost -Dinstallprefix=${stagedir}${prefix} -Dman3ext=3pm -Uinstallusrbinperl -Dpager=/usr/bin/more -Dlocincpth=/usr/local/lse/include -Dloclibpth=/usr/local/lse/lib -des -Dinc_version_list='5.16.3')
 # Force alignment on SPARC since the configure test can fail:
 # https://rt.perl.org/Public/Bug/Display.html?id=133495
 [ "$arch" = "sparc" ] && configure_args+=(-Dd_u32align)
@@ -36,7 +36,7 @@ build()
 {
     setdir source
     $__configure "${configure_args[@]}"
-    ${__make} LDDLFLAGS="-shared -L$prefix/lib -R$prefix/lib" CLDFLAGS="-L$prefix/lib -R$prefix/lib"
+    ${__make} LDDLFLAGS="-shared -L$prefix/lib -Wl,-rpath,$prefix/lib" CLDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
 }
 
 reg check

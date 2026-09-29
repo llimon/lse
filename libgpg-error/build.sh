@@ -17,7 +17,7 @@ source[0]=ftp://ftp.gnupg.org/gcrypt/libgpg-error/$topdir-$version.tar.bz2
 
 # Global settings
 export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
+export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
 configure_args+=(--disable-static --disable-languages)
 
 reg prep

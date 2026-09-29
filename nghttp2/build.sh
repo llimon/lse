@@ -31,7 +31,7 @@ configure_args+=(
 #--enable-lib-only)
 make_build_target="V=1"
 # No python deps from packaged scripts
-ignore_deps="TGCpy27"
+ignore_deps="LSEpy27"
 # No symbol visibility support
 ac_overrides="ax_cv_check_cflags___fvisibility_hidden=no"
 

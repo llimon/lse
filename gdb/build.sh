@@ -33,7 +33,7 @@ build()
 reg check
 check()
 {
-    export LD_OPTIONS="-R$prefix/lib"
+    export LD_OPTIONS="-Wl,-rpath,$prefix/lib"
     generic_check
 }
 

@@ -21,7 +21,7 @@ patch[0]=gcc-4.2.4-new-gas.patch
 # Global settings
 
 # This compiler is bootstrapped with gcc 4.1.2
-export PATH=/usr/tgcware/gcc41/bin:$PATH
+export PATH=/usr/local/lse/gcc41/bin:$PATH
 
 reg prep
 prep()

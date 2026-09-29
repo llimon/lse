@@ -37,7 +37,7 @@ else
 fi
 
 # Buildsystem is non-standard so we take the easy way out
-export LD_OPTIONS="-R$prefix/lib"
+export LD_OPTIONS="-Wl,-rpath,$prefix/lib"
 
 reg prep
 prep()
@@ -58,7 +58,7 @@ prep()
     ${__gsed} -i 's/mv8/mcpu=v8/g' Configure
 
     ${__gsed} -i "/^CFLAG=/s;CFLAG=;CFLAG=-I${prefix}/include;" Makefile
-    ${__gsed} -i "/EX_LIBS/s;-lz;-L${prefix}/lib -R${prefix}/lib -lz -llsecompat;" Makefile
+    ${__gsed} -i "/EX_LIBS/s;-lz;-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lz -llsecompat;" Makefile
 
 }
 
@@ -77,8 +77,8 @@ build()
     ${__gsed} -i 's|LIBDEPS=" $$LIBRARIES $(EX_LIBS)"|LIBDEPS="$(EX_LIBS) -L.. -lssl -L.. -lcrypto -L.. -lssl -L.. -lcrypto"|g' apps/Makefile
     ${__gsed} -i 's|LIBDEPS=" $$LIBRARIES $(EX_LIBS)"|LIBDEPS="$(EX_LIBS) -L.. -lssl -L.. -lcrypto -L.. -lssl -L.. -lcrypto"|g' test/Makefile
 
-    ${__make} SHARED_LDFLAGS="-shared -R${prefix}/${_libdir}" depend
-    ${__make} SHARED_LDFLAGS="-shared -R${prefix}/${_libdir}"
+    ${__make} SHARED_LDFLAGS="-shared -Wl,-rpath,${prefix}/${_libdir}" depend
+    ${__make} SHARED_LDFLAGS="-shared -Wl,-rpath,${prefix}/${_libdir}"
 }
 
 reg check

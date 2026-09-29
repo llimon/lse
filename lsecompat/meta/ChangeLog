@@ -1,0 +1,4 @@
+CHANGELOG
+---------
+* Mon Sep 28 2026 Luis Enrique Limon - 1.0-1
+- Created lsecompat as a library and distributable package

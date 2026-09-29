@@ -25,7 +25,7 @@ majorminor=$(echo $version | cut -d. -f1-2)
 
 lprefix=$prefix
 [ -n "$snapshot" ] && topsrcdir=gcc-$version-$snapshot
-prefix=/usr/tgcware/${topdir}${majorminor}
+prefix=/usr/local/lse/${topdir}${majorminor}
 __configure="../$topsrcdir/configure"
 make_build_target=bootstrap
 
@@ -43,7 +43,7 @@ objdir=all_native
 
 configure_args+=($linker $assembler $langs $platform_configure_args)
 
-LDFLAGS="-Wl,-R,$prefix/lib -Wl,-R,$lprefix/lib"
+LDFLAGS="-Wl,-rpath,$prefix/lib -Wl,-rpath,$lprefix/lib"
 
 export CONFIG_SHELL=/bin/ksh
 

@@ -30,9 +30,9 @@ reg build
 build()
 {
     setdir source
-    ${__make} -f Makefile-libbz2_so CC="gcc -fPIC ${GCC_MCPU:--mcpu=v7} -lgcc_s -R$prefix/lib"
+    ${__make} -f Makefile-libbz2_so CC="gcc -fPIC ${GCC_MCPU:--mcpu=v7} -lgcc_s -Wl,-rpath,$prefix/lib"
     rm -f *.o
-    ${__make} -f Makefile CC="gcc -fPIC ${GCC_MCPU:--mcpu=v7}" LDFLAGS="-R$prefix/lib -lgcc_s"
+    ${__make} -f Makefile CC="gcc -fPIC ${GCC_MCPU:--mcpu=v7}" LDFLAGS="-Wl,-rpath,$prefix/lib -lgcc_s"
 }
 
 reg check

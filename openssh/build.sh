@@ -21,7 +21,7 @@ patch[3]=undef-wcwidth.patch
 make_check_target="tests"
 
 # Global settings
-#export LDFLAGS="-R$prefix/lib -L$prefix/lib -lz -lw -lposix4 -lpthread -lthread -lgcc_s"
+#export LDFLAGS="-Wl,-rpath,$prefix/lib -L$prefix/lib -lz -lw -lposix4 -lpthread -lthread -lgcc_s"
 #export CC="gcc -std=gnu99 -fgnu89-inline"
 
 #export CPPFLAGS="$CPPFLAGS -D__EXTENSIONS__"

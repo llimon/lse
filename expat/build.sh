@@ -18,7 +18,7 @@ patch[0]=expat-2.5.0-no-strtof.patch
 
 # Global settings
 export LDFLAGS="$LDFLAGS -lgcc_s"
-export CPPFLAGS="$CPPFLAGS -I/usr/tgcware/include"
+export CPPFLAGS="$CPPFLAGS -I/usr/local/lse/include"
 
 reg prep
 prep()

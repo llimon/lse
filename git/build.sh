@@ -59,10 +59,10 @@ endif
 SHELL=$prefix/bin/bash
 PERL_PATH=$prefix/bin/perl
 SHELL_PATH=$prefix/bin/bash
-SANE_TOOL_PATH=/usr/tgcware/gnu:/usr/xpg6/bin:/usr/xpg4/bin
+SANE_TOOL_PATH=/usr/local/lse/gnu:/usr/xpg6/bin:/usr/xpg4/bin
 BASIC_CFLAGS+=-std=gnu99 $GCC_MCPU
 BASIC_CFLAGS+=-I$prefix/include
-BASIC_LDFLAGS+=-L$prefix/lib -R$prefix/lib
+BASIC_LDFLAGS+=-L$prefix/lib -Wl,-rpath,$prefix/lib
 
 # Appending to EXTLIBS guarantees these link AFTER libgit.a / object files
 EXTLIBS +=$prefix/lib/libsnprintf.a -lgen -lpthread -lgcc_s

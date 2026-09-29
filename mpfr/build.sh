@@ -17,8 +17,7 @@ source[0]=http://www.mpfr.org/mpfr-current/$topdir-$real_version.tar.xz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Overrides of CFLAGS, CPPFLAGS, LDFLAGS, LIBS
-export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/snprintf_compat.h"
-export LIBS="$LIBS -lsnprintf -lgcc_s -lgmp"
+export LIBS="$LIBS -llsecompat -lgmp"
 ac_overrides="ac_cv_func_vsnprintf=yes
   ac_cv_func_vsnprintf=yes
   ac_cv_func_snprintf=yes

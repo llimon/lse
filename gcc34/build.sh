@@ -23,7 +23,7 @@ patch[2]=gcc-3.4.6-gnat-share-make.patch
 # Global settings
 
 # This compiler is bootstrapped with gcc 3.3.6
-export PATH=/usr/tgcware/gcc33/bin:$PATH
+export PATH=/usr/local/lse/gcc33/bin:$PATH
 
 reg prep
 prep()

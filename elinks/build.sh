@@ -32,7 +32,7 @@ patch[14]=elinks-scroll.patch
 # Global settings
 export PKG_CONFIG=pkgconf
 export CPPFLAGS="-I$prefix/lib"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
+export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
 
 ac_overrides="ac_cv_func_mmap_fixed_mapped=no"
 configure_args+=(--without-x --enable-256-colors)

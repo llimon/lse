@@ -22,7 +22,7 @@ patch[1]=gcc-4.0.4-new-gas.patch
 # Global settings
 
 # This compiler is bootstrapped with gcc 3.4.6
-export PATH=/usr/tgcware/gcc34/bin:$PATH
+export PATH=/usr/local/lse/gcc34/bin:$PATH
 
 reg prep
 prep()

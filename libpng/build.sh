@@ -19,15 +19,8 @@ source[0]=https://ftp-osl.osuosl.org/pub/libpng/src/libpng12/${topdir}-${version
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
-# Redefin package global attributes
-pkgedby="Luis E Limon"
-pkgdirdesig="tgcsware"
-pkgprefix="TGCS"
-email="9660709+llimon@users.noreply.github.com"
-
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
+export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
 topsrcdir=${topdir}-${version}
 #configure_args+=()
 

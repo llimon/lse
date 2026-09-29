@@ -9,7 +9,7 @@ topdir=libiconv
 version=1.15
 pkgver=2
 source[0]=https://mirrors.kernel.org/gnu/$topdir/$topdir-$version.tar.gz
-patch[0]=libiconv-getprogname.patch
+#patch[0]=libiconv-getprogname.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions

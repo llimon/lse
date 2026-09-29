@@ -17,8 +17,8 @@ source[0]=https://cmake.org/files/v2.8/$topdir-$version.tar.gz
 
 # Global settings
 LD_OPTIONS="$LDFLAGS -lposix4 -lw"
-#CXXFLAGS="$CXXFLAGS -fpermissive -D__EXTENSIONS__ -I/usr/tgcware/include -include $prefix/include/compat/usleep_compat.h -DHAVE_WCSLEN=1 -DHAVE_WCSCPY=1 -DHAVE_WCHAR_H=1"
-CXXFLAGS="$CXXFLAGS -fpermissive -D__EXTENSIONS__ -I/usr/tgcware/include -include $prefix/include/compat/usleep_compat.h" 
+#CXXFLAGS="$CXXFLAGS -fpermissive -D__EXTENSIONS__ -I/usr/local/lse/include -include $prefix/include/compat/usleep_compat.h -DHAVE_WCSLEN=1 -DHAVE_WCSCPY=1 -DHAVE_WCHAR_H=1"
+CXXFLAGS="$CXXFLAGS -fpermissive -D__EXTENSIONS__ -I/usr/local/lse/include -include $prefix/include/compat/usleep_compat.h" 
 CFLAGS="$CFLAGS -DKWSYS_SHARED_FORWARD_LDPATH=\\\"LD_LIBRARY_PATH\\\""
 CXXFLAGS="$CXXFLAGS -DKWSYS_SHARED_FORWARD_LDPATH=\\\"LD_LIBRARY_PATH\\\""
 echo "CFLAGS=$CFLAGS"

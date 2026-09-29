@@ -93,7 +93,7 @@ EOF
 
     currdir = $PWD
 
-    ${__make} CC="gcc -include /usr/tgcware/include/compat/snprintf_compat.h"
+    ${__make} CC="gcc -include /usr/local/lse/include/compat/snprintf_compat.h"
 }
 
 

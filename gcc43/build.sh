@@ -20,7 +20,7 @@ patch[1]=sol-ld-fixes.patch
 . ${BUILDPKG_BASE}/gcc/build.sh.gcc.common
 
 # This compiler is bootstrapped with gcc 4.2.4
-export PATH=/usr/tgcware/gcc42/bin:$PATH
+export PATH=/usr/local/lse/gcc42/bin:$PATH
 
 reg prep
 prep()

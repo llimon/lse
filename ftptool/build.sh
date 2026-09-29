@@ -34,8 +34,8 @@ prep()
 
 
     ${__gsed} -i 's|# DEFINES= -DSYSV -DSVR4|DEFINES= -DSYSV -DSVR4 -DOWTOOLKIT_WARNING_DISABLED|' Makefile
-    #${__gsed} -i 's|# LIBSUNOS5= -L${OPENWINHOME}/lib -lsocket -lnsl -lm|LIBSUNOS5= -L${OPENWINHOME}/lib -R${OPENWINHOME}/lib -lsocket -lnsl -lm|' Makefile
-    ${__gsed} -i 's|# LIBSUNOS5= -L${OPENWINHOME}/lib -lsocket -lnsl -lm|LIBSUNOS5=-L/usr/openwin/lib -R/usr/openwin/lib -lsocket -lnsl -lm |' Makefile
+    #${__gsed} -i 's|# LIBSUNOS5= -L${OPENWINHOME}/lib -lsocket -lnsl -lm|LIBSUNOS5= -L${OPENWINHOME}/lib -Wl,-rpath,${OPENWINHOME}/lib -lsocket -lnsl -lm|' Makefile
+    ${__gsed} -i 's|# LIBSUNOS5= -L${OPENWINHOME}/lib -lsocket -lnsl -lm|LIBSUNOS5=-L/usr/openwin/lib -Wl,-rpath,/usr/openwin/lib -lsocket -lnsl -lm |' Makefile
     ${__gsed} -i 's|# CC=gcc -g|CC=gcc|' Makefile
     ${__gsed} -i "s|CDEBUGFLAGS = -O -xF|CDEBUGFLAGS = $CFLAGS -g -mno-unaligned-doubles -fno-pack-struct -I/usr/openwin/include |" Makefile
     ${__gsed} -i 's|CCOPTIONS = -DSYSV -DSVR4 -xF -Wa,-cg92|CCOPTIONS = -DSUNOS41 -DXVIEW3 -DSYSV -DSVR4 -std=gnu99|' Makefile
@@ -47,7 +47,7 @@ prep()
     ${__gsed} -i "s|\(LIBDIR[[:space:]]*=\).*|\1 \$(OPENWINHOME)/lib|" Makefile
     ${__gsed} -i "s|\(MANDIR[[:space:]]*=\).*|\1 /share/man/man1|" Makefile
     ${__gsed} -i "s|\(HELPDIR[[:space:]]*=\).*|\1 \$(OPENWINHOME)/help|" Makefile
-    ${__gsed} -i "s|\(DESTDIR[[:space:]]*=\).*|\1 ${stagedir}/usr/tgcware/openwin|" Makefile
+    ${__gsed} -i "s|\(DESTDIR[[:space:]]*=\).*|\1 ${stagedir}/usr/local/lse/openwin|" Makefile
     ${__gsed} -i "s|\(MKDIRHIER[[:space:]]*=\).*|\1 /bin/sh /usr/openwin/bin/mkdirhier|" Makefile
     ${__gsed} -i 's|$(INSTALL) -c $(INSTMANFLAGS) ftptool.info $(HELPDIR)/ftptool.info|#$(INSTALL) -c $(INSTMANFLAGS) ftptool.info $(HELPDIR)/ftptool.info|' Makefile
 }

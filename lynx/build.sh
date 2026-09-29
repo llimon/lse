@@ -17,7 +17,7 @@ source[0]=https://invisible-mirror.net/archives/$topdir/tarballs/${topdir}${vers
 
 # Global settings
 export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
+export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
 topsrcdir=${topdir}${version}
 configure_args+=(--with-ssl)
 

@@ -20,7 +20,7 @@ patch[0]=gmp-5.1.2-no-c99-trunc.patch
 
 export CONFIG_SHELL=$prefix/bin/bash
 export SHELL=$prefix/bin/bash
-export LD_OPTIONS="-R$prefix/lib"
+export LD_OPTIONS="-Wl,-rpath,$prefix/lib"
 #export AR="$prefix/bin/gar"
 #export RANLIB=$prefix/bin/granlib
 export LDFLAGS="$LDFLAGS -pthread"

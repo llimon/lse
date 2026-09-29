@@ -86,7 +86,7 @@ install()
 {
     generic_install DESTDIR
     ${__mv} ${stagedir}${prefix}/share/doc/sudo ${stagedir}${prefix}/${_vdocdir}
-    ${__rm} -f ${stagedir}${prefix}/etc/sudoers
+    #${__rm} -f ${stagedir}${prefix}/etc/sudoers
     #${__rm} -f ${stagedir}${prefix}/relnotes/sudo*
 #lprefix/relnotes/sudo-1.8.32-1/sudo.txt
     validate_staged_files ${stagedir} "/usr/local/lse/bin/sudo"

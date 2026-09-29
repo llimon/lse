@@ -18,7 +18,7 @@ source[0]=$topdir-$version.tar.gz
 # Global settings
 no_configure=1
 CC=gcc
-syslibs="-L$prefix/lib -R$prefix/lib -lsocket -lnsl -lgcc_s -lsnprintf"
+syslibs="-L$prefix/lib -Wl,-rpath,$prefix/lib -lsocket -lnsl -lgcc_s -lsnprintf"
 
 if [ "${gnu_os_ver}" = "2.5.1" ]; then
   cflags_os="-O2 -Wall -DSOLARIS_251"

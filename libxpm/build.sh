@@ -21,7 +21,7 @@ source[0]=https://fossies.org/linux/misc/old/${topdir}-${version}.tar.gz
 
 # Global settings
 export CPPFLAGS="$CPPFLAGS -I/usr/openwin/include -I. -Ilib -I../lib"
-export LDFLAGS="-R/usr/openwin/lib -L/usr/openwin/lib"
+export LDFLAGS="-Wl,-rpath,/usr/openwin/lib -L/usr/openwin/lib"
 
 topsrcdir=${topdir}-${version}
 #configure_args+=()

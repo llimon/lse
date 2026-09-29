@@ -18,7 +18,7 @@ patch[1]=python-2.7.9-multiprocessing-without-urandom.patch
 
 # Global settings
 export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -R$prefix/lib"
+export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
 
 configure_args+=(--disable-ipv6 --with-system-expat --enable-shared)
 make_check_target=test

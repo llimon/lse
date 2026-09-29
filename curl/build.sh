@@ -33,7 +33,7 @@ prep()
     generic_prep
     setdir source
     # Ensure testsuite can find sshd
-    sed -i 's#/usr/freeware#/usr/tgcware#' tests/sshhelp.pm
+    sed -i 's#/usr/freeware#/usr/local/lse#' tests/sshhelp.pm
 }
 
 reg build

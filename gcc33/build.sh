@@ -21,7 +21,7 @@ patch[0]=gcc-3.3.6-new-makeinfo.patch
 # Global settings
 
 # This compiler is bootstrapped with gcc 3.2.3
-export PATH=/usr/tgcware/gcc32/bin:$PATH
+export PATH=/usr/local/lse/gcc32/bin:$PATH
 
 reg prep
 prep()

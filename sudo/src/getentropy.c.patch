@@ -1,0 +1,20 @@
+diff -ruN a/lib/util/getentropy.c b/lib/util/getentropy.c
+--- a/lib/util/getentropy.c	2020-06-11 20:18:15.000000000 +0000
++++ b/lib/util/getentropy.c	2025-08-17 20:18:27.780009000 +0000
+@@ -504,6 +504,8 @@
+ 					}
+ 
+ 					/* Check cnts and times... */
++#ifdef HAVE_CLOCK_GETTIME
++
+ 					for (ii = 0; ii < sizeof(cl)/sizeof(cl[0]);
+ 					    ii++) {
+ 						HX((e = clock_gettime(cl[ii],
+@@ -511,6 +513,7 @@
+ 						if (e != -1)
+ 							cnt += (int)ts.tv_nsec;
+ 					}
++#endif
+ 
+ 					HX((e = getrusage(RUSAGE_SELF,
+ 					    &ru)) == -1, ru);

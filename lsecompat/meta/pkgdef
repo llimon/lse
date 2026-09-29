@@ -1,0 +1,12 @@
+[lsecompat]
+pkgname="$pkgprefix""compa"
+name="lsecompat - Legacy SPARC Extensions library and header files"
+pkgcat="application"
+pkgvendor="http://www.lsext.org/"
+pkgdesc="lsecompat provides stdint.h, inttypes.h for Sparc 32-bit and POSIX compatibility functions and shims"
+pkgver="$pkgver"
+files(-,root,bin)
+default_docs
+$_bindir
+$_libdir
+$_includedir

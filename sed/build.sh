@@ -10,12 +10,13 @@ version=4.7
 pkgver=1
 source[0]=https://mirrors.kernel.org/gnu/sed/$topdir-$version.tar.xz
 # If there are no patches, simply comment this
-patch[0]=getprogname.patch
+#patch[0]=getprogname.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Override or extend CPPFLAGS, LDFLAGS, LIBS, CFLAGS here
+export LIBS="$LIBS -llsecompat"
 gnu_link sed
 
 reg prep
