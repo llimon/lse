@@ -833,6 +833,57 @@ fmtfp (char *buffer, size_t *currlen, size_t maxlen,
 }
 #endif /* !defined(HAVE_SNPRINTF) || !defined(HAVE_VSNPRINTF) */
 
+#if !defined(HAVE_VASPRINTF)
+int vasprintf(char **strp, const char *fmt, va_list ap) {
+    va_list ap_copy;
+    int len;
+    char *buf;
+
+    if (!strp) return -1;
+
+    /* 1. Query required buffer length (excluding null terminator) */
+    va_copy(ap_copy, ap);
+    len = vsnprintf(NULL, 0, fmt, ap_copy);
+    va_end(ap_copy);
+
+    if (len < 0) {
+        *strp = NULL;
+        return -1;
+    }
+
+    /* 2. Allocate required memory + 1 for null byte */
+    buf = (char *)malloc((size_t)len + 1);
+    if (!buf) {
+        *strp = NULL;
+        return -1;
+    }
+
+    /* 3. Format string into newly allocated buffer */
+    len = vsnprintf(buf, (size_t)len + 1, fmt, ap);
+    if (len < 0) {
+        free(buf);
+        *strp = NULL;
+        return -1;
+    }
+
+    *strp = buf;
+    return len;
+}
+#endif
+
+#if !defined( HAVE_ASPRINTF)
+int asprintf(char **strp, const char *fmt, ...) {
+    va_list ap;
+    int len;
+
+    va_start(ap, fmt);
+    len = vasprintf(strp, fmt, ap);
+    va_end(ap);
+
+    return len;
+}
+#endif
+
 #if !defined(HAVE_VSNPRINTF)
 int
 vsnprintf (char *str, size_t count, const char *fmt, va_list args)
@@ -857,6 +908,17 @@ snprintf(char *str, size_t count, SNPRINTF_CONST char *fmt, ...)
 
 /* Embedded Standalone Unit Test */
 #ifdef _TEST_SNPRINTF_COMPAT
+
+/* Helper wrapper to validate vasprintf */
+static int test_vasprintf_helper(char **strp, const char *fmt, ...) {
+    va_list ap;
+    int ret;
+    va_start(ap, fmt);
+    ret = vasprintf(strp, fmt, ap);
+    va_end(ap);
+    return ret;
+}
+
 int main(void) {
     char buf[128];
     int len;
@@ -864,6 +926,7 @@ int main(void) {
     long long big_num = 9223372036854775807LL;
     long double ld_val = 3.141592653589793238462643383279502884L;
     size_t sz_val = 1024;
+    char *dyn_buf;
 
     printf("=== Solaris / SunOS Comprehensive C99 Stress Suite ===\n");
 
@@ -927,7 +990,25 @@ int main(void) {
     printf("[11] Left alignment (%%-10s): '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "Left: 'sparc     '") == 0);
 
-    printf("\nSUCCESS: All comprehensive C99 snprintf stress tests passed cleanly!\n");
+    /* 12. Dynamic Allocation via asprintf */
+    dyn_buf = NULL;
+    len = asprintf(&dyn_buf, "Dynamic %s %lld", "Alloc", big_num);
+    printf("[12] asprintf dynamic alloc: '%s' (len: %d)\n", dyn_buf, len);
+    assert(dyn_buf != NULL);
+    assert(strcmp(dyn_buf, "Dynamic Alloc 9223372036854775807") == 0);
+    assert(len == 33);
+    free(dyn_buf);
+
+    /* 13. Dynamic Allocation via vasprintf */
+    dyn_buf = NULL;
+    len = test_vasprintf_helper(&dyn_buf, "Size: %zu, Hex: 0x%zx", sz_val, (size_t)0xDEADBEEF);
+    printf("[13] vasprintf dynamic alloc: '%s' (len: %d)\n", dyn_buf, len);
+    assert(dyn_buf != NULL);
+    assert(strcmp(dyn_buf, "Size: 1024, Hex: 0xdeadbeef") == 0);
+    assert(len == 27);
+    free(dyn_buf);
+
+    printf("\nSUCCESS: All 13 C99 & POSIX string formatting tests passed cleanly!\n");
     return 0;
 }
 #endif /* _TEST_SNPRINTF_COMPAT */
