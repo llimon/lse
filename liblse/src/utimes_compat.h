@@ -2,6 +2,7 @@
 #define UTIMES_COMPAT_H
 
 #include <sys/types.h>
+#include <sys/time.h>
 
 #ifndef COMPAT_UTIMES_COMPAT_H
 #define COMPAT_UTIMES_COMPAT_H
