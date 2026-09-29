@@ -25,7 +25,7 @@ RM      = rm -f
 # Base Flags
 BASE_CFLAGS  = -O2 -mcpu=v7 -fPIC
 ALL_CFLAGS   = $(BASE_CFLAGS) $(CFLAGS)
-ALL_CPPFLAGS = -I. -I$(INCDIR) $(CPPFLAGS)
+ALL_CPPFLAGS = -DHAVE_LONG_LONG -DHAVE_LONG_DOUBLE -I. -I$(INCDIR) $(CPPFLAGS)
 
 # Dynamic Library Versioning
 SHLIB_MAJOR = 1
