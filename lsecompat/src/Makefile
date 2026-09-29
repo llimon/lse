@@ -92,7 +92,7 @@ LIB_LSENET_A    = liblsenet.a
 LIB_LSEW_A      = liblsew.a
 
 # Headers
-HEADERS_TOP    = lsecompat.h lsenet.h stdint.h inttypes.h
+HEADERS_TOP    = lsecompat.h lsenet.h lsew.h stdint.h inttypes.h
 HEADERS_LSE    = string_compat.h \
                  snprintf_compat.h \
                  math_compat.h \
