@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef VTERM_CUSTOM_H
-#define VTERM_CUSTOM_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS
  * ==================================================================== */
@@ -45,11 +42,5 @@ extern const VTermEncoding encoding_utf8;
 // Define a placeholder for the missing 'encoding_usascii'
 extern const VTermEncoding encoding_usascii;
 
-
-/* ====================================================================
- * SECTION 2: STATIC INLINE FUNCTIONS & IMPLEMENTATION OVERRIDES
- * ==================================================================== */
-
-#endif // VTERM_CUSTOM_H
 
 #endif /* VTERM_COMPAT_H */

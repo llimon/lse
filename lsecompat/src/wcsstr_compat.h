@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef COMPAT_WCSSTR_COMPAT_H
-#define COMPAT_WCSSTR_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS (Goes to .h)
  * ==================================================================== */
@@ -31,11 +28,5 @@ wchar_t *wcsstr(const wchar_t *haystack, const wchar_t *needle);
 #ifdef __cplusplus
 }
 #endif
-
-/* ====================================================================
- * SECTION 2: IMPLEMENTATION & UNIT TEST (Goes to .c)
- * ==================================================================== */
-
-#endif /* COMPAT_WCSSTR_COMPAT_H */
 
 #endif /* WCSSTR_COMPAT_H */

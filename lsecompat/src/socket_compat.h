@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef COMPAT_SOCKET_COMPAT_H
-#define COMPAT_SOCKET_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS
  * ==================================================================== */
@@ -65,11 +62,5 @@ int inet_pton(int af, const char *src, void *dst);
 #ifdef __cplusplus
 }
 #endif
-
-/* ====================================================================
- * SECTION 2: IMPLEMENTATION & WEAK LINKING
- * ==================================================================== */
-
-#endif /* COMPAT_SOCKET_COMPAT_H */
 
 #endif /* SOCKET_COMPAT_H */

@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef MY_STRTOIMAX_COMPAT_H
-#define MY_STRTOIMAX_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS (Goes to .h)
  * ==================================================================== */
@@ -37,11 +34,5 @@ uintmax_t strtoumax(const char *nptr, char **endptr, int base);
 #ifdef __cplusplus
 }
 #endif
-
-/* ====================================================================
- * SECTION 2: STATIC INLINE FUNCTIONS & IMPLEMENTATION OVERRIDES (Goes to .c)
- * ==================================================================== */
-
-#endif /* MY_STRTOIMAX_COMPAT_H */
 
 #endif /* STRTOIMAX_COMPAT_H */

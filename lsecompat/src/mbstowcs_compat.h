@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef COMPAT_MBSTOWCS_COMPAT_H
-#define COMPAT_MBSTOWCS_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS (Goes to .h)
  * ==================================================================== */
@@ -45,10 +42,5 @@ size_t mbstowcs(wchar_t *dest, const char *src, size_t n);
 }
 #endif
 
-/* ====================================================================
- * SECTION 2: IMPLEMENTATION & UNIT TEST (Goes to .c)
- * ==================================================================== */
-
-#endif /* COMPAT_MBSTOWCS_COMPAT_H */
 
 #endif /* MBSTOWCS_COMPAT_H */

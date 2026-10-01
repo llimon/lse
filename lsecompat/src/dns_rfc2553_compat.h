@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef COMPAT_DNS_RFC2553_COMPAT_H
-#define COMPAT_DNS_RFC2553_COMPAT_H
-
 #include <sys/types.h>
 #include <stdint.h>
 #include <compat/socket_compat.h> /* KEEP */
@@ -102,6 +99,5 @@ int getnameinfo(const struct sockaddr *sa, socklen_t salen,
                 char *host, size_t hostlen,
                 char *serv, size_t servlen, int flags);
 
-#endif /* COMPAT_DNS_RFC2553_COMPAT_H */
 
 #endif /* DNS_RFC2553_COMPAT_H */

@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef COMPAT_USLEEP_COMPAT_H
-#define COMPAT_USLEEP_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES AND DECLARATIONS (Goes to .h)
  * ==================================================================== */
@@ -31,11 +28,5 @@ int usleep(useconds_t usec);
 #ifdef __cplusplus
 }
 #endif
-
-/* ====================================================================
- * SECTION 2: IMPLEMENTATION & UNIT TEST (Goes to .c)
- * ==================================================================== */
-
-#endif /* COMPAT_USLEEP_COMPAT_H */
 
 #endif /* USLEEP_COMPAT_H */
