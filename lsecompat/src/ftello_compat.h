@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef LSE_FTELLO_COMPAT_H
-#define LSE_FTELLO_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS (Goes to .h)
  * ==================================================================== */
@@ -39,11 +36,5 @@ int fseeko(FILE *stream, offset_t offset, int whence);
 #ifdef __cplusplus
 }
 #endif
-
-/* ====================================================================
- * SECTION 2: STATIC INLINE FUNCTIONS & IMPLEMENTATION OVERRIDES (Goes to .c)
- * ==================================================================== */
-
-#endif /* LSE_FTELLO_COMPAT_H */
 
 #endif /* FTELLO_COMPAT_H */

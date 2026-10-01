@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef GETPROGNAME_COMPAT_H
-#define GETPROGNAME_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES AND DECLARATIONS (Goes to .h)
  * ==================================================================== */
@@ -28,11 +25,5 @@ void setprogname(const char *name);
 #ifdef __cplusplus
 }
 #endif
-
-/* ====================================================================
- * SECTION 2: IMPLEMENTATION & UNIT TEST (Goes to .c)
- * ==================================================================== */
-
-#endif /* GETPROGNAME_COMPAT_H */
 
 #endif /* GETPROGNAME_COMPAT_H */

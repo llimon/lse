@@ -42,6 +42,7 @@ COMMON_SRCS = strtoimax_compat.c \
               getprogname_compat.c \
               usleep_compat.c \
               utimes_compat.c \
+              strerror_r_compat.c \
               math_compat.c
 
 NET_SRCS    = dns_rfc2553_compat.c \
@@ -96,6 +97,7 @@ HEADERS_LSE    = string_compat.h \
                  usleep_compat.h \
                  utimes_compat.h \
                  dns_rfc2553_compat.h \
+                 strerror_r_compat.h \
                  socket_compat.h
 
 # ------------------------------------------------------------------------------

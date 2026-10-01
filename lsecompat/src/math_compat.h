@@ -8,9 +8,6 @@
  ** Custom implementation of isinf for C99 floating-point classification.
  ****/
 
-#ifndef COMPAT_MATH_COMPAT_H
-#define COMPAT_MATH_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS (Goes to .h)
  * ==================================================================== */
@@ -33,11 +30,5 @@ int isinf_double(double x);
 #define isinf(x) \
     (sizeof(x) == sizeof(float) ? isinf_float(x) : isinf_double(x))
 #endif
-
-/* ====================================================================
- * SECTION 2: IMPLEMENTATION & UNIT TEST (Goes to .c)
- * ==================================================================== */
-
-#endif /* COMPAT_MATH_COMPAT_H */
 
 #endif /* MATH_COMPAT_H */

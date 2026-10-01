@@ -3,9 +3,6 @@
 
 #include <sys/types.h>
 
-#ifndef LSE_SNPRINTF_COMPAT_H
-#define LSE_SNPRINTF_COMPAT_H
-
 /* ====================================================================
  * SECTION 1: SYSTEM INCLUDES, TYPEDEFS, AND MACRO DEFINITIONS (Goes to .h)
  * ==================================================================== */
@@ -36,5 +33,4 @@ int vasnprintf(char **ptr, size_t str_m, const char *fmt, va_list ap);
  * SECTION 2: IMPLEMENTATION & WEAK LINKING (Goes to .c)
  * ==================================================================== */
 
-#endif /* LSE_SNPRINTF_COMPAT_H */
 #endif /* SNPRINTF_COMPAT_H */
