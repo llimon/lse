@@ -1,4 +1,5 @@
 #include "strerror_r_compat.h"
+#include "snprintf_compat.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

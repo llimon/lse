@@ -20,7 +20,7 @@
 #include <lse/map_compat.h>
 #include <lse/math_compat.h>
 #include <lse/usleep_compat.h>
-#include <lse/times_compat.h>
+#include <lse/time_compat.h>
 #include <lse/vterm_compat.h>
 
 #endif /* LSECOMPAT_MASTER_H */

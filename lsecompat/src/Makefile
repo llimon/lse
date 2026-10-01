@@ -43,7 +43,6 @@ COMMON_SRCS = strtoimax_compat.c \
               usleep_compat.c \
               strerror_r_compat.c \
               time_compat.c \
-              strerror_r.c \
               math_compat.c
 
 W_SRCS      = mbstowcs_compat.c \
