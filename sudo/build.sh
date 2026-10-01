@@ -17,13 +17,11 @@ patch[0]=getentropy.c.patch
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
+export LD_RUN_PATH="/usr/local/lse/lib"
 
 # Global settings
-export LDFLAGS="$LDFLAGS -lposix4 -llsecompat"
-ac_overrides="gl_cv_func_snprintf_directive_n=yes
-gl_cv_func_vsnprintf_directive_n=yes
-gl_cv_func_printf_directive_n=yes
-"
+export LIBS="-lposix4"
+export EXTRA_LIBS="-lsecompat"
 # disabling generation of .so binaries; We don't need that stuff for sudo and makes it a little leaner for resource contrained workstations.
 configure_args+=(--enable-static --disable-shared --enable-static-sudoers --disable-poll --disable-hardening --sysconfdir=/usr/local/lse/etc --with-man --with-all-insults)
 
@@ -57,13 +55,6 @@ run_configure()
     echo $__configure "${configure_args[@]}"
     $__configure "${configure_args[@]}"
 
-	 # Compatibillity with solaris older than 2.6
-	 #if [ "`uname -r`" = "5.6" ]; then
-	 #	${__gsed} -i 's|#define HAVE_SNPRINTF 1|/* #define HAVE_SNPRINTF 1 */|' config.h
-	 #	${__gsed} -i 's|#define HAVE_VSNPRINTF 1|/* #define HAVE_VSNPRINTF 1 */|' config.h
-	 #fi
-
-	
 }
 
 reg build

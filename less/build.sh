@@ -16,8 +16,9 @@ source[0]=http://www.greenwoodsoftware.com/less/$topdir-$version.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export LIBS="$LIBS -lw"
+export LIBS="$LIBS -lw -llsecompat -llsew"
 configure_args+=(--with-editor=/bin/vi)
+make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h -include $prefix/include/lsew.h" )
 
 reg prep
 prep()

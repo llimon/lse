@@ -17,7 +17,7 @@ source[0]=https://downloads.sourceforge.net/$topdir/$topdir-$version.tar.bz2
 
 # Global settings
 #export LIBS="$prefix/lib/libsnprintf.a"
-export LIBS="$LIBS -lsnprintf -lgcc_s"
+export LIBS="$LIBS -llsecompat -lpthread"
 configure_args+=(--enable-utf)
 
 reg prep

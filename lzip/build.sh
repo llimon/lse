@@ -20,8 +20,7 @@ patch[0]=libs-build-patch
 # Global settings
 #CXXFLAGS="-D_GLIBCXX_USE_C99 -D_GLIBCXX_USE_C99_CHECK -I/usr/local/lse/include/c++/4.1.2"
 export CXXFLAGS="-I$prefix/include/c++/4.1.2 -include $prefix/include/compat/snprintf_compat.h"
-# Stupid Solaris linker and lzip custom build cannot use -lsnprintf because of single pass linking.
-export LIBS="$LIBS -lsnprintf"
+export LIBS="$LIBS -llsecompat -lpthread"
 configure_args+=(CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" LIBS="$LIBS")
 
 reg prep

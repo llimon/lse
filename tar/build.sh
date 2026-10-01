@@ -20,7 +20,7 @@ source[0]=ftp://ftp.sunet.se/pub/gnu/tar/$topdir-$version.tar.bz2
 # solaris 2.5.1 does not have ftello
 #configure_args+=(--disable-largefile)
 LIBS="$LIBS -llsecompat"
-make_build_opts=( _pls "CPPFLAGS=\"\$CPPFLAGS -include $prefix/include/lsecompat.h\" ${make_build_opts}" )
+#make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h" )
 
 gnu_link tar
 

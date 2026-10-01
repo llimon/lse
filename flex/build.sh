@@ -16,7 +16,7 @@ source[0]=https://github.com/westes/$topdir/releases/download/v${version}/$topdi
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export LIBS="-lsnprintf -lgen"
+export LIBS="-llsecompat -lgen"
 
 reg prep
 prep()

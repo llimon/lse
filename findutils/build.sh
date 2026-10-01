@@ -17,7 +17,7 @@ source[0]=ftp://ftp.sunet.se/pub/gnu/findutils/$topdir-$version.tar.gz
 
 # Global settings
 export CPPFLAGS="-I$prefix/include -Dwint_t=int"
-export LIBS="-lposix4 $prefix/lib/libsnprintf.a"
+export LIBS="-lposix4 -llsecompat -lw"
 ac_overrides="am_cv_func_mbstate_t=no 
 ac_cv_header_wctype_h=no 
 ac_cv_header_wchar_h=no 
@@ -29,6 +29,8 @@ gl_cv_func_wctob=
 no gl_cv_func_mbsinit=no"
 
 gnu_link find locate oldfind updatedb xargs
+
+make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h -include $prefix/include/lse/mbstowcs_compat.h -i $prefix/include/lse/wcsstr_compat.h" )
 
 reg prep
 prep()

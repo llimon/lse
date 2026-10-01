@@ -29,8 +29,7 @@ reg build
 build()
 {
     # Global settings
-    export LDFLAGS="$LDFLAGS"
-    LDFLAGS="$LDFLAGS -llsecompat" 
+    LIB="-llsecompat -llsew"
     # Should use bash for libtool
     export CONFIG_SHELL=/usr/local/lse/bin/bash
     configure_args+=(--enable-extra-encodings)

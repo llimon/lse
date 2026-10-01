@@ -22,6 +22,8 @@ patch[1]=sol-ld-fixes.patch
 # This compiler is bootstrapped with gcc 4.2.4
 export PATH=/usr/local/lse/gcc42/bin:$PATH
 
+export LD_RUN_PATH="/usr/local/lse/lib"
+
 reg prep
 prep()
 {
@@ -40,7 +42,7 @@ build()
 
     # v7 requires explicit -lgcc_s
     if [[ "$gcc_arch" == *"v7"* ]]; then
-        export LDFLAGS="$LDFLAGS -lgcc_s"
+        export LDFLAGS="$LDFLAGS -lgcc_s -lpthread"
     fi
 
     # Append stage1/boot flags using the computed LDFLAGS

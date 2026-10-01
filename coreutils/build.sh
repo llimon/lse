@@ -28,6 +28,7 @@ prep()
 reg build
 build()
 {
+    export SHELL="/usr/tgcware/bin/bash"
     generic_build
 }
 

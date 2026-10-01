@@ -26,11 +26,7 @@ __configure="./Configure"
 # Define compatibility headers and enforce -O2
 export GCC_MCPU="-mcpu=${TARGET_CPU:-v7}"
 compat_cflags="-O2 $GCC_MCPU -I$prefix/include \
--include $prefix/include/compat/strtoimax_compat.h \
--include $prefix/include/compat/dns_rfc2553_compat.h \
--include $prefix/include/compat/socket_compat.h \
--include $prefix/include/compat/snprintf_compat.h \
--include $prefix/include/compat/dlfcn_compat.h"
+-include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h"
 # no-asm
 configure_args=(
     --prefix=$prefix 
@@ -38,15 +34,18 @@ configure_args=(
     --with-rand-seed=devrandom,egd 
     zlib 
     shared 
+    no-dso 
     enable-egd 
     no-threads
     no-asm
-    
     CFLAGS="$CFLAGS $compat_cflags"
     CPPFLAGS="$CPPFLAGS $compat_cflags"
     # OpenSSL 3.0 uses LDLIBS for extra library linkages
     LDFLAGS="$LDFLAGS"
-    LDLIBS="$LIBS -lsnprintf"
+    LDLIBS="$LIBS -lposix4 -llsecompat -llsenet -lc"
+    EX_LIBS="-llsecompat -lc"
+    # Clears the version-script mapfile generator variable
+    shared_mapfile=""
 )
 
 # 2. Target architecture MUST be appended AT THE VERY END
@@ -56,7 +55,7 @@ else
     configure_args+=(386 solaris-x86-gcc)
 fi
 
-cpus_online=$(psrinfo | nawk '/on-line/ {count++} END { print count }')
+cpus_online=$(psrinfo | nawk '/on-line/ {count++} END { print count + 1 }')
 
 reg prep
 prep()

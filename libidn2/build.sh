@@ -44,33 +44,16 @@ prep()
 # `}
 
 
-run_configure()
-{
-    local my_ac_overrides="$platform_ac_overrides $ac_overrides"
-    setdir ${srcdir}/${topsrcdir}/$1
-
-    local acvar
-    for acvar in $my_ac_overrides; do
-        export $acvar
-    done
-    echo $__configure "${configure_args[@]}"
-    $__configure "${configure_args[@]}"
-}
-
 
 reg build
 build()
 {
     export CFLAGS="$CFLAGS -std=gnu99" 
-    export LIBS="$LIBS -lgcc_s"
+    export LIBS="$LIBS -llsecompat"
     ac_overrides="ac_cv_func_getprogname=yes \
                   ac_cv_prog_cc_c11=no \
                   gl_cv_compiler_c11_supported=no"
-
-    run_configure
-    #${__make} CPPFLAGS="$CPPFLAGS -include config.h -include ${prefix}/include/compat/getprogname_compat.h" 
-    ${__make} CC="${CC:-gcc} -include config.h -include ${prefix}/include/compat/getprogname_compat.h" ${make_build_opts}
-
+    generic_build
 
 }
 
