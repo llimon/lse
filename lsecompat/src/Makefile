@@ -42,7 +42,7 @@ COMMON_SRCS = strtoimax_compat.c \
               getprogname_compat.c \
               usleep_compat.c \
               time_compat.c \
-              mbstowcs_compat.c \
+              strerror_r.c \
               math_compat.c
 
 W_SRCS      = mbstowcs_compat.c \
@@ -104,7 +104,8 @@ HEADERS_LSE    = string_compat.h \
                  dns_rfc2553_compat.h \
                  socket_compat.h \
                  mbstowcs_compat.h \
-                 wcsstr_compat.h
+                 wcsstr_compat.h \
+                 strerror_r_compat.h 
 
 # ------------------------------------------------------------------------------
 # Build Rules
