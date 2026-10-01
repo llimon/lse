@@ -41,9 +41,12 @@ COMMON_SRCS = strtoimax_compat.c \
               snprintf_compat.c \
               getprogname_compat.c \
               usleep_compat.c \
-              utimes_compat.c \
               strerror_r_compat.c \
+              time_compat.c \
               math_compat.c
+
+W_SRCS      = mbstowcs_compat.c \
+              wcsstr_compat.c
 
 NET_SRCS    = dns_rfc2553_compat.c \
               socket_compat.c
@@ -81,13 +84,15 @@ endif
 # Object Files
 LSECOMPAT_OBJS = $(LSECOMPAT_SRCS:.c=.o)
 LSENET_OBJS    = $(NET_SRCS:.c=.o)
+LSEW_OBJS    = $(W_SRCS:.c=.o)
 
 # Target Static Libraries
 LIB_LSECOMPAT_A = liblsecompat.a
 LIB_LSENET_A    = liblsenet.a
+LIB_LSEW_A      = liblsew.a
 
 # Headers
-HEADERS_TOP    = lsecompat.h lsenet.h stdint.h inttypes.h
+HEADERS_TOP    = lsecompat.h lsenet.h lsew.h stdint.h inttypes.h
 HEADERS_LSE    = string_compat.h \
                  snprintf_compat.h \
                  math_compat.h \
@@ -95,7 +100,7 @@ HEADERS_LSE    = string_compat.h \
                  ftello_compat.h \
                  getprogname_compat.h \
                  usleep_compat.h \
-                 utimes_compat.h \
+                 time_compat.h \
                  dns_rfc2553_compat.h \
                  strerror_r_compat.h \
                  socket_compat.h
@@ -104,7 +109,7 @@ HEADERS_LSE    = string_compat.h \
 # Build Rules
 # ------------------------------------------------------------------------------
 
-all: info $(LIB_LSECOMPAT_A) $(LIB_LSENET_A) $(LIB_LSECOMPAT_SO) $(LIB_LSENET_SO)
+all: info $(LIB_LSECOMPAT_A) $(LIB_LSENET_A) $(LIB_LSEW_A) $(LIB_LSECOMPAT_SO) $(LIB_LSENET_SO) $(LIB_LSEW_SO)
 
 info:
 	@echo "=== Building lse-compat for Target OS: $(OS_TYPE) ($(UNAME_S) $(UNAME_R)) ==="
@@ -122,6 +127,12 @@ $(LIB_LSENET_A): $(LSENET_OBJS)
 	$(AR) cr $@ $(LSENET_OBJS)
 	$(RANLIB) $@
 
+$(LIB_LSEW_A): $(LSEW_OBJS)
+	@echo "=== Creating Static Archive $@ ==="
+	$(RM) $@
+	$(AR) cr $@ $(LSEW_OBJS)
+	$(RANLIB) $@
+
 # Shared Objects (.so)
 $(LIB_LSECOMPAT_SO): $(LSECOMPAT_OBJS)
 	@echo "=== Creating Shared Object $@ ==="
@@ -130,6 +141,10 @@ $(LIB_LSECOMPAT_SO): $(LSECOMPAT_OBJS)
 $(LIB_LSENET_SO): $(LSENET_OBJS)
 	@echo "=== Creating Shared Object $@ ==="
 	$(BUILD_SO_CMD) $(LSENET_OBJS) $(NET_EXTRA_LIBS)
+
+$(LIB_LSEW_SO): $(LSEW_OBJS)
+	@echo "=== Creating Shared Object $@ ==="
+	$(BUILD_SO_CMD) $(LSEW_OBJS) $(NET_EXTRA_LIBS)
 
 # Pattern Rule
 %.o: %.c
@@ -166,6 +181,7 @@ install: all
 	chmod 644 $(LIBDIR)/liblse*
 	$(RANLIB) $(LIBDIR)/$(LIB_LSECOMPAT_A)
 	$(RANLIB) $(LIBDIR)/$(LIB_LSENET_A)
+	$(RANLIB) $(LIBDIR)/$(LIB_LSEW_A)
 	@echo "=== Installation complete ==="
 
 clean:

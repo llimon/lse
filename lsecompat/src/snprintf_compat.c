@@ -919,6 +919,10 @@ static int test_vasprintf_helper(char **strp, const char *fmt, ...) {
     return ret;
 }
 
+/* =========================================================================
+ * Embedded Unit Test Harness
+ * Compile test: gcc -O2 -mcpu=v7 -DHAVE_LONG_DOUBLE -DHAVE_LONG_LONG -D_TEST_SNPRINTF_COMPAT snprintf_compat.c -o test_snprintf
+ * ========================================================================= */
 int main(void) {
     char buf[128];
     int len;

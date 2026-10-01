@@ -19,10 +19,8 @@
 #include <lse/getprogname_compat.h>
 #include <lse/map_compat.h>
 #include <lse/math_compat.h>
-#include <lse/mbstowcs_compat.h>
 #include <lse/usleep_compat.h>
-#include <lse/utimes_compat.h>
+#include <lse/times_compat.h>
 #include <lse/vterm_compat.h>
-#include <lse/wcsstr_compat.h>
 
 #endif /* LSECOMPAT_MASTER_H */
