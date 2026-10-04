@@ -8,7 +8,7 @@
 #include <string.h>
 #include <netdb.h> 
 #include <sys/socket.h> 
-#include <compat/socket_compat.h> /* KEEP */
+#include <lse/socket_compat.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 

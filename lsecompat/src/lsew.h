@@ -15,5 +15,7 @@
 /* Individual Modular Compatibility Headers */
 #include <lse/mbstowcs_compat.h>
 #include <lse/wcsstr_compat.h>
+#include <lse/wchar_compat.h>
+
 
 #endif /* LSEWCOMPAT_MASTER_H */

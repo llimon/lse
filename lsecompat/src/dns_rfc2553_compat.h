@@ -5,7 +5,7 @@
 
 #include <sys/types.h>
 #include <stdint.h>
-#include <compat/socket_compat.h> /* KEEP */
+#include <lse/socket_compat.h> /* KEEP */
 
 #ifndef AF_INET
 #define AF_INET 2

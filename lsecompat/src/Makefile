@@ -15,6 +15,10 @@ PREFIX ?= /usr/local/lse
 INCDIR     = $(PREFIX)/include
 LSE_INCDIR = $(INCDIR)/lse
 LIBDIR     = $(PREFIX)/lib
+# Customisable RPATH flag (can be overridden via: make RPATH_FLAG="-Wl,-R,$(LIBDIR)")
+# Default uses GNU ld syntax (-Wl,-rpath,...)
+#RPATH_FLAG ?= -Wl,-rpath,$(LIBDIR)
+RPATH_FLAG ?= -Wl,-R$(LIBDIR) -Wl,-rpath,$(LIBDIR)
 
 # Toolchain
 CC      = gcc
@@ -25,7 +29,7 @@ RM      = rm -f
 # Base Flags
 BASE_CFLAGS  = -O2 -mcpu=v7 -fPIC
 ALL_CFLAGS   = $(BASE_CFLAGS) $(CFLAGS)
-ALL_CPPFLAGS = -DHAVE_LONG_LONG -DHAVE_LONG_DOUBLE -I. -I$(INCDIR) $(CPPFLAGS)
+ALL_CPPFLAGS = -DHAS_PROCFS_SVR4 -DHAVE_LONG_LONG -DHAVE_LONG_DOUBLE -I. -I$(INCDIR) $(CPPFLAGS)
 
 # Dynamic Library Versioning
 SHLIB_MAJOR = 1
@@ -46,7 +50,7 @@ COMMON_SRCS = strtoimax_compat.c \
               math_compat.c
 
 W_SRCS      = mbstowcs_compat.c \
-              wcsstr_compat.c
+              wcsstr_compat.c 
 
 NET_SRCS    = dns_rfc2553_compat.c \
               socket_compat.c
@@ -56,27 +60,31 @@ ifeq ($(UNAME_S),SunOS)
   
   ifeq ($(OS_MAJOR),4)
     # --- SunOS 4.x Configuration (a.out) ---
-    OS_TYPE       = SunOS4
-    LSECOMPAT_SRCS = $(COMMON_SRCS) string_compat.c
+    OS_TYPE          = SunOS4
+    LSECOMPAT_SRCS   = $(COMMON_SRCS) string_compat.c
     
     # SunOS 4 shared lib syntax: liblsecompat.so.1.0 (requires ld -assert pure-text)
     LIB_LSECOMPAT_SO = liblsecompat.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
     LIB_LSENET_SO    = liblsenet.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
+    LIB_LSEW_SO      = liblsew.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
     
-    BUILD_SO_CMD     = ld -assert pure-text -o $@
+    BUILD_SO_CMD     = ld -assert pure-text
+    SHLIB_LDFLAGS    =
     NET_EXTRA_LIBS   =
   else
     # --- Solaris 2.x / SunOS 5.x Configuration (ELF) ---
-    OS_TYPE       = Solaris2
+    OS_TYPE          = Solaris2
     # Solaris 2.5.1 already has string functions, skip string_compat.c
-    LSECOMPAT_SRCS = $(COMMON_SRCS)
+    LSECOMPAT_SRCS   = $(COMMON_SRCS)
     
     # ELF shared lib syntax: liblsecompat.so
     LIB_LSECOMPAT_SO = liblsecompat.so
     LIB_LSENET_SO    = liblsenet.so
+    LIB_LSEW_SO      = liblsew.so
     
-    # Solaris ELF shared library creation via GCC
-    BUILD_SO_CMD     = $(CC) -shared -Wl,-h,$@ -o $@
+    # Solaris ELF shared library creation via GCC with embedded RPATH
+    BUILD_SO_CMD     = $(CC) -shared
+    SHLIB_LDFLAGS    = -Wl,-h,$@ $(RPATH_FLAG)
     NET_EXTRA_LIBS   = -lsocket -lnsl
   endif
 endif
@@ -84,7 +92,7 @@ endif
 # Object Files
 LSECOMPAT_OBJS = $(LSECOMPAT_SRCS:.c=.o)
 LSENET_OBJS    = $(NET_SRCS:.c=.o)
-LSEW_OBJS    = $(W_SRCS:.c=.o)
+LSEW_OBJS      = $(W_SRCS:.c=.o)
 
 # Target Static Libraries
 LIB_LSECOMPAT_A = liblsecompat.a
@@ -106,7 +114,9 @@ HEADERS_LSE    = string_compat.h \
                  mbstowcs_compat.h \
                  wcsstr_compat.h \
                  strerror_r_compat.h \
-                 socket_compat.h
+                 map_compat.h \
+                 vterm_compat.h \
+                 wchar_compat.h
 
 # ------------------------------------------------------------------------------
 # Build Rules
@@ -139,15 +149,15 @@ $(LIB_LSEW_A): $(LSEW_OBJS)
 # Shared Objects (.so)
 $(LIB_LSECOMPAT_SO): $(LSECOMPAT_OBJS)
 	@echo "=== Creating Shared Object $@ ==="
-	$(BUILD_SO_CMD) $(LSECOMPAT_OBJS)
+	$(BUILD_SO_CMD) $(SHLIB_LDFLAGS) $(LDFLAGS) -o $@ $(LSECOMPAT_OBJS)
 
 $(LIB_LSENET_SO): $(LSENET_OBJS)
 	@echo "=== Creating Shared Object $@ ==="
-	$(BUILD_SO_CMD) $(LSENET_OBJS) $(NET_EXTRA_LIBS)
+	$(BUILD_SO_CMD) $(SHLIB_LDFLAGS) $(LDFLAGS) -o $@ $(LSENET_OBJS) $(NET_EXTRA_LIBS)
 
 $(LIB_LSEW_SO): $(LSEW_OBJS)
 	@echo "=== Creating Shared Object $@ ==="
-	$(BUILD_SO_CMD) $(LSEW_OBJS) $(NET_EXTRA_LIBS)
+	$(BUILD_SO_CMD) $(SHLIB_LDFLAGS) $(LDFLAGS) -o $@ $(LSEW_OBJS) $(NET_EXTRA_LIBS)
 
 # Pattern Rule
 %.o: %.c

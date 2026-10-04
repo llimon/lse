@@ -11,6 +11,11 @@
 #if defined(__sun__) && (defined(__SVR4) || defined(__svr4__))
 #endif
 
+/* protect mbstate from autoconf */
+#ifdef mbstate_t
+#  undef mbstate_t
+#endif
+
 #ifndef _WCHAR_T
 #  ifndef _WCHAR_T_DEFINED
      typedef long wchar_t;
