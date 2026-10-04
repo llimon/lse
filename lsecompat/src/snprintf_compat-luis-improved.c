@@ -982,54 +982,53 @@ int main(void) {
     size_t sz_val = 1024;
     char *dyn_buf;
 
-    printf("=== Solaris / SunOS Comprehensive C99 Stress Suite ===\n");
+    printf("=== Solaris / SunOS Complete 18-Test C99, POSIX & SPARC Stress Suite ===\n");
 
     /* --- BASE C99 COMPLIANCE CHECKS --- */
 
-    /* 1. 64-bit Long Long Formatting */
+    /* 01. 64-bit Long Long Formatting */
     len = snprintf(buf, sizeof(buf), "LLMAX: %lld", big_num);
     printf("[01] 64-bit int: '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "LLMAX: 9223372036854775807") == 0);
 
-    /* 2. Truncation & Null Termination Boundary */
+    /* 02. Truncation & Null Termination Boundary */
     len = snprintf(buf, 10, "1234567890ABCDEF");
     printf("[02] Truncation (bound 10): '%s' (reported len: %d)\n", buf, len);
     assert(strlen(buf) == 9 && strcmp(buf, "123456789") == 0 && len == 16);
 
-    /* 3. Long Double Formatting (%Lf) */
+    /* 03. Long Double Formatting (%Lf) */
     len = snprintf(buf, sizeof(buf), "LD: %.10Lf", ld_val);
     printf("[03] Long double: '%s' (len: %d)\n", buf, len);
     assert(strstr(buf, "3.1415926536") != NULL);
 
-    /* 4. %n Specifier */
+    /* 04. %n Specifier */
     len = snprintf(buf, sizeof(buf), "Hello %nWorld", &n_count);
     printf("[04] %%n count: '%s' (written %%n: %d, total len: %d)\n", buf, n_count, len);
     assert(n_count == 6 && len == 11 && strcmp(buf, "Hello World") == 0);
 
-    /* 5. NULL-Buffer Dry Run Length Query */
+    /* 05. NULL-Buffer Dry Run Length Query */
     len = snprintf(NULL, 0, "Test %d string", 123);
     printf("[05] NULL-buffer length query: %d\n", len);
     assert(len == 15);
 
-    /* 6. C99 size_t modifier (%zu) */
+    /* 06. C99 size_t modifier (%zu) */
     len = snprintf(buf, sizeof(buf), "Size: %zu", sz_val);
     printf("[06] C99 size_t (%%zu): '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "Size: 1024") == 0);
 
-
     /* --- ADVANCED EDGE-CASE STRESS TESTS --- */
 
-    /* 7. Signed ssize_t / ptrdiff_t Formatting (%zd, %td) */
+    /* 07. Signed ssize_t / ptrdiff_t Formatting (%zd, %td) */
     len = snprintf(buf, sizeof(buf), "SSize: %zd, Diff: %td", (ssize_t)-512, (ptrdiff_t)-42);
     printf("[07] Signed %%zd / %%td: '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "SSize: -512, Diff: -42") == 0);
 
-    /* 8. Hexadecimal size_t Formatting (%zx / %zX) */
+    /* 08. Hexadecimal size_t Formatting (%zx / %zX) */
     len = snprintf(buf, sizeof(buf), "HexSize: 0x%zx", (size_t)0xDEADBEEF);
     printf("[08] Hex size_t (%%zx): '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "HexSize: 0xdeadbeef") == 0);
 
-    /* 9. C99 Precision Zero Rule (value 0 with precision .0 MUST produce 0 chars) */
+    /* 09. C99 Precision Zero Rule */
     len = snprintf(buf, sizeof(buf), "ZeroPrec: '%.0d'", 0);
     printf("[09] Zero value with .0 precision: '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "ZeroPrec: ''") == 0);
@@ -1037,7 +1036,7 @@ int main(void) {
     /* 10. Width + Precision Zero Padding Combination (%010.5d) */
     len = snprintf(buf, sizeof(buf), "Padded: '%010.5d'", 42);
     printf("[10] Width + Precision padding: '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "Padded: '     00042'") == 0); /* C99: precision overrides '0' flag */
+    assert(strcmp(buf, "Padded: '     00042'") == 0);
 
     /* 11. Left Alignment + Field Width (%-10s) */
     len = snprintf(buf, sizeof(buf), "Left: '%-10s'", "sparc");
@@ -1048,21 +1047,48 @@ int main(void) {
     dyn_buf = NULL;
     len = asprintf(&dyn_buf, "Dynamic %s %lld", "Alloc", big_num);
     printf("[12] asprintf dynamic alloc: '%s' (len: %d)\n", dyn_buf, len);
-    assert(dyn_buf != NULL);
-    assert(strcmp(dyn_buf, "Dynamic Alloc 9223372036854775807") == 0);
-    assert(len == 33);
+    assert(dyn_buf != NULL && strcmp(dyn_buf, "Dynamic Alloc 9223372036854775807") == 0 && len == 33);
     free(dyn_buf);
 
     /* 13. Dynamic Allocation via vasprintf */
     dyn_buf = NULL;
     len = test_vasprintf_helper(&dyn_buf, "Size: %zu, Hex: 0x%zx", sz_val, (size_t)0xDEADBEEF);
     printf("[13] vasprintf dynamic alloc: '%s' (len: %d)\n", dyn_buf, len);
-    assert(dyn_buf != NULL);
-    assert(strcmp(dyn_buf, "Size: 1024, Hex: 0xdeadbeef") == 0);
-    assert(len == 27);
+    assert(dyn_buf != NULL && strcmp(dyn_buf, "Size: 1024, Hex: 0xdeadbeef") == 0 && len == 27);
     free(dyn_buf);
 
-    printf("\nSUCCESS: All 13 C99 & POSIX string formatting tests passed cleanly!\n");
+    /* --- CRASH & POSITIONAL HARDENING TESTS --- */
+
+    /* 14. NULL String Pointer Protection (%s with NULL) */
+    len = snprintf(buf, sizeof(buf), "NullStr: %s", (char *)NULL);
+    printf("[14] NULL string handling: '%s' (len: %d)\n", buf, len);
+    assert(strstr(buf, "(null)") != NULL || strstr(buf, "(NULL)") != NULL || strcmp(buf, "NullStr: ") == 0);
+
+    /* 15. SPARC Multi-Argument Stack Alignment Check */
+    len = snprintf(buf, sizeof(buf), "User %s port %zu id %lld host %s", "llimon", sz_val, big_num, "github.com");
+    printf("[15] Stack alignment check: '%s' (len: %d)\n", buf, len);
+    assert(strcmp(buf, "User llimon port 1024 id 9223372036854775807 host github.com") == 0);
+
+    /* 16. vasprintf NULL String Edge Case */
+    dyn_buf = NULL;
+    len = test_vasprintf_helper(&dyn_buf, "User: %s Host: %s", (char *)NULL, "sparc-box");
+    printf("[16] vasprintf NULL string: '%s' (len: %d)\n", dyn_buf, len);
+    assert(dyn_buf != NULL);
+    assert(strstr(dyn_buf, "(null)") != NULL || strstr(dyn_buf, "(NULL)") != NULL || strstr(dyn_buf, "User: ") != NULL);
+    free(dyn_buf);
+
+    /* 17. Zero-Count Buffer Dry Run (count == 0 with non-NULL buffer) */
+    buf[0] = 'X';
+    len = snprintf(buf, 0, "Should non-mutate buffer");
+    printf("[17] Count=0 buffer protection: buf[0]='%c' (reported len: %d)\n", buf[0], len);
+    assert(buf[0] == 'X' && len == 24);
+
+    /* 18. SPARC Positional Arguments (%3$s %1$d %2$lld) */
+    len = snprintf(buf, sizeof(buf), "Pos: %3$s %1$d %2$lld", 42, 9223372036854775807LL, "sparc");
+    printf("[18] Positional args (%%3$s %%1$d %%2$lld): '%s' (len: %d)\n", buf, len);
+    assert(strcmp(buf, "Pos: sparc 42 9223372036854775807") == 0);
+
+    printf("\nSUCCESS: All 18 C99, POSIX, and SPARC alignment tests passed cleanly!\n");
     return 0;
 }
 #endif /* _TEST_SNPRINTF_COMPAT */
