@@ -6,7 +6,7 @@ diff -ruN a/include/ntp_rfc2553.h b/include/ntp_rfc2553.h
  #include <isc/net.h>
  
 +/* Force our clean 16-byte IPv4 multi-host resolver on Solaris 2.5.1 */
-+#include "lse/dns_rfc2553_compat.h"
++#include <lse/dns_rfc2553_compat.h>
 +
  #include "ntp_types.h"
  

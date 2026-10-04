@@ -21,7 +21,8 @@ patch[0]=rfc2553.patch
 
 
 # Global settings
-export LIBS="-lsocket -lnsl"
+export LIBS="-lsocket -lnsl -llsecompat -llsenet"
+export CPPFLAGS="$CPPFLAGS -include $prefix/include/lsenet.h"
 ac_overrides="ac_cv_header_sys_timepps_h=no ac_cv_header_timepps_h=no"
 #configure_args+=(--disable-ipv6 --without-crypto --disable-all-clocks)
 configure_args+=(--disable-ipv6 --disable-all-clocks)
