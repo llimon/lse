@@ -1,0 +1,9 @@
+[httpd]
+pkgname="${pkgprefix}${topdir}"
+name="$topdir - Apache HTTPD, a powerfull and robust webserver "
+pkgcat="application"
+pkgvendor="https://archive.apache.org/dist/httpd/"
+shortdesc="The Apache HTTP Server Project is a collaborative software development effort aimed at creating a robust, commercial-grade, feature-rich, and freely-available source code implementation of an HTTP (Web) server."
+pkgver="$pkgver"
+files(-,root,bin)
+*

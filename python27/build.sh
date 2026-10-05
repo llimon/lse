@@ -17,10 +17,12 @@ patch[1]=python-2.7.9-multiprocessing-without-urandom.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
+export LIBS="$LIBS -llsecompat -llsenet"
 
 configure_args+=(--disable-ipv6 --with-system-expat --enable-shared)
+#make_build_opts=( CC="${CC:-gcc} -include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h -I./Include -I. -I../Include " )
+make_build_opts=( CC="${CC:-gcc} -include ${prefix}/include/lsecompat.h -include ${prefix}/include/lsenet.h" )
+
 make_check_target=test
 
 # Reduce e.g. 2.7.9 to 2.7
