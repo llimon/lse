@@ -16,6 +16,9 @@ source[0]=https://invisible-island.net/archives/${xterm}/${topdir}-${version}.tg
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 
+# Global overrides
+#export CFLAGS="$CFLAGS -std=gnu99" 
+export LIBS="$LIBS -llsecompat"
 
 configure_args+=( --enable-ansi-color \
     --enable-sixel-graphics \
@@ -55,8 +58,6 @@ run_configure()
 reg build
 build()
 {
-    #export CFLAGS="$CFLAGS -std=gnu99" 
-    #export LIBS="$LIBS -lsnprintf -lgcc_s"
 
 #    ac_overrides="ac_cv_func_getprogname=yes \
 #                  ac_cv_prog_cc_c11=no \
@@ -93,7 +94,7 @@ EOF
 
     currdir = $PWD
 
-    ${__make} CC="gcc -include /usr/local/lse/include/compat/snprintf_compat.h"
+    ${__make} CC="gcc -include ${prefix}/include/lsecompat.h"
 }
 
 
