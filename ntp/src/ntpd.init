@@ -1,15 +1,16 @@
 #
 # SYS5 Startup script for ntpd
 # By Luis Enrique Limon,  2026
-TE=/usr/local/lse/sbin/ntpdate 
+NTPD=/usr/local/lse/bin/ntpd
+NTPDATE=/usr/local/lse/bin/ntpdate 
 NTPCONF=/usr/local/lse/etc/ntp.conf
 PIDFILE=/var/run/ntpd.pid
 
 case "$1" in
 'start')
-        if [ -f $NTPD -a -f$NTPCONF ]; then
+        if [ -f "$NTPD" -a -f "$NTPCONF" ]; then
                 echo "Syncing initial time with ntpdate..."
-                if [ -f $NTPDATE ]; then
+                if [ -f "$NTPDATE" ]; then
                         # Extract first server or peer directive from ntp.conf (ignoring comments)
                         NTPSERVER=`/usr/bin/awk '/^[ \t]*(server|peer)[ \t]+/ {print $2; exit}' $NTPCONF`
                         
@@ -25,12 +26,12 @@ case "$1" in
                 echo "Starting NTP daemon..."
                 $NTPD -g -p $PIDFILE -c$NTPCONF
         else
-                echo "NTP setup incomplete. Check $NTPD and$NTPCONF"
+                echo "NTP setup incomplete. Check $NTPD and $NTPCONF"
                 exit 1
         fi
         ;;
 'stop')
-        if [ -f $PIDFILE ]; then
+        if [ -f "$PIDFILE" ]; then
                 echo "Stopping NTP daemon..."
                 kill `cat $PIDFILE`
                 rm -f $PIDFILE
