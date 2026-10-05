@@ -23,38 +23,28 @@ source[0]=https://download.osgeo.org/libtiff/${topdir}-${version}.tar.gz
 # Global settings
 topsrcdir=${topdir}-${version}
 #configure_args+=()
+make_build_opts=( CC="${CC:-gcc}  -include ${prefix}/include/lsecompat.h" )
+
 
 ##
 ## Override or extend globals
-export LIBS="$LIBS -lsnprintf -lgcc_s"
+export LIBS="$LIBS -llsecompat"
 
 reg prep
 prep()
 {
     generic_prep
     setdir source
-    ${__gsed} -i 's|^#! /bin/sh|#!/bin/bash|' configure
+    ${__gsed} -i 's|^#! /bin/sh|#!/usr/local/lse/bin/bash|' configure
+    #${__gsed} -i 's|print -r --|printf "%s\\n"|g' libtool
+    
 
-}
-
-run_configure()
-{
-    local my_ac_overrides="$platform_ac_overrides $ac_overrides"
-    setdir ${srcdir}/${topsrcdir}/$1
-
-    local acvar
-    for acvar in $my_ac_overrides; do
-        export $acvar
-    done
-    echo $__configure "${configure_args[@]}"
-    $__configure "${configure_args[@]}"
 }
 
 reg build
 build()
 {
-    run_configure
-    ${__make} CC="${CC:-gcc}  -include ${prefix}/include/compat/snprintf_compat.h" ${make_build_opts}
+    SHELL=/usr/local/lse/bin/bash generic_build
 }
 
 reg check

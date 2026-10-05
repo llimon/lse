@@ -1,0 +1,188 @@
+diff -ruN a/gdb/sol-thread.c b/gdb/sol-thread.c
+--- a/gdb/sol-thread.c	2014-07-29 05:37:42.000000000 +0000
++++ b/gdb/sol-thread.c	2026-10-04 17:29:38.223630000 +0000
+@@ -730,31 +730,25 @@
+ /* Process stop.  */
+ 
+ ps_err_e
+-ps_pstop (gdb_ps_prochandle_t ph)
++ps_pstop (struct ps_prochandle *ph)
+ {
+   return PS_OK;
+ }
+ 
+-/* Process continue.  */
+-
+ ps_err_e
+-ps_pcontinue (gdb_ps_prochandle_t ph)
++ps_pcontinue (struct ps_prochandle *ph)
+ {
+   return PS_OK;
+ }
+ 
+-/* LWP stop.  */
+-
+ ps_err_e
+-ps_lstop (gdb_ps_prochandle_t ph, lwpid_t lwpid)
++ps_lstop (struct ps_prochandle *ph, lwpid_t lwpid)
+ {
+   return PS_OK;
+ }
+ 
+-/* LWP continue.  */
+-
+ ps_err_e
+-ps_lcontinue (gdb_ps_prochandle_t ph, lwpid_t lwpid)
++ps_lcontinue (struct ps_prochandle *ph, lwpid_t lwpid)
+ {
+   return PS_OK;
+ }
+@@ -762,7 +756,7 @@
+ /* Looks up the symbol LD_SYMBOL_NAME in the debugger's symbol table.  */
+ 
+ ps_err_e
+-ps_pglobal_lookup (gdb_ps_prochandle_t ph, const char *ld_object_name,
++ps_pglobal_lookup (struct ps_prochandle *ph, const char *ld_object_name,
+ 		   const char *ld_symbol_name, gdb_ps_addr_t *ld_symbol_addr)
+ {
+   struct bound_minimal_symbol ms;
+@@ -815,18 +809,27 @@
+ 
+ /* Copies SIZE bytes from target process .data segment to debugger memory.  */
+ 
++
+ ps_err_e
+-ps_pdread (gdb_ps_prochandle_t ph, gdb_ps_addr_t addr,
+-	   gdb_ps_read_buf_t buf, gdb_ps_size_t size)
++ ps_pdread(struct ps_prochandle *ph, psaddr_t addr, 
++	void *buf, size_t size)
++/*ps_err_e
++ps_pdread (struct ps_prochandle *ph, gdb_ps_addr_t addr,
++	   gdb_ps_read_buf_t buf, gdb_ps_size_t size)*/
+ {
+   return rw_common (0, ph, addr, buf, size);
+ }
+ 
+ /* Copies SIZE bytes from debugger memory .data segment to target process.  */
+ 
++
+ ps_err_e
+-ps_pdwrite (gdb_ps_prochandle_t ph, gdb_ps_addr_t addr,
++ps_pdwrite(struct ps_prochandle *ph, psaddr_t addr, 
++	const void *buf , size_t size)
++/*
++ps_pdwrite (struct ps_prochandle *ph, gdb_ps_addr_t addr,
+ 	    gdb_ps_write_buf_t buf, gdb_ps_size_t size)
++*/
+ {
+   return rw_common (1, ph, addr, (gdb_byte *) buf, size);
+ }
+@@ -834,8 +837,12 @@
+ /* Copies SIZE bytes from target process .text segment to debugger memory.  */
+ 
+ ps_err_e
+-ps_ptread (gdb_ps_prochandle_t ph, gdb_ps_addr_t addr,
++ps_ptread(struct ps_prochandle *ph, psaddr_t addr, 
++	void * buf, size_t size)
++/*
++ps_ptread (struct ps_prochandle *ph, gdb_ps_addr_t addr,
+ 	   gdb_ps_read_buf_t buf, gdb_ps_size_t size)
++*/
+ {
+   return rw_common (0, ph, addr, buf, size);
+ }
+@@ -843,8 +850,12 @@
+ /* Copies SIZE bytes from debugger memory .text segment to target process.  */
+ 
+ ps_err_e
+-ps_ptwrite (gdb_ps_prochandle_t ph, gdb_ps_addr_t addr,
++ps_ptwrite(struct ps_prochandle *ph, psaddr_t addr, 
++	const void *buf, size_t size)
++/*
++ps_ptwrite (struct ps_prochandle *ph, gdb_ps_addr_t addr,
+ 	    gdb_ps_write_buf_t buf, gdb_ps_size_t size)
++*/
+ {
+   return rw_common (1, ph, addr, (gdb_byte *) buf, size);
+ }
+@@ -852,7 +863,7 @@
+ /* Get general-purpose registers for LWP.  */
+ 
+ ps_err_e
+-ps_lgetregs (gdb_ps_prochandle_t ph, lwpid_t lwpid, prgregset_t gregset)
++ps_lgetregs (struct ps_prochandle *ph, lwpid_t lwpid, prgregset_t gregset)
+ {
+   struct cleanup *old_chain;
+   struct regcache *regcache;
+@@ -873,7 +884,7 @@
+ /* Set general-purpose registers for LWP.  */
+ 
+ ps_err_e
+-ps_lsetregs (gdb_ps_prochandle_t ph, lwpid_t lwpid,
++ps_lsetregs (struct ps_prochandle *ph, lwpid_t lwpid,
+ 	     const prgregset_t gregset)
+ {
+   struct cleanup *old_chain;
+@@ -907,7 +918,7 @@
+ /* Get size of extra register set.  Currently a noop.  */
+ 
+ ps_err_e
+-ps_lgetxregsize (gdb_ps_prochandle_t ph, lwpid_t lwpid, int *xregsize)
++ps_lgetxregsize (struct ps_prochandle *ph, lwpid_t lwpid, int *xregsize)
+ {
+   return PS_OK;
+ }
+@@ -915,7 +926,7 @@
+ /* Get extra register set.  Currently a noop.  */
+ 
+ ps_err_e
+-ps_lgetxregs (gdb_ps_prochandle_t ph, lwpid_t lwpid, caddr_t xregset)
++ps_lgetxregs (struct ps_prochandle *ph, lwpid_t lwpid, caddr_t xregset)
+ {
+   return PS_OK;
+ }
+@@ -923,7 +934,7 @@
+ /* Set extra register set.  Currently a noop.  */
+ 
+ ps_err_e
+-ps_lsetxregs (gdb_ps_prochandle_t ph, lwpid_t lwpid, caddr_t xregset)
++ps_lsetxregs (struct ps_prochandle *ph, lwpid_t lwpid, caddr_t xregset)
+ {
+   return PS_OK;
+ }
+@@ -931,7 +942,7 @@
+ /* Get floating-point registers for LWP.  */
+ 
+ ps_err_e
+-ps_lgetfpregs (gdb_ps_prochandle_t ph, lwpid_t lwpid,
++ps_lgetfpregs (struct ps_prochandle *ph, lwpid_t lwpid,
+ 	       prfpregset_t *fpregset)
+ {
+   struct cleanup *old_chain;
+@@ -953,7 +964,7 @@
+ /* Set floating-point regs for LWP.  */
+ 
+ ps_err_e
+-ps_lsetfpregs (gdb_ps_prochandle_t ph, lwpid_t lwpid,
++ps_lsetfpregs (struct ps_prochandle *ph, lwpid_t lwpid,
+ 	       const prfpregset_t * fpregset)
+ {
+   struct cleanup *old_chain;
+@@ -978,7 +989,7 @@
+    (e.g. procfs) method, but this ought to work.  */
+ 
+ ps_err_e
+-ps_pdmodel (gdb_ps_prochandle_t ph, int *data_model)
++ps_pdmodel (struct ps_prochandle *ph, int *data_model)
+ {
+   if (exec_bfd == 0)
+     *data_model = PR_MODEL_UNKNOWN;
+@@ -999,7 +1010,7 @@
+    of libthread_db would fail because of ps_lgetLDT being undefined.  */
+ 
+ ps_err_e
+-ps_lgetLDT (gdb_ps_prochandle_t ph, lwpid_t lwpid,
++ps_lgetLDT (struct ps_prochandle *ph, lwpid_t lwpid,
+ 	    struct ssd *pldt)
+ {
+   /* NOTE: only used on Solaris, therefore OK to refer to procfs.c.  */
