@@ -6,7 +6,7 @@
 ###########################################################
 # Check the following 4 variables before running the script
 topdir=xterm
-version=287
+version=297
 pkgver=1
 source[0]=https://invisible-island.net/archives/${xterm}/${topdir}-${version}.tgz
 # If there are no patches, simply comment this
@@ -20,8 +20,13 @@ source[0]=https://invisible-island.net/archives/${xterm}/${topdir}-${version}.tg
 #export CFLAGS="$CFLAGS -std=gnu99" 
 export LIBS="$LIBS -llsecompat"
 
-configure_args+=( --enable-ansi-color \
+    #--with-app-defaults=${prefix}/lib/X11/app-defaults \
+configure_args+=( 
+    --enable-ansi-color \
+    --with-terminal-id=340 \
+    --enable-fallback-liner \
     --enable-sixel-graphics \
+    --enable-256-color \
     --disable-fifo-lines \
     --disable-wide-chars \
     --disable-luit \
@@ -30,7 +35,7 @@ configure_args+=( --enable-ansi-color \
     --with-x \
     --disable-session-mgt \
     --x-includes=/usr/openwin/include \
-    --x-libraries=/usr/openwin/lib
+    --x-libraries=/usr/openwin/lib \
 )
 
 reg prep
@@ -109,22 +114,14 @@ check()
 reg install
 install()
 {
-    #local stage_doc_dir="${stage_dir}${prefix}/share/doc/groff-1.22"
-
-    # Pre-create staging directories so contrib/mom doesn't choke on missing paths
-    #mkdir -p "${stage_doc_dir}/pdf"
-    #mkdir -p "${stage_doc_dir}/examples/mom"
-    #make_install_target="install pdfdocdir=\$(docdir)/examples/mom"
-
-    # Empty MOM_PDFDOCFILES in Makefile.sub so it doesn't attempt to install/link PDFs
-    setdir source
-    sed -e 's/^MOM_PDFDOCFILES =.*/MOM_PDFDOCFILES =/' \
-        contrib/mom/Makefile.sub > contrib/mom/Makefile.sub.tmp \
-        && mv contrib/mom/Makefile.sub.tmp contrib/mom/Makefile.sub
 
     generic_install DESTDIR
 
     doc COPYING* NEWS README TODO LICENSES
+
+    mv ${stagedir}${prefix}/bin/xterm ${stagedir}${prefix}/bin/xterm-color || exit 1
+    cd ${stagedir}${prefix}/bin && ln -s xterm-color xterm-sixel  || exit 1
+
 }
 
 reg pack

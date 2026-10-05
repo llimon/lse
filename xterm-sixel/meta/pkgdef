@@ -5,8 +5,6 @@ pkgcat="application"
 pkgvendor="https://xterm.dev/"
 pkgdesc="XTerm is the standard terminal emulator application for the X Window System (X.org)"
 pkgver="$pkgver"
-files(755,root,sys)
-#
 files(-,root,bin)
 $_bindir
 $_libdir
