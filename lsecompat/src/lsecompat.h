@@ -7,6 +7,9 @@
 #ifndef LSECOMPAT_MASTER_H
 #define LSECOMPAT_MASTER_H
 
+/* Only process C code if we are NOT compiling assembly */
+#ifndef __ASSEMBLER__
+
 /* Standard feature macro overrides for GNU / POSIX compatibility */
 #ifndef _GNU_SOURCE
 #  define _GNU_SOURCE 1
@@ -22,5 +25,7 @@
 #include <lse/usleep_compat.h>
 #include <lse/time_compat.h>
 #include <lse/vterm_compat.h>
+
+#endif /* !__ASSEMBLER__ */
 
 #endif /* LSECOMPAT_MASTER_H */

@@ -7,6 +7,9 @@
 #ifndef LSEWCOMPAT_MASTER_H
 #define LSEWCOMPAT_MASTER_H
 
+/* Only process C code if we are NOT compiling assembly */
+#ifndef __ASSEMBLER__
+
 /* Standard feature macro overrides for GNU / POSIX compatibility */
 #ifndef _GNU_SOURCE
 #  define _GNU_SOURCE 1
@@ -17,5 +20,6 @@
 #include <lse/wcsstr_compat.h>
 #include <lse/wchar_compat.h>
 
+#endif /* !__ASSEMBLER__ */
 
 #endif /* LSEWCOMPAT_MASTER_H */

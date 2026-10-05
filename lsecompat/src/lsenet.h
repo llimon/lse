@@ -7,6 +7,9 @@
 #ifndef LSENET_MASTER_H
 #define LSENET_MASTER_H
 
+/* Only process C code if we are NOT compiling assembly */
+#ifndef __ASSEMBLER__
+
 /* Standard feature macro overrides for GNU / POSIX compatibility */
 #ifndef _GNU_SOURCE
 #  define _GNU_SOURCE 1
@@ -15,5 +18,7 @@
 /* Individual Modular Compatibility Headers */
 #include <lse/socket_compat.h>
 #include <lse/dns_rfc2553_compat.h>
+
+#endif /* !__ASSEMBLER__ */
 
 #endif /* LSENET_MASTER_H */

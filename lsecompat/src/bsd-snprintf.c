@@ -4,7 +4,9 @@
  * It may be used for any purpose as long as this notice remains intact
  * on all source code distributions
  */
+
 #define SNPRINTF_CONST const
+
 
 /**************************************************************
  * Original:
@@ -113,15 +115,12 @@
 
 #if !defined(HAVE_SNPRINTF) || !defined(HAVE_VSNPRINTF)
 
-#include <sys/types.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include <assert.h>
 #include <errno.h>
-#include <stddef.h>
 
 #ifdef HAVE_LONG_DOUBLE
 # define LDOUBLE long double
@@ -188,27 +187,6 @@ static int fmtint(char *buffer, size_t *currlen, size_t maxlen,
     LLONG value, int base, int min, int max, int flags);
 static int fmtfp(char *buffer, size_t *currlen, size_t maxlen,
     LDOUBLE fvalue, int min, int max, int flags);
-#if defined(__GNUC__) && !defined(VA_COPY)
-#  define VA_COPY(dest, src) __va_copy(dest, src)
-#endif
-
-/* 
- * Fetches positional argument N from args_in.
- * 32-bit SPARC ABI: Standard arguments take 1 stack word (4 bytes).
- */
-static void
-get_pos_ap(va_list args_in, int target_pos, va_list *out_ap)
-{
-    va_list ap;
-    int i;
-    VA_COPY(ap, args_in);
-    for (i = 1; i < target_pos; i++) {
-        (void)va_arg(ap, int);
-    }
-    VA_COPY(*out_ap, ap);
-    va_end(ap);
-}
-
 
 static int
 dopr(char *buffer, size_t maxlen, const char *format, va_list args_in)
@@ -224,11 +202,6 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args_in)
 	int cflags;
 	size_t currlen;
 	va_list args;
-   int base;
-   int pos_num = 0;
-
-   va_list pos_ap;
-   va_list *active_args;
 
 	VA_COPY(args, args_in);
 	
@@ -250,20 +223,6 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args_in)
 			ch = *format++;
 			break;
 		case DP_S_FLAGS:
-         if (isdigit((unsigned char)ch) && ch != '0') {
-             const char *p = format;
-             int num = ch - '0';
-             while (isdigit((unsigned char)*p)) {
-                 num = num * 10 + (*p - '0');
-                 p++;
-             }
-             if (*p == '$') {
-                 pos_num = num;
-                 format = p + 1;
-                 ch = *format++;
-             }
-         }
-
 			switch (ch) {
 			case '-':
 				flags |= DP_F_MINUS;
@@ -338,22 +297,6 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args_in)
 					ch = *format++;
 				}
 				break;
-			case 'z':                       /* C99 size_t / ssize_t */
-                                if (sizeof(size_t) == sizeof(LLONG))
-                                        cflags = DP_C_LLONG;
-                                else 
-                                        cflags = DP_C_LONG;
-                                ch = *format++;
-                                break;
-                        case 'j':                       /* C99 intmax_t / uintmax_t */
-                                cflags = DP_C_LLONG;
-                                ch = *format++;
-                                break;
-                        case 't':                       /* C99 ptrdiff_t */
-                                cflags = DP_C_LONG;     /* Always 32-bit long on SPARC V7/V8 */
-                                ch = *format++;
-                                break;
-
 			case 'L':
 				cflags = DP_C_LDOUBLE;
 				ch = *format++;
@@ -364,12 +307,6 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args_in)
 			state = DP_S_CONV;
 			break;
 		case DP_S_CONV:
-         active_args = &args;
-
-         if (pos_num > 0) {
-             get_pos_ap(args_in, pos_num, &pos_ap);
-             active_args = &pos_ap;
-         }
 			switch (ch) {
 			case 'd':
 			case 'i':
@@ -386,23 +323,49 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args_in)
 					return -1;
 				break;
 			case 'o':
-			case 'u':
-			case 'X':
-			case 'x':
+				flags |= DP_F_UNSIGNED;
 				if (cflags == DP_C_SHORT)
-                                        value = va_arg (args, unsigned int);
-                                else if (cflags == DP_C_LONG)
-                                        value = va_arg (args, unsigned long int);
-                                else if (cflags == DP_C_LLONG)
-                                        value = va_arg (args, unsigned LLONG);
-                                else
-                                        value = va_arg (args, unsigned int);
-
-                                base = (ch == 'u') ? 10 : ((ch == 'o') ? 8 : 16);
-                                if (fmtint(buffer, &currlen, maxlen,
-                                    value, base, min, max, flags) == -1)
-                                        return -1;
-                                break;
+					value = va_arg (args, unsigned int);
+				else if (cflags == DP_C_LONG)
+					value = (long)va_arg (args, unsigned long int);
+				else if (cflags == DP_C_LLONG)
+					value = (long)va_arg (args, unsigned LLONG);
+				else
+					value = (long)va_arg (args, unsigned int);
+				if (fmtint(buffer, &currlen, maxlen, value,
+				    8, min, max, flags) == -1)
+					return -1;
+				break;
+			case 'u':
+				flags |= DP_F_UNSIGNED;
+				if (cflags == DP_C_SHORT)
+					value = va_arg (args, unsigned int);
+				else if (cflags == DP_C_LONG)
+					value = (long)va_arg (args, unsigned long int);
+				else if (cflags == DP_C_LLONG)
+					value = (LLONG)va_arg (args, unsigned LLONG);
+				else
+					value = (long)va_arg (args, unsigned int);
+				if (fmtint(buffer, &currlen, maxlen, value,
+				    10, min, max, flags) == -1)
+					return -1;
+				break;
+			case 'X':
+				flags |= DP_F_UP;
+			case 'x':
+				flags |= DP_F_UNSIGNED;
+				if (cflags == DP_C_SHORT)
+					value = va_arg (args, unsigned int);
+				else if (cflags == DP_C_LONG)
+					value = (long)va_arg (args, unsigned long int);
+				else if (cflags == DP_C_LLONG)
+					value = (LLONG)va_arg (args, unsigned LLONG);
+				else
+					value = (long)va_arg (args, unsigned int);
+				if (fmtint(buffer, &currlen, maxlen, value,
+				    16, min, max, flags) == -1)
+					return -1;
+				break;
 			case 'f':
 				if (cflags == DP_C_LDOUBLE)
 					fvalue = va_arg (args, LDOUBLE);
@@ -550,102 +513,90 @@ fmtstr(char *buffer, size_t *currlen, size_t maxlen,
 
 static int
 fmtint(char *buffer, size_t *currlen, size_t maxlen,
-       LLONG value, int base, int min, int max, int flags)
+		    LLONG value, int base, int min, int max, int flags)
 {
-        int signvalue = 0;
-        unsigned LLONG uvalue;
-        char convert[20];
-        int place = 0;
-        int spadlen = 0; /* amount to space pad */
-        int zpadlen = 0; /* amount to zero pad */
-        int caps = 0;
-        int zero_precision = (max == 0); /* Track explicit .0 precision */
-        int has_precision = (max >= 0);  /* Track if precision was set */
-
-        /* C99 Rule: If precision is specified for integers, ignore '0' flag */
-        if (has_precision) {
-                flags &= ~DP_F_ZERO;
-        }
-        
-        if (max < 0)
-                max = 0;
-        
-        uvalue = value;
-        
-        if(!(flags & DP_F_UNSIGNED)) {
-                if( value < 0 ) {
-                        signvalue = '-';
-                        uvalue = -value;
-                } else {
-                        if (flags & DP_F_PLUS)  /* Do a sign (+/i) */
-                                signvalue = '+';
-                        else if (flags & DP_F_SPACE)
-                                signvalue = ' ';
-                }
-        }
+	int signvalue = 0;
+	unsigned LLONG uvalue;
+	char convert[20];
+	int place = 0;
+	int spadlen = 0; /* amount to space pad */
+	int zpadlen = 0; /* amount to zero pad */
+	int caps = 0;
+	
+	if (max < 0)
+		max = 0;
+	
+	uvalue = value;
+	
+	if(!(flags & DP_F_UNSIGNED)) {
+		if( value < 0 ) {
+			signvalue = '-';
+			uvalue = -value;
+		} else {
+			if (flags & DP_F_PLUS)  /* Do a sign (+/i) */
+				signvalue = '+';
+			else if (flags & DP_F_SPACE)
+				signvalue = ' ';
+		}
+	}
   
-        if (flags & DP_F_UP) caps = 1; /* Should characters be upper case? */
+	if (flags & DP_F_UP) caps = 1; /* Should characters be upper case? */
 
-        /* C99 Rule: If value is 0 and precision is explicitly .0, produce NO digits */
-        if (uvalue == 0 && zero_precision) {
-                place = 0;
-        } else {
-                do {
-                        convert[place++] =
-                                (caps? "0123456789ABCDEF":"0123456789abcdef")
-                                [uvalue % (unsigned)base  ];
-                        uvalue = (uvalue / (unsigned)base );
-                } while(uvalue && (place < 20));
-                if (place == 20) place--;
-                convert[place] = 0;
-        }
+	do {
+		convert[place++] =
+			(caps? "0123456789ABCDEF":"0123456789abcdef")
+			[uvalue % (unsigned)base  ];
+		uvalue = (uvalue / (unsigned)base );
+	} while(uvalue && (place < 20));
+	if (place == 20) place--;
+	convert[place] = 0;
 
-        zpadlen = max - place;
-        spadlen = min - MAX (max, place) - (signvalue ? 1 : 0);
-        if (zpadlen < 0) zpadlen = 0;
-        if (spadlen < 0) spadlen = 0;
-        if (flags & DP_F_ZERO) {
-                zpadlen = MAX(zpadlen, spadlen);
-                spadlen = 0;
-        }
-        if (flags & DP_F_MINUS) 
-                spadlen = -spadlen; /* Left Justify */
+	zpadlen = max - place;
+	spadlen = min - MAX (max, place) - (signvalue ? 1 : 0);
+	if (zpadlen < 0) zpadlen = 0;
+	if (spadlen < 0) spadlen = 0;
+	if (flags & DP_F_ZERO) {
+		zpadlen = MAX(zpadlen, spadlen);
+		spadlen = 0;
+	}
+	if (flags & DP_F_MINUS) 
+		spadlen = -spadlen; /* Left Justifty */
 
 #ifdef DEBUG_SNPRINTF
-        printf("zpad: %d, spad: %d, min: %d, max: %d, place: %d\n",
-               zpadlen, spadlen, min, max, place);
+	printf("zpad: %d, spad: %d, min: %d, max: %d, place: %d\n",
+	       zpadlen, spadlen, min, max, place);
 #endif
 
-        /* Spaces */
-        while (spadlen > 0) {
-                DOPR_OUTCH(buffer, *currlen, maxlen, ' ');
-                --spadlen;
-        }
+	/* Spaces */
+	while (spadlen > 0) {
+		DOPR_OUTCH(buffer, *currlen, maxlen, ' ');
+		--spadlen;
+	}
 
-        /* Sign */
-        if (signvalue) 
-                DOPR_OUTCH(buffer, *currlen, maxlen, signvalue);
+	/* Sign */
+	if (signvalue) 
+		DOPR_OUTCH(buffer, *currlen, maxlen, signvalue);
 
-        /* Zeros */
-        if (zpadlen > 0) {
-                while (zpadlen > 0) {
-                        DOPR_OUTCH(buffer, *currlen, maxlen, '0');
-                        --zpadlen;
-                }
-        }
+	/* Zeros */
+	if (zpadlen > 0) {
+		while (zpadlen > 0) {
+			DOPR_OUTCH(buffer, *currlen, maxlen, '0');
+			--zpadlen;
+		}
+	}
 
-        /* Digits */
-        while (place > 0) {
-                --place;
-                DOPR_OUTCH(buffer, *currlen, maxlen, convert[place]);
-        }
+	/* Digits */
+	while (place > 0) {
+		--place;
+		DOPR_OUTCH(buffer, *currlen, maxlen, convert[place]);
+	}
   
-        /* Left Justified spaces */
-        while (spadlen < 0) {
-                DOPR_OUTCH(buffer, *currlen, maxlen, ' ');
-                ++spadlen;
-        }
-        return 0;
+	/* Left Justified spaces */
+	while (spadlen < 0) {
+		DOPR_OUTCH(buffer, *currlen, maxlen, ' ');
+		++spadlen;
+	}
+	return 0;
 }
 
 static LDOUBLE abs_val(LDOUBLE value)
@@ -878,103 +829,54 @@ fmtfp (char *buffer, size_t *currlen, size_t maxlen,
 }
 #endif /* !defined(HAVE_SNPRINTF) || !defined(HAVE_VSNPRINTF) */
 
-#if !defined(HAVE_ASPRINTF)
-int asprintf(char **ptr, const char *fmt, /*args*/ ...) {
-  va_list ap;
-  size_t str_m;
-  int str_l;
-
-  *ptr = NULL;
-  va_start(ap, fmt);                            /* measure the required size */
-  str_l = vsnprintf(NULL, (size_t)0, fmt, ap);
-  va_end(ap);
-  assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-  *ptr = (char *) malloc(str_m = (size_t)str_l + 1);
-  if (*ptr == NULL) { errno = ENOMEM; str_l = -1; }
-  else {
-    int str_l2;
-    va_start(ap, fmt);
-    str_l2 = vsnprintf(*ptr, str_m, fmt, ap);
-    va_end(ap);
-    assert(str_l2 == str_l);
-  }
-  return str_l;
-}
-#endif
-
 #if !defined(HAVE_VASPRINTF)
-int vasprintf(char **ptr, const char *fmt, va_list ap) {
-  size_t str_m;
-  int str_l;
+int vasprintf(char **strp, const char *fmt, va_list ap) {
+    va_list ap_copy;
+    int len;
+    char *buf;
 
-  *ptr = NULL;
-  { va_list ap2;
-    va_copy(ap2, ap);  /* don't consume the original ap, we'll need it again */
-    str_l = vsnprintf(NULL, (size_t)0, fmt, ap2);/*get required size*/
-    va_end(ap2);
-  }
-  assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-  *ptr = (char *) malloc(str_m = (size_t)str_l + 1);
-  if (*ptr == NULL) { errno = ENOMEM; str_l = -1; }
-  else {
-    int str_l2 = vsnprintf(*ptr, str_m, fmt, ap);
-    assert(str_l2 == str_l);
-  }
-  return str_l;
+    if (!strp) return -1;
+
+    /* 1. Query required buffer length (excluding null terminator) */
+    va_copy(ap_copy, ap);
+    len = vsnprintf(NULL, 0, fmt, ap_copy);
+    va_end(ap_copy);
+
+    if (len < 0) {
+        *strp = NULL;
+        return -1;
+    }
+
+    /* 2. Allocate required memory + 1 for null byte */
+    buf = (char *)malloc((size_t)len + 1);
+    if (!buf) {
+        *strp = NULL;
+        return -1;
+    }
+
+    /* 3. Format string into newly allocated buffer */
+    len = vsnprintf(buf, (size_t)len + 1, fmt, ap);
+    if (len < 0) {
+        free(buf);
+        *strp = NULL;
+        return -1;
+    }
+
+    *strp = buf;
+    return len;
 }
 #endif
 
-#if !defined(HAVE_ASNPRINTF)
-int asnprintf (char **ptr, size_t str_m, const char *fmt, /*args*/ ...) {
-  va_list ap;
-  int str_l;
+#if !defined( HAVE_ASPRINTF)
+int asprintf(char **strp, const char *fmt, ...) {
+    va_list ap;
+    int len;
 
-  *ptr = NULL;
-  va_start(ap, fmt);                            /* measure the required size */
-  str_l = vsnprintf(NULL, (size_t)0, fmt, ap);
-  va_end(ap);
-  assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-  if ((size_t)str_l + 1 < str_m) str_m = (size_t)str_l + 1;      /* truncate */
-  /* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
-  if (str_m == 0) {  /* not interested in resulting string, just return size */
-  } else {
-    *ptr = (char *) malloc(str_m);
-    if (*ptr == NULL) { errno = ENOMEM; str_l = -1; }
-    else {
-      int str_l2;
-      va_start(ap, fmt);
-      str_l2 = vsnprintf(*ptr, str_m, fmt, ap);
-      va_end(ap);
-      assert(str_l2 == str_l);
-    }
-  }
-  return str_l;
-}
-#endif
+    va_start(ap, fmt);
+    len = vasprintf(strp, fmt, ap);
+    va_end(ap);
 
-#if !defined(HAVE_VASNPRINTF)
-int vasnprintf (char **ptr, size_t str_m, const char *fmt, va_list ap) {
-  int str_l;
-
-  *ptr = NULL;
-  { va_list ap2;
-    va_copy(ap2, ap);  /* don't consume the original ap, we'll need it again */
-    str_l = vsnprintf(NULL, (size_t)0, fmt, ap2);/*get required size*/
-    va_end(ap2);
-  }
-  assert(str_l >= 0);        /* possible integer overflow if str_m > INT_MAX */
-  if ((size_t)str_l + 1 < str_m) str_m = (size_t)str_l + 1;      /* truncate */
-  /* if str_m is 0, no buffer is allocated, just set *ptr to NULL */
-  if (str_m == 0) {  /* not interested in resulting string, just return size */
-  } else {
-    *ptr = (char *) malloc(str_m);
-    if (*ptr == NULL) { errno = ENOMEM; str_l = -1; }
-    else {
-      int str_l2 = vsnprintf(*ptr, str_m, fmt, ap);
-      assert(str_l2 == str_l);
-    }
-  }
-  return str_l;
+    return len;
 }
 #endif
 
@@ -1000,140 +902,3 @@ snprintf(char *str, size_t count, SNPRINTF_CONST char *fmt, ...)
 	return ret;
 }
 #endif
-
-/* Embedded Standalone Unit Test */
-#ifdef _TEST_SNPRINTF_COMPAT
-
-/* Helper wrapper to validate vasprintf */
-static int test_vasprintf_helper(char **strp, const char *fmt, ...) {
-    va_list ap;
-    int ret;
-    va_start(ap, fmt);
-    ret = vasprintf(strp, fmt, ap);
-    va_end(ap);
-    return ret;
-}
-
-/* =========================================================================
- * Embedded Unit Test Harness
- * Compile test: gcc -O2 -mcpu=v7 -DHAVE_LONG_DOUBLE -DHAVE_LONG_LONG -D_TEST_SNPRINTF_COMPAT snprintf_compat.c -o test_snprintf
- * ========================================================================= */
-int main(void) {
-    char buf[128];
-    int len;
-    int n_count = -1;
-    long long big_num = 9223372036854775807LL;
-    long double ld_val = 3.141592653589793238462643383279502884L;
-    size_t sz_val = 1024;
-    char *dyn_buf;
-
-    printf("=== Solaris / SunOS Complete 18-Test C99, POSIX & SPARC Stress Suite ===\n");
-
-    /* --- BASE C99 COMPLIANCE CHECKS --- */
-
-    /* 01. 64-bit Long Long Formatting */
-    len = snprintf(buf, sizeof(buf), "LLMAX: %lld", big_num);
-    printf("[01] 64-bit int: '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "LLMAX: 9223372036854775807") == 0);
-
-    /* 02. Truncation & Null Termination Boundary */
-    len = snprintf(buf, 10, "1234567890ABCDEF");
-    printf("[02] Truncation (bound 10): '%s' (reported len: %d)\n", buf, len);
-    assert(strlen(buf) == 9 && strcmp(buf, "123456789") == 0 && len == 16);
-
-    /* 03. Long Double Formatting (%Lf) */
-    len = snprintf(buf, sizeof(buf), "LD: %.10Lf", ld_val);
-    printf("[03] Long double: '%s' (len: %d)\n", buf, len);
-    assert(strstr(buf, "3.1415926536") != NULL);
-
-    /* 04. %n Specifier */
-    len = snprintf(buf, sizeof(buf), "Hello %nWorld", &n_count);
-    printf("[04] %%n count: '%s' (written %%n: %d, total len: %d)\n", buf, n_count, len);
-    assert(n_count == 6 && len == 11 && strcmp(buf, "Hello World") == 0);
-
-    /* 05. NULL-Buffer Dry Run Length Query */
-    len = snprintf(NULL, 0, "Test %d string", 123);
-    printf("[05] NULL-buffer length query: %d\n", len);
-    assert(len == 15);
-
-    /* 06. C99 size_t modifier (%zu) */
-    len = snprintf(buf, sizeof(buf), "Size: %zu", sz_val);
-    printf("[06] C99 size_t (%%zu): '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "Size: 1024") == 0);
-
-    /* --- ADVANCED EDGE-CASE STRESS TESTS --- */
-
-    /* 07. Signed ssize_t / ptrdiff_t Formatting (%zd, %td) */
-    len = snprintf(buf, sizeof(buf), "SSize: %zd, Diff: %td", (ssize_t)-512, (ptrdiff_t)-42);
-    printf("[07] Signed %%zd / %%td: '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "SSize: -512, Diff: -42") == 0);
-
-    /* 08. Hexadecimal size_t Formatting (%zx / %zX) */
-    len = snprintf(buf, sizeof(buf), "HexSize: 0x%zx", (size_t)0xDEADBEEF);
-    printf("[08] Hex size_t (%%zx): '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "HexSize: 0xdeadbeef") == 0);
-
-    /* 09. C99 Precision Zero Rule */
-    len = snprintf(buf, sizeof(buf), "ZeroPrec: '%.0d'", 0);
-    printf("[09] Zero value with .0 precision: '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "ZeroPrec: ''") == 0);
-
-    /* 10. Width + Precision Zero Padding Combination (%010.5d) */
-    len = snprintf(buf, sizeof(buf), "Padded: '%010.5d'", 42);
-    printf("[10] Width + Precision padding: '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "Padded: '     00042'") == 0);
-
-    /* 11. Left Alignment + Field Width (%-10s) */
-    len = snprintf(buf, sizeof(buf), "Left: '%-10s'", "sparc");
-    printf("[11] Left alignment (%%-10s): '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "Left: 'sparc     '") == 0);
-
-    /* 12. Dynamic Allocation via asprintf */
-    dyn_buf = NULL;
-    len = asprintf(&dyn_buf, "Dynamic %s %lld", "Alloc", big_num);
-    printf("[12] asprintf dynamic alloc: '%s' (len: %d)\n", dyn_buf, len);
-    assert(dyn_buf != NULL && strcmp(dyn_buf, "Dynamic Alloc 9223372036854775807") == 0 && len == 33);
-    free(dyn_buf);
-
-    /* 13. Dynamic Allocation via vasprintf */
-    dyn_buf = NULL;
-    len = test_vasprintf_helper(&dyn_buf, "Size: %zu, Hex: 0x%zx", sz_val, (size_t)0xDEADBEEF);
-    printf("[13] vasprintf dynamic alloc: '%s' (len: %d)\n", dyn_buf, len);
-    assert(dyn_buf != NULL && strcmp(dyn_buf, "Size: 1024, Hex: 0xdeadbeef") == 0 && len == 27);
-    free(dyn_buf);
-
-    /* --- CRASH & POSITIONAL HARDENING TESTS --- */
-
-    /* 14. NULL String Pointer Protection (%s with NULL) */
-    len = snprintf(buf, sizeof(buf), "NullStr: %s", (char *)NULL);
-    printf("[14] NULL string handling: '%s' (len: %d)\n", buf, len);
-    assert(strstr(buf, "(null)") != NULL || strstr(buf, "(NULL)") != NULL || strcmp(buf, "NullStr: ") == 0);
-
-    /* 15. SPARC Multi-Argument Stack Alignment Check */
-    len = snprintf(buf, sizeof(buf), "User %s port %zu id %lld host %s", "llimon", sz_val, big_num, "github.com");
-    printf("[15] Stack alignment check: '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "User llimon port 1024 id 9223372036854775807 host github.com") == 0);
-
-    /* 16. vasprintf NULL String Edge Case */
-    dyn_buf = NULL;
-    len = test_vasprintf_helper(&dyn_buf, "User: %s Host: %s", (char *)NULL, "sparc-box");
-    printf("[16] vasprintf NULL string: '%s' (len: %d)\n", dyn_buf, len);
-    assert(dyn_buf != NULL);
-    assert(strstr(dyn_buf, "(null)") != NULL || strstr(dyn_buf, "(NULL)") != NULL || strstr(dyn_buf, "User: ") != NULL);
-    free(dyn_buf);
-
-    /* 17. Zero-Count Buffer Dry Run (count == 0 with non-NULL buffer) */
-    buf[0] = 'X';
-    len = snprintf(buf, 0, "Should non-mutate buffer");
-    printf("[17] Count=0 buffer protection: buf[0]='%c' (reported len: %d)\n", buf[0], len);
-    assert(buf[0] == 'X' && len == 24);
-
-    /* 18. SPARC Positional Arguments (%3$s %1$d %2$lld) */
-    len = snprintf(buf, sizeof(buf), "Pos: %3$s %1$d %2$lld", 42, 9223372036854775807LL, "sparc");
-    printf("[18] Positional args (%%3$s %%1$d %%2$lld): '%s' (len: %d)\n", buf, len);
-    assert(strcmp(buf, "Pos: sparc 42 9223372036854775807") == 0);
-
-    printf("\nSUCCESS: All 18 C99, POSIX, and SPARC alignment tests passed cleanly!\n");
-    return 0;
-}
-#endif /* _TEST_SNPRINTF_COMPAT */
