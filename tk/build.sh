@@ -16,8 +16,10 @@ source[0]=${topdir}${version}-src.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export LIBS="$LIBS -lgcc_s"
+export LIBS="$LIBS -llsecompat"
 configure_args=(--prefix=$prefix --mandir=$prefix/$_mandir --disable-symbols --enable-man-symlinks --with-tcl=${prefix}/${_libdir})
+make_build_opts=( CC="${CC:-gcc}  -include ${prefix}/include/lsecompat.h" )
+
 topsrcdir=$topdir$version
 
 majorver="${version%.*}"
