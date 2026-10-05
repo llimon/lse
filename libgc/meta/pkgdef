@@ -1,0 +1,9 @@
+[libgc]
+pkgname="${pkgprefix}l${topdir}"
+name="$topdir - Boehm-Demers-Weiser conservative garbage collector"
+pkgcat="libraries"
+pkgvendor="https://github.com/bdwgc/bdwgc"
+shortdesc="libgc (most commonly known as the Boehm-Demers-Weiser conservative garbage collector, or bdwgc) is a popular general-purpose garbage-collecting storage allocator designed to act as a plug-in replacement for C's malloc() and C++'s new"
+pkgver="$pkgver"
+files(-,root,bin)
+*
