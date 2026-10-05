@@ -24,6 +24,8 @@ source[0]=https://www.hboehm.info/gc/gc_source/${topdir}-${version}d.tar.gz
 #CPPFLAGS="$CPPFLAGS -std=gnu99"
 configure_args+=(
   --build=sparc-sun-solaris2.5 \
+  --host=sparc-sun-solaris2.5 \
+  --target=sparc-sun-solaris2.5 \
   --enable-shared \
   --enable-threads=posix \
   CC="gcc" \ 
@@ -41,6 +43,7 @@ reg build
 build()
 {
     no_configure=1
+    setdir source
     generic_run_configure
 
     sed -i 's/-lrt//g' Makefile
