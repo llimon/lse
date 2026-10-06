@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# /etc/init.d/apache2 - SVR4 / SVR5 Init Script for Apache 2.0.65
+# Prefix: /usr/local/lse/apache2
+# 
+# By: Luis Enrique Limon
+#
+
+APACHE_HOME="/usr/local/lse/apache2"
+APACHECTL="${APACHE_HOME}/bin/apachectl"
+PIDFILE="${APACHE_HOME}/logs/httpd.pid"
+
+PATH=/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/lse/bin
+export PATH
+
+case "$1" in
+  start)
+        if [ -f "$PIDFILE" ]; then
+                PID=`cat "$PIDFILE" 2>/dev/null`
+                if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
+                        echo "Apache httpd is already running (PID $PID)."
+                        exit 0
+                else
+                        echo "Removing stale PID file ($PIDFILE)..."
+                        rm -f "$PIDFILE"
+                fi
+        fi
+        echo "Starting Apache httpd web server..."
+        $APACHECTL start
+        ;;
+
+  stop)
+        echo "Stopping Apache httpd web server..."
+        if [ -f "$PIDFILE" ]; then
+                $APACHECTL stop
+        else
+                echo "PID file ($PIDFILE) not found. Attempting shutdown..."
+                $APACHECTL stop 2>/dev/null
+        fi
+        ;;
+
+  restart)
+        echo "Restarting Apache httpd web server..."
+        $APACHECTL restart
+        ;;
+
+  graceful)
+        echo "Gracefully restarting Apache httpd web server..."
+        $APACHECTL graceful
+        ;;
+
+  status)
+        if [ -f "$PIDFILE" ]; then
+                PID=`cat "$PIDFILE" 2>/dev/null`
+                if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
+                        echo "Apache httpd is running (PID $PID)."
+                        exit 0
+                fi
+        fi
+        echo "Apache httpd is stopped."
+        exit 3
+        ;;
+
+  configtest)
+        $APACHECTL configtest
+        ;;
+
+  *)
+        echo "Usage: $0 {start|stop|restart|graceful|status|configtest}"
+        exit 1
+        ;;
+esac
+
+exit 
