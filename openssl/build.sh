@@ -29,7 +29,13 @@ shortver=102
 pname=openssl${shortver}
 make_check_target="test"
 __configure="./Configure"
-configure_args=(--prefix=$prefix --openssldir=${prefix}/${_sharedir}/ssl${shortver} zlib shared no-dynamic-engine)
+
+prefix=${prefix}/${pname}
+configure_args=(
+   --prefix=$prefix/
+   zlib shared 
+   no-dynamic-engine
+)
 if [ "$arch" = "sparc" ]; then
     configure_args+=(solaris-sparc${gcc_arch}-gcc)
 else
@@ -92,47 +98,13 @@ install()
 {
     clean stage
     setdir source
-    ${__make} INSTALL_PREFIX=$stagedir MANDIR=${prefix}/${_mandir} install
-    # Relocate
-    mkdir -p ${stagedir}${prefix}/{${_includedir},${_libdir}}/$pname
-    ${__mv} ${stagedir}${prefix}/${_includedir}/{openssl,$pname/openssl}
-    ${__mv} ${stagedir}${prefix}/${_bindir}/{openssl,$pname}
-    ${__rm} -rf ${stagedir}${prefix}/{${_sharedir}/ssl/misc,{${_bindir},${_mandir}/man1}/{CA.pl,c_rehash,*tsget}*}
-    ${__rm} -f ${stagedir}${prefix}/${_libdir}/*.so
-    ln -s ../libcrypto.so.${sover} ${stagedir}${prefix}/${_libdir}/${pname}/libcrypto.so
-    ln -s ../libssl.so.${sover} ${stagedir}${prefix}/${_libdir}/${pname}/libssl.so
-    for pc in libcrypto libssl openssl
-    do
-	${__sed} -e "s@\(Libs: -L\${libdir}\)@\1 -L\${libdir}/$pname@" \
-	         -e "s@\(Cflags: -I\${includedir}\)@\1 -I\${includedir}/$pname@" \
-		 -e "s@\(Requires.*:.*\)\(libssl\)@\1\2$shortver@g" \
-		 -e "s@\(Requires.*:.*\)\(libcrypto\)@\1\2$shortver@g" \
-		 ${stagedir}${prefix}/${_libdir}/pkgconfig/${pc}.pc > ${stagedir}${prefix}/${_libdir}/pkgconfig/${pc}${shortver}.pc
-	rm -f ${stagedir}${prefix}/${_libdir}/pkgconfig/${pc}.pc
-    done
-    setdir ${stagedir}${prefix}/${_mandir}
-    ${__mv} man1/{openssl.1,${pname}.1}
-    for manpage in man*/*
-    do
-	[ "${manpage}" = "man1/${pname}.1" ] && continue
-	if [ -L "${manpage}" ]; then
-	    TARGET=$(${__ls} -l ${manpage} | ${__awk} '{ print $NF }')
-	    ${__ln} -snf ${TARGET}ssl${shortver} ${manpage}ssl${shortver}
-	    ${__rm} -f ${manpage}
-	else
-	    ${__mv} $manpage ${manpage}ssl${shortver}
-	fi
-    done
-    # Make .sos writable
-    chmod 755 ${stagedir}${prefix}/${_libdir}/*.so.*
-    chmod 755 ${stagedir}${prefix}/${_libdir}/engines/*.so
-    # Nuke static libraries - they just take up space
-    ${__rm} -f ${stagedir}${prefix}/${_libdir}/*.a
+    ${__make} INSTALL_PREFIX=$stagedir  MANDIR=$stagedir/${_mandir}  install
 
     doc README CHANGES FAQ INSTALL LICENSE NEWS
-
+    
     custom_install=1
     generic_install INSTALL_PREFIX
+ 
 
     # Compatible with previous releases
     compat openssl 1.0.2j 1 1

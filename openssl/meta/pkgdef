@@ -6,10 +6,12 @@ pkgvendor="https://www.openssl.org"
 pkgdesc="Cryptography and SSL/TLS Toolkit"
 pkgver="$pkgver"
 files(-,root,bin)
-default_docs
-$_libdir/*.so.*
-$_libdir/engines/*.so
-$_sharedir/ssl${shortver}
+openssl102/$_libdir/*.so.*
+openssl102/$_libdir/*.so
+openssl102/$_libdir/*.a
+openssl102/$_libdir/engines/*.so
+openssl102/$_sharedir/ssl${shortver}
+openssl102/$_sharedir/doc/openssl*/*
 
 [openssl-utils]
 pkgname="${pkgprefix}osslu"
@@ -19,8 +21,8 @@ pkgvendor="https://www.openssl.org"
 pkgdesc="Cryptography and SSL/TLS Toolkit"
 pkgver="$pkgver"
 files(-,root,bin)
-$_bindir
-$_mandir/man{1,5,7}
+openssl102/$_bindir
+openssl102/$_mandir/man{1,5,7}
 
 [openssl-devel]
 pkgname="${pkgprefix}ossld"
@@ -30,9 +32,9 @@ pkgvendor="https://www.openssl.org"
 pkgdesc="Files needed for developing with OpenSSL"
 pkgver="$pkgver"
 files(-,root,bin)
-$_includedir/$pname
-$_libdir/$pname/*.so
-$_libdir/pkgconfig
+openssl102/$_includedir
+openssl102/$_libdir/$pname/*.so
+openssl102/$_libdir/pkgconfig
 
 [openssl-devel-manpages]
 pkgname="${pkgprefix}osslm"
@@ -42,5 +44,5 @@ pkgvendor="https://www.openssl.org"
 pkgdesc="Developement manpages for OpenSSL"
 pkgver="$pkgver"
 files(-,root,bin)
-$_mandir/man3
-
+#openssl102/ssl/$_mandir/man*/*
+openssl102/ssl
