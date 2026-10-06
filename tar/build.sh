@@ -10,8 +10,7 @@ version=1.30
 pkgver=1
 source[0]=ftp://ftp.sunet.se/pub/gnu/tar/$topdir-$version.tar.bz2
 # If there are no patches, simply comment this
-#patch[0]=getprogname.patch
-#patch[1]=ftello-fix.patch
+patch[0]=localtime-recursion-fix-core-on-tar-test.patch
 
 # Source function library
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
