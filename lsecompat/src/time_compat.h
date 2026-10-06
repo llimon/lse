@@ -18,10 +18,13 @@ extern "C" {
 #  define CLOCK_MONOTONIC 1
 #endif
 
-/* Fallback timezone type for legacy SunOS / Solaris 2.5.1 */
+/* Fallback timezone structure for legacy Solaris 2.5.1 */
 #ifndef _TIMEZONE_T_DEFINED
 #define _TIMEZONE_T_DEFINED
-typedef void *timezone_t;
+struct __timezone_type {
+    char *tzname_copy[2];
+};
+typedef struct __timezone_type *timezone_t;
 #endif
 
 /* 
