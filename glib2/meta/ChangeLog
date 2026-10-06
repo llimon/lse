@@ -1,0 +1,9 @@
+CHANGELOG
+---------
+* Thu Jul 25 2025 Luis E Limon <luis@appointmetly.com> - 2.10.1-1
+- Initial build
+* Thu Jul 25 2025 Luis E Limon <luis@appointmetly.com> - 2.12.9-1
+- Upgraded to 2.12.9
+- Renamed package to TGL (TGC Supplemental)
+* Fri Aug 8 2025 Luis E Limon <luis@appointmetly.com> - 2.14.0-1
+- Upgraded to 2.14.0

@@ -1,0 +1,32 @@
+[glib2]
+pkgname="${pkgprefix}${topdir}"
+name="$topdir - is a general-purpose, portable utility library"
+pkgcat="system"
+pkgvendor="https://download.gnome.org/sources/"
+pkgdesc="GLib is a general-purpose, portable utility library, which provides many useful data types, macros, type conversions, string utilities, file utilities, a mainloop abstraction, and so on."
+pkgver="$pkgver"
+files(-,root,bin)
+$_bindir/glib*
+$_bindir/gobject-query
+$_libdir/libglib-*
+$_libdir/libgobject-*
+$_libdir/libgmodule-*
+$_libdir/libgthread-*
+$_libdir/glib-2.0/include/*
+$_libdir/pkgconfig/glib-*
+$_libdir/pkgconfig/gmodule*2.0*
+$_libdir/pkgconfig/gthread*2.0*
+$_libdir/pkgconfig/gobject*2.0*
+$_includedir/glib-2.0/glib/*
+$_includedir/glib-2.0/glib.h
+$_includedir/glib-2.0/glib-object.h
+$_includedir/glib-2.0/gmodule.h
+$_includedir/glib-2.0/gobject/*
+$_sharedir/man/*
+$_sharedir/glib-2.0/gettext
+$_sharedir/gtk-doc/html/glib/*
+$_sharedir/gtk-doc/html/gobject/*
+$_sharedir/locale/*
+$_sharedir/aclocal/*
+$_docdir/glib-${version}/*
+

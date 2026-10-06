@@ -1,0 +1,14 @@
+[mc]
+pkgname="${pkgprefix}${topdir}"
+name="$topdir - GNU Midnight Commander (or mc) is a visual, dual-pane file manager."
+pkgcat="utilities"
+pkgvendor="https://midnight-commander.org/"
+pkgdesc="Midnight Commander is a feature-rich, full-screen, text-mode application that allows you to copy, move, and delete files and entire directory trees, search for files, and execute commands in the subshell. Internal viewer, editor and diff viewer are included."
+pkgver="$pkgver"
+files(-,root,bin)
+$_bindir/mc*
+$_libdir/mc
+sbin
+$_libdir
+$_sharedir/*
+
