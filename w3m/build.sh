@@ -17,9 +17,16 @@ source[0]=https://github.com/tats/w3m/archive/refs/tags/v0.5.3+git20210102+deb11
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-LIBS="$LIBS -llsecompat -llsenet -lpthread -lthread"
+export LDFLAGS="$LDFLAGS -llsecompat -llsenet -pthread -lthread"
+LIBS="$LIBS -lpng12 -ljpeg -ltiff -lz"
 topsrcdir=${topdir}-${version}
-configure_args+=(--with-ssl --enable-image )
+configure_args+=(
+   --with-ssl 
+   --enable-image=x11,sixel \
+   --with-termlib=ncurses \
+   --with-ssl=/usr/local/lse/openssl102 \
+   --with-imagelib="png jpeg tiff"
+ )
 #--with-imagelib=imlib2)
 
 reg prep

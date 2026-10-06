@@ -18,6 +18,12 @@ extern "C" {
 #  define CLOCK_MONOTONIC 1
 #endif
 
+/* Fallback timezone type for legacy SunOS / Solaris 2.5.1 */
+#ifndef _TIMEZONE_T_DEFINED
+#define _TIMEZONE_T_DEFINED
+typedef void *timezone_t;
+#endif
+
 /* 
  * If system headers didn't declare prototypes, declare them here.
  * Weak binding in time_compat.c will supply implementation without symbol conflicts.

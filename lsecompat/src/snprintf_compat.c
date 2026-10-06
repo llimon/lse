@@ -1253,6 +1253,21 @@ int main(void) {
     assert(strcmp(buf, "Pos: sparc 42 9223372036854775807") == 0);
     */
 
+    /* 20. Tar Verbose Metadata Formatting (64-bit file size + multiple string parameters) */
+    {
+        char mode[] = "-rw-r--r--";
+        char owner[] = "llimon";
+        char group[] = "staff";
+        unsigned long long file_size = 10737418240ULL; /* 10 GB file size */
+        char mtime[] = "2026-10-06 01:55";
+        char path[] = "w3m-0.5.3+git20210102/configure";
+
+        len = snprintf(buf, sizeof(buf), "%s %s/%s %12llu %s %s",
+                       mode, owner, group, file_size, mtime, path);
+        printf("[20] Tar verbose metadata: '%s' (len: %d)\n", buf, len);
+        assert(strcmp(buf, "-rw-r--r-- llimon/staff  10737418240 2026-10-06 01:55 w3m-0.5.3+git20210102/configure") == 0);
+    }
+
     printf("\nSUCCESS: All 20 C99, POSIX, and SPARC alignment tests passed cleanly!\n");
 
     return 0;
