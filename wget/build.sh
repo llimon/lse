@@ -16,10 +16,19 @@ patch[0]=getprogname.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings extention / overrides
-export LIBS="$LIBS -llsecompat -llsenet"
-export CFLAGS="$CFLAGS -std=gnu99"
-export CXXFLAGS="$CXXFLAGS -fpermissive"
-configure_args+=(--with-ssl=openssl --with-libssl-prefix=$prefix)
+#export LIBS="$LIBS -llsecompat -llsenet"
+export LIBS="$LIBS -llsecompat"
+
+# Supply library search paths and headers (RPATH is inherited from LDFLAGS)
+export LDFLAGS="$LDFLAGS -L${ssl_prefix}/lib"
+export CFLAGS="${CFLAGS} -std=gnu99 -I${ssl_prefix}/include"
+export CXXFLAGS="${CXXFLAGS} -fpermissive -I${ssl_prefix}/include"
+configure_args+=(
+   --with-ssl=openssl 
+   --with-libssl-prefix=$prefix/openssl102 
+   --disable-nls
+   --disable-iri
+)
 
 reg prep
 prep()
@@ -57,6 +66,7 @@ install()
 {
     generic_install DESTDIR
     doc AUTHORS COPYING NEWS README MAILING-LIST
+    echo "ca_certificate = /usr/local/lse/etc/curl-ca-bundle.pem" | tee -a ${stagedir}${prefix}/etc/wgetrc
 }
 
 reg pack
