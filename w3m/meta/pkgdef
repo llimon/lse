@@ -1,0 +1,16 @@
+[w3m]
+pkgname="${pkgprefix}${topdir}"
+name="$topdir - w3m is a text-based web browser as well as a pager like more or less"
+pkgcat="application"
+pkgvendor="https://w3m.sourceforge.net"
+pkgdesc="w3m is text-basd web browser as well as pager"
+pkgver="$pkgver"
+files(-,root,bin)
+$_bindir/w3m
+$_bindir/w3mman
+libexec/w3m/*
+$_sharedir/man/*
+$_sharedir/w3m/*
+$_docdir/*
+$_sharedir/locale/*
+
