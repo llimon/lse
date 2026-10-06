@@ -1,4 +1,8 @@
 CHANGELOG
 ---------
-* Thu Jul 24 2025 Luis E Limon <luis@appointmetly.com> - 0.5.3-1
+
+* Tue Oct 6 2026 Luis Enrique Limon - 0.5.3-git20210102-deb11u1-2
+- Upgraded to github release
+
+* Thu Jul 24 2025 Luis Enrique Limon - 0.5.3-1
 - Initial build

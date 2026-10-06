@@ -6,11 +6,10 @@
 ###########################################################
 # Check the following 4 variables before running the script
 topdir=w3m
-version=0.5.3
-pkgver=1
+version=0.5.3-git20210102-deb11u1
+pkgver=2
 
-source[0]=https://downloads.sourceforge.net/project/${topdir}/${topdir}/${topdir}-${version}/${topdir}-${version}.tar.gz
-#source[0]=https://cytranet-dal.dl.sourceforge.net/project/${topdir}/${topdir}/${topdir}-${version}/${topdir}-${version}.tar.gz?viasf=1
+source[0]=https://github.com/tats/w3m/archive/refs/tags/v0.5.3+git20210102+deb11u1.tar.gz
 # If there are no patches, simply comment this
 #patch[0]=
 
