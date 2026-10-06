@@ -1,0 +1,21 @@
+diff -ruN a/gnu/localtime-buffer.c b/gnu/localtime-buffer.c
+Fix infinite recursion in rpl_localtime when built against Gnulib time.h.
+
+On Solaris 2.5.1 with GCC 4.x, Gnulib's internal time.h macro-defines 
+`localtime` to `rpl_localtime`. When `localtime-buffer.c` executes 
+`struct tm *tm = localtime (timep);`, it expands to `rpl_localtime`, 
+causing infinite stack recursion and SIGSEGV.
+
+Undefining `localtime` ensures `rpl_localtime` invokes the underlying 
+libc `localtime` symbol directly.
+It happens while performing a tile test (-t)
+--- a/gnu/localtime-buffer.c	2017-12-16 13:23:32.000000000 +0000
++++ b/gnu/localtime-buffer.c	2026-10-06 11:31:01.288295000 +0000
+@@ -21,6 +21,7 @@
+ 
+ /* Specification.  */
+ #include "localtime-buffer.h"
++#undef localtime
+ 
+ #if GETTIMEOFDAY_CLOBBERS_LOCALTIME || TZSET_CLOBBERS_LOCALTIME
+ 
