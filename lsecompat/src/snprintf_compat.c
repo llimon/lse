@@ -664,8 +664,8 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
           precision = uj;
         }
       }
-   /* parse 'h', 'l' and 'll' length modifiers */
-      if (*p == 'h' || *p == 'l' || *p == 'L') {
+   /* parse 'h', 'l', 'll', 'L', 'z' (size_t) and 't' (ptrdiff_t) length modifiers */
+      if (*p == 'h' || *p == 'l' || *p == 'L' || *p == 'z' || *p == 't') {
         length_modifier = *p; p++;
         if (length_modifier == 'l' && *p == 'l') {   /* double l = long long */
 #ifdef SNPRINTF_LONGLONG_SUPPORT
@@ -808,6 +808,12 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
             if      (long_arg > 0) arg_sign =  1;
             else if (long_arg < 0) arg_sign = -1;
             break;
+          case 'z':
+          case 't':
+            long_arg = (long int)va_arg(ap, ptrdiff_t);
+            if      (long_arg > 0) arg_sign =  1;
+            else if (long_arg < 0) arg_sign = -1;
+            break;
 #ifdef SNPRINTF_LONGLONG_SUPPORT
           case '2':
             long_long_arg = va_arg(ap, long long int);
@@ -825,6 +831,10 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
             break;
           case 'l':
             ulong_arg = va_arg(ap, unsigned long int);
+            if (ulong_arg) arg_sign = 1;
+            break;
+          case 'z':
+            ulong_arg = (unsigned long int)va_arg(ap, size_t);
             if (ulong_arg) arg_sign = 1;
             break;
 #ifdef SNPRINTF_LONGLONG_SUPPORT
@@ -886,6 +896,7 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
           f[f_l++] = '%';    /* construct a simple format string for sprintf */
           if (!length_modifier) { }
           else if (length_modifier=='2') { f[f_l++] = 'l'; f[f_l++] = 'l'; }
+          else if (length_modifier=='z' || length_modifier=='t') { f[f_l++] = 'l'; }
           else f[f_l++] = length_modifier;
           f[f_l++] = fmt_spec; f[f_l++] = '\0';
           if (fmt_spec == 'p') str_arg_l += sprintf(tmp+str_arg_l, f, ptr_arg);
@@ -894,6 +905,8 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
             case '\0':
             case 'h': str_arg_l+=sprintf(tmp+str_arg_l, f, int_arg);  break;
             case 'l': str_arg_l+=sprintf(tmp+str_arg_l, f, long_arg); break;
+            case 'z':
+            case 't': str_arg_l+=sprintf(tmp+str_arg_l, f, long_arg); break;
 #ifdef SNPRINTF_LONGLONG_SUPPORT
             case '2': str_arg_l+=sprintf(tmp+str_arg_l,f,long_long_arg); break;
 #endif
@@ -902,7 +915,8 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
             switch (length_modifier) {
             case '\0':
             case 'h': str_arg_l+=sprintf(tmp+str_arg_l, f, uint_arg);  break;
-            case 'l': str_arg_l+=sprintf(tmp+str_arg_l, f, ulong_arg); break;
+            case 'l': 
+            case 'z': str_arg_l+=sprintf(tmp+str_arg_l, f, ulong_arg); break;
 #ifdef SNPRINTF_LONGLONG_SUPPORT
             case '2': str_arg_l+=sprintf(tmp+str_arg_l,f,ulong_long_arg);break;
 #endif
@@ -1114,26 +1128,21 @@ int main(void) {
     assert(len == 15);
 
     /* 6. C99 size_t modifier (%zu) */
-/*
     len = snprintf(buf, sizeof(buf), "Size: %zu", sz_val);
     printf("[06] C99 size_t (%%zu): '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "Size: 1024") == 0);
-*/
 
     /* --- ADVANCED EDGE-CASE STRESS TESTS --- */
 
     /* 7. Signed ssize_t / ptrdiff_t Formatting (%zd, %td) */
-/*
     len = snprintf(buf, sizeof(buf), "SSize: %zd, Diff: %td", (ssize_t)-512, (ptrdiff_t)-42);
     printf("[07] Signed %%zd / %%td: '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "SSize: -512, Diff: -42") == 0);
 
     /* 8. Hexadecimal size_t Formatting (%zx / %zX) */
-/*
     len = snprintf(buf, sizeof(buf), "HexSize: 0x%zx", (size_t)0xDEADBEEF);
     printf("[08] Hex size_t (%%zx): '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "HexSize: 0xdeadbeef") == 0);
-*/
 
     /* 9. C99 Precision Zero Rule (value 0 with precision .0 MUST produce 0 chars) */
     len = snprintf(buf, sizeof(buf), "ZeroPrec: '%.0d'", 0);
@@ -1160,7 +1169,6 @@ int main(void) {
     free(dyn_buf);
 
     /* 13. Dynamic Allocation via vasprintf */
-/*
     dyn_buf = NULL;
     len = test_vasprintf_helper(&dyn_buf, "Size: %zu, Hex: 0x%zx", sz_val, (size_t)0xDEADBEEF);
     printf("[13] vasprintf dynamic alloc: '%s' (len: %d)\n", dyn_buf, len);
@@ -1168,7 +1176,6 @@ int main(void) {
     assert(strcmp(dyn_buf, "Size: 1024, Hex: 0xdeadbeef") == 0);
     assert(len == 27);
     free(dyn_buf);
-*/
 
     /* 14. Dynamic Precision Float (%.*f %s) */
     len = snprintf(buf, sizeof(buf), "%.*f %s", 2, 99.9482, "f");
