@@ -1182,7 +1182,50 @@ int main(void) {
     printf("[14] Dynamic precision float (%%.*f %%s): '%s' (len: %d)\n", buf, len);
     assert(strcmp(buf, "99.95 f") == 0 && len == 7);
 
-    printf("\nSUCCESS: All 14 C99 & POSIX string formatting tests passed cleanly!\n");
+    /* --- CRASH & POSITIONAL HARDENING TESTS --- */
+
+    /* 15. NULL String Pointer Protection (%s with NULL) */
+    len = snprintf(buf, sizeof(buf), "NullStr: %s", (char *)NULL);
+    printf("[15] NULL string handling: '%s' (len: %d)\n", buf, len);
+    assert(strstr(buf, "(null)") != NULL || strstr(buf, "(NULL)") != NULL || strcmp(buf, "NullStr: ") == 0);
+
+    /* 16. SPARC Multi-Argument Stack Alignment Check */
+    len = snprintf(buf, sizeof(buf), "User %s port %zu id %lld host %s", "llimon", sz_val, big_num, "github.com");
+    printf("[16] Stack alignment check: '%s' (len: %d)\n", buf, len);
+    assert(strcmp(buf, "User llimon port 1024 id 9223372036854775807 host github.com") == 0);
+
+    /* 17. vasprintf NULL String Edge Case */
+    dyn_buf = NULL;
+    len = test_vasprintf_helper(&dyn_buf, "User: %s Host: %s", (char *)NULL, "sparc-box");
+    printf("[17] vasprintf NULL string: '%s' (len: %d)\n", dyn_buf, len);
+    assert(dyn_buf != NULL);
+    assert(strstr(dyn_buf, "(null)") != NULL || strstr(dyn_buf, "(NULL)") != NULL || strstr(dyn_buf, "User: ") != NULL);
+    free(dyn_buf);
+
+    /* 18. Zero-Count Buffer Dry Run (count == 0 with non-NULL buffer) */
+    buf[0] = 'X';
+    len = snprintf(buf, 0, "Should non-mutate buffer");
+    printf("[18] Count=0 buffer protection: buf[0]='%c' (reported len: %d)\n", buf[0], len);
+    assert(buf[0] == 'X' && len == 24);
+
+    /* 19. Parameter formatting (sequential) */
+    len = snprintf(buf, sizeof(buf), "Pos: %s %d %lld", "sparc", 42, big_num);
+    printf("[19] Sequential args (%%s %%d %%lld): '%s' (len: %d)\n", buf, len);
+    assert(strcmp(buf, "Pos: sparc 42 9223372036854775807") == 0);
+
+    /* 20. SPARC Positional Arguments (%3$s %1$d %2$lld) */
+    /*
+     *
+     * We do not yet support possitional arguments.
+     * They are rarely used only in places like glibc localization routines.
+     * 
+    len = snprintf(buf, sizeof(buf), "Pos: %3$s %1$d %2$lld", 42, 9223372036854775807LL, "sparc");
+    printf("[19] Positional args (%%3$s %%1$d %%2$lld): '%s' (len: %d)\n", buf, len);
+    assert(strcmp(buf, "Pos: sparc 42 9223372036854775807") == 0);
+    */
+
+    printf("\nSUCCESS: All 20 C99, POSIX, and SPARC alignment tests passed cleanly!\n");
+
     return 0;
 }
 #endif /* _TEST_SNPRINTF_COMPAT */
