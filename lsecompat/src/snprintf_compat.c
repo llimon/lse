@@ -724,6 +724,37 @@ int portable_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap) {
         default: break;
         }
         break;
+      case 'n': {
+        switch (length_modifier) {
+        case '\0': {
+          int *ip = va_arg(ap, int *);
+          if (ip != NULL) *ip = (int)str_l;
+          break;
+        }
+        case 'h': {
+          short int *ip = va_arg(ap, short int *);
+          if (ip != NULL) *ip = (short int)str_l;
+          break;
+        }
+        case 'l':
+        case 'z':
+        case 't': {
+          long int *ip = va_arg(ap, long int *);
+          if (ip != NULL) *ip = (long int)str_l;
+          break;
+        }
+#ifdef SNPRINTF_LONGLONG_SUPPORT
+        case '2': {
+          long long int *ip = va_arg(ap, long long int *);
+          if (ip != NULL) *ip = (long long int)str_l;
+          break;
+        }
+#endif
+        }
+        str_arg = tmp;
+        str_arg_l = 0;
+        }
+         break;
       case 'f': case 'e': case 'E': case 'g': case 'G': {
         double double_arg = 0.0;
         long double long_double_arg = 0.0L;
@@ -1116,11 +1147,9 @@ int main(void) {
     assert(strstr(buf, "3.1415926536") != NULL);
 
     /* 4. %n Specifier */
-/*
     len = snprintf(buf, sizeof(buf), "Hello %nWorld", &n_count);
     printf("[04] %%n count: '%s' (written %%n: %d, total len: %d)\n", buf, n_count, len);
     assert(n_count == 6 && len == 11 && strcmp(buf, "Hello World") == 0);
-*/
 
     /* 5. NULL-Buffer Dry Run Length Query */
     len = snprintf(NULL, 0, "Test %d string", 123);
