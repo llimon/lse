@@ -6,9 +6,9 @@
 ###########################################################
 # Check the following 4 variables before running the script
 topdir=emacs
-version=24.5
+version=23.4
 pkgver=1
-source[0]=ftp://ftp.heanet.ie/pub/gnu/$topdir/$topdir-$version.tar.xz
+source[0]=ftp://ftp.heanet.ie/pub/gnu/$topdir/$topdir-$version.tar.gz
 # If there are no patches, simply comment this
 #patch[0]=
 
@@ -17,6 +17,7 @@ source[0]=ftp://ftp.heanet.ie/pub/gnu/$topdir/$topdir-$version.tar.xz
 
 # Global settings
 basic_args=("${configure_args[@]}")
+export LIBS="$LIBS -llsecompat"
 
 reg prep
 prep()

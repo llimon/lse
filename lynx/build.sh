@@ -16,10 +16,11 @@ source[0]=https://invisible-mirror.net/archives/$topdir/tarballs/${topdir}${vers
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="-I$prefix/include"
-export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
+LIBS="$LIBS -llsecompat -llsenet"
 topsrcdir=${topdir}${version}
 configure_args+=(--with-ssl)
+make_build_opts=( CC="${CC:-gcc}  -include ${prefix}/include/lsecompat.h" )
+
 
 reg prep
 prep()

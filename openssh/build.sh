@@ -21,15 +21,29 @@ patch[3]=undef-wcwidth.patch
 make_check_target="tests"
 
 # Global settings
-#export LDFLAGS="-Wl,-rpath,$prefix/lib -L$prefix/lib -lz -lw -lposix4 -lpthread -lthread -lgcc_s"
+#export LDFLAGS="-Wl,-rpath,$prefix/lib -L$prefix/lib -lz -lw -lposix4 -lpthread -lthread -llsecompat"
 #export CC="gcc -std=gnu99 -fgnu89-inline"
 
-#export CPPFLAGS="$CPPFLAGS -D__EXTENSIONS__"
-export LIBS="$LIBS -lz -lw -lgcc_s "
+#export CPPFLAGS="$CPPFLAGS -D__EXTENSIONS__ -I../"
+
+SOCKETFILE=/var/run/egd-pool
+export LIBS="$LIBS -lz -lw -llsecompat -llsew"
 export CC="gcc -std=gnu99" 
 make_check_target="tests"
 
-configure_args=(--prefix=$prefix --mandir=$prefix/$_mandir --sysconfdir=$prefix/${_sysconfdir}/ssh --datadir=$prefix/${_sharedir}/openssh --with-default-path=/usr/bin:$prefix/${_bindir} --with-mantype=man --without-pam --with-privsep-user=sshd --with-privsep-path=/var/empty/sshd --with-superuser-path=/usr/bin:/usr/sbin:$prefix/$_bindir:$prefix/$_sbindir --with-lastlog=/var/adm/lastlog)
+configure_args=(
+   --prefix=$prefix 
+   --mandir=$prefix/$_mandir 
+   --sysconfdir=$prefix/${_sysconfdir}/ssh 
+   --datadir=$prefix/${_sharedir}/openssh 
+   --with-default-path=/usr/bin:$prefix/${_bindir} 
+   --with-mantype=man 
+   --without-pam 
+   --with-privsep-user=sshd 
+   --with-prngd-socket=$SOCKETFILE
+   --with-privsep-path=/var/empty/sshd 
+   --with-superuser-path=/usr/bin:/usr/sbin:$prefix/$_bindir:$prefix/$_sbindir 
+   --with-lastlog=/var/adm/lastlog)
 
 reg prep
 prep()
@@ -40,6 +54,8 @@ prep()
 reg build
 build()
 {
+#    make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h -I." )
+    #make_build_opts=( CPPFLAGS="$CPPFLAGS -I. -I$(srcdir) -I/usr/local/lse/include -D_REENTRANT -DOPENSSL_API_COMPAT=0x10100000L $(PATHS) -DHAVE_CONFIG_H -DPICFLAG=-fPIC -include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h -I.")
     generic_build
 }
 

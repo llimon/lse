@@ -39,9 +39,7 @@ prep()
 reg build
 build()
 {
-    export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/ftello_compat.h \
-         -include $prefix/include/compat/snprintf_compat.h"
-    export LIBS="$LIBS $prefix/lib/libsnprintf.a -lssl -lcrypto -lsocket -lnsl -ldl -lgcc_s"
+    export LIBS="$LIBS $prefix/lib/libsnprintf.a -lssl -lcrypto -lsocket -lnsl -ldl -llsecompat -llsenet"
     export CFLAGS="$CFLAGS -std=gnu99"
     export PKG_CONFIG=pkgconf
     # Prefer the X/Open feature set to get utimes() defined
@@ -53,7 +51,7 @@ build()
     ac_overrides="ac_cv_prog_cc_c11=no \
               gl_cv_compiler_c11_supported=no"
 
-    make_build_opts=( _pls "CPPFLAGS=\"\$CPPFLAGS -include config.h -i $prefix/include/compat/dns_rfc2553_compat.h\" ${make_build_opts}" )
+    make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h" )
 
     ${__gsed} -i 's/int connect(int, void\*, int);/ /* connect proto removed */ /' configure
     configure_args+=(--enable-static=no --with-openssl=$prefix --enable-http --enable-ftp --enable-file --disable-ldap --enable-manual --enable-cookies --with-libidn2 --with-libssh2 --with-nghttp2 --with-ca-bundle=${prefix}/${_sysconfdir}/curl-ca-bundle.pem --disable-threaded-resolver)

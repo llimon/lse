@@ -14,7 +14,7 @@ dir $_sysconfdir/rc1.d
 dir $_sysconfdir/rc2.d
 dir $_sysconfdir/rcS.d
 dir usr
-dir usr/tgcware
+dir usr/local/lse
 dir var
 dir var/empty
 ${_sysconfdir}/*/*lse_sshd
@@ -33,5 +33,6 @@ $lprefix/libexec/sshd-session
 $lprefix/libexec/sftp-server
 $lprefix/libexec/ssh-pkcs11-helper
 $lprefix/libexec/ssh-sk-helper
+$lprefix/relnotes/*
 default_docs
 

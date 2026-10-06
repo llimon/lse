@@ -20,9 +20,26 @@ patch[1]=gcc-4.1.2-new-gas.patch
 . ${BUILDPKG_BASE}/gcc/build.sh.gcc.common
 
 # Global settings
+# This compiler is bootstrapped with gcc 3.4.6
+#export PATH=/opt/gnu/gnat/bin:/usr/tgcware/gcc34/bin:/usr/local/bin:$PATH
+export CPPFLAGS="-I/usr/tgcware/include"
+export LDFLAGS="-L/usr/tgcware/lib -R/usr/local/lse"
+export LIBS="-lgcc_s"
+export SHELL=/usr/local/lse/bin/bash
 
 # This compiler is bootstrapped with gcc 4.0.4
-export PATH=/usr/local/lse/gcc40/bin:$PATH
+export PATH=/usr/tgcware/gcc40/bin:$PATH
+
+#LD_LIBRARY_PATH=/usr/local/lse/lib
+
+
+
+export LDFLAGS="-lgcc_s"
+configure_args+=(
+   --with-gmp=/usr/local/lse
+   --with-mpfr=/usr/local/lse
+)
+configure_args+=(--enable-obsolete)
 
 reg prep
 prep()

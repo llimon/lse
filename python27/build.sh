@@ -72,8 +72,16 @@ install()
     ${__mv} ${stagedir}${prefix}/${_bindir}/idle ${stagedir}${prefix}/${_bindir}/idle${pydotver}
     ${__mv} ${stagedir}${prefix}/${_bindir}/pydoc ${stagedir}${prefix}/${_bindir}/pydoc${pydotver}
     ${__mv} ${stagedir}${prefix}/${_bindir}/smtpd.py ${stagedir}${prefix}/${_bindir}/smtpd${pydotver}.py
-    ${__rm} -f ${stagedir}${prefix}/${_bindir}/python{,-config}
-    ${__rm} -f ${stagedir}${prefix}/${_bindir}/python2{,-config}
+
+
+    # Remove stale unversioned binaries if present
+    ${__rm} -f${stagedir}${prefix}/${_bindir}/python
+    ${__rm} -f${stagedir}${prefix}/${_bindir}/python-config
+
+    # Create relative symlinks for unversioned python and python-config
+    ln -s python${pydotver}${stagedir}${prefix}/${_bindir}/python
+    ln -s python${pydotver}-config${stagedir}${prefix}/${_bindir}/python-config
+
     ${__rm} -f ${stagedir}${prefix}/${pylibdir}/LICENSE.txt
     ${__rm} -f ${stagedir}${prefix}/${_mandir}/man1/python{,2}.1
     ${__rm} -f ${stagedir}${prefix}/${_libdir}/pkgconfig/python{,2}.pc

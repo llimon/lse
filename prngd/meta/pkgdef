@@ -13,7 +13,7 @@ dir $_sysconfdir/rc1.d
 dir $_sysconfdir/rc2.d
 dir $_sysconfdir/rcS.d
 dir usr
-dir usr/tgcware
+dir usr/local/lse
 ${_sysconfdir}/*/*prngd
 files(-,root,bin)
 default_docs

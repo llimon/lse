@@ -16,17 +16,19 @@ source[0]=https://github.com/${topdir}/${topdir}/releases/download/v${version}/$
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-  #LIBEV_CFLAGS="-I/usr/local/include" \
-  #LIBEV_LIBS="-L/usr/local/lib -lev" \
+#   --enable-app \
+#  #LIBEV_CFLAGS="-I/usr/local/include" \
+#  #LIBEV_LIBS="-L/usr/local/lib -lev" \
 configure_args+=(
-	--disable-static  \
-   --enable-app \
-   --disable-hpack-tools \
-   OPENSSL_CFLAGS="-I/usr/local/ssl/include" \
-   OPENSSL_LIBS="-L/usr/local/ssl/lib -lssl -lcrypto" \
-   CFLAGS="$CFLAGS" \
-  CXXFLAGS="CXXFLAGS" \
+    --disable-static  \
+    --enable-lib-only 
 )
+#   --enable-app \
+#   --disable-hpack-tools \
+#   OPENSSL_CFLAGS="-I/usr/local/lse/ssl/include" \
+#   OPENSSL_LIBS="-L/usr/local/lse/ssl/lib -lssl -lcrypto" \
+#   CFLAGS="$CFLAGS" \
+#  CXXFLAGS="CXXFLAGS" \
 
 #--enable-lib-only)
 make_build_target="V=1"

@@ -16,8 +16,9 @@ source[0]=ftp://ftp.tcl.tk/pub/tcl/tcl8_4/$topdir$version-src.tar.gz
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export LDFLAGS="$LDFLAGS -lgcc_s"
+LIBS="$LIBS -llsecompat"
 configure_args=(--prefix=$prefix --mandir=$prefix/$_mandir --disable-symbols --enable-man-symlinks)
+make_build_opts=( CC="${CC:-gcc}  -include ${prefix}/include/lsecompat.h -include ${prefix}/include/lsenet.h" )
 topsrcdir=$topdir$version
 
 majorver="${version%.*}"

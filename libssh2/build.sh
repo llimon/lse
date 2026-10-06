@@ -17,8 +17,9 @@ patch[0]=libssh2-1.9.0-missing-stdint_h.patch
 
 # Global settings
 export PATH=$PATH:/usr/local/lse/sbin
-export LIBS="-lgcc_s -lsnprintf"
+export LIBS="-llsecompat"
 configure_args+=(--disable-examples-build --disable-static --disable-docker-tests)
+make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h" )
 
 
 reg prep

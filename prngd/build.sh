@@ -18,7 +18,7 @@ source[0]=$topdir-$version.tar.gz
 # Global settings
 no_configure=1
 CC=gcc
-syslibs="-L$prefix/lib -Wl,-rpath,$prefix/lib -lsocket -lnsl -lgcc_s -lsnprintf"
+syslibs="-L$prefix/lib -Wl,-rpath,$prefix/lib -lsocket -lnsl -llsecompat"
 
 if [ "${gnu_os_ver}" = "2.5.1" ]; then
   cflags_os="-O2 -Wall -DSOLARIS_251"
@@ -41,8 +41,9 @@ reg build
 build()
 {
     setdir source
+    make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h -I./Include" )
     echo "${configure_args[@]}"
-    ${__make} "${configure_args[@]}"
+    ${__make} "${configure_args[@]}" "$make_build_opts"
 }
 
 reg check

@@ -22,6 +22,7 @@ files(750,root,root)
 dir $lprefix/$_sysconfdir/sudoers.d
 files(440,root,root)
 $lprefix/$_sysconfdir/sudoers.dist
+$lprefix/$_sysconfdir/sudoers
 files(4755,root,root)
 $lprefix/$_bindir/sudo
 files(755,root,root)

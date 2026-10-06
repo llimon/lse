@@ -25,8 +25,11 @@ prep()
 reg build
 build()
 {
-    export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/snprintf_compat.h"
-    export LIBS="$LIBS -lsnprintf -lpthread"
+    #export CPPFLAGS="$CPPFLAGS -include $prefix/include/lsew.h"
+    export LIBS="$LIBS -llsecompat -lpthread"
+
+    make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h" )
+   
     generic_build
 }
 

@@ -16,8 +16,8 @@ source[0]=https://github.com/PCRE2Project/$topdir/releases/download/$topdir-$ver
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="$CPPFLAGS -include $prefix/include/compat/snprintf_compat.h"
-export LIBS="$LIBS -lsnprintf -lgcc_s"
+export CPPFLAGS="$CPPFLAGS -include $prefix/include/lse/snprintf_compat.h"
+export LIBS="$LIBS -llsecompat"
 configure_args+=(--disable-percent-zt)
 
 reg prep

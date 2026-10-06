@@ -22,7 +22,13 @@ patch[1]=gcc-4.0.4-new-gas.patch
 # Global settings
 
 # This compiler is bootstrapped with gcc 3.4.6
-export PATH=/usr/local/lse/gcc34/bin:$PATH
+#export PATH=/opt/gnu/gnat/bin:/usr/tgcware/gcc34/bin:/usr/local/bin:$PATH
+export LDFLAGS="-L$prefix/lib -R$prefix/lib"
+export LIBS="-lgcc_s"
+export SHELL=/usr/tgcware/bin/bash
+
+echo $gnu_os_ver
+
 
 reg prep
 prep()

@@ -22,7 +22,7 @@ source[0]=https://www.ijg.org/files/${topdir}src-v${version}.tar.gz
 
 # Global settings
 topsrcdir=${topdir}-${version}
-LIBS="-lgcc_s"
+LIBS="$LIBS -llsecompat"
 #configure_args+=()
 
 reg prep

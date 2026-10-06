@@ -9,6 +9,8 @@ files(-,root,bin)
 default_docs
 $_bindir/pydoc${pydotver}
 $_bindir/python${pydotver}
+$_bindir/python
+$_bindir/python2
 $_mandir/man1/python${pydotver}.1
 
 [python27-libs]
@@ -385,5 +387,11 @@ pkgdesc="A graphical user interface for the Python scripting language"
 pkgver="$pkgver"
 files(-,root,bin)
 $dynload_dir/_tkinter.so
-$pylibdir/lib-tk
+$dynload_dir/lib-tk
+$dynload_dir/_md5.so
+$dynload_dir/_sha.so
+$dynload_dir/_sha256.so
+$dynload_dir/_sha512.so
+$dynload_dir/_ssl_failed.so
+$pylibdir/lib-tk/*
 

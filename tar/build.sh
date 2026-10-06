@@ -20,7 +20,8 @@ source[0]=ftp://ftp.sunet.se/pub/gnu/tar/$topdir-$version.tar.bz2
 # solaris 2.5.1 does not have ftello
 #configure_args+=(--disable-largefile)
 LIBS="$LIBS -llsecompat"
-#make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h" )
+CPPFLAGS="$CPPFLAGS -D__EXTENSIONS__"
+make_build_opts=( CC="gcc -g -include $prefix/include/lse/snprintf_compat.h -include $prefix/include/lse/time_compat.h" )
 
 gnu_link tar
 
@@ -28,6 +29,9 @@ reg prep
 prep()
 {
     generic_prep
+#    setdir source
+#    sed -i '/#define FPRINTFTIME 1/a \
+#typedef void *timezone_t;' gnu/fprintftime.h
 }
 
 reg build

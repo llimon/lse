@@ -36,7 +36,7 @@ build()
 {
     setdir source
     $__configure "${configure_args[@]}"
-    ${__make} LDDLFLAGS="-shared -L$prefix/lib -Wl,-rpath,$prefix/lib" CLDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
+    ${__make} LDDLFLAGS="-shared -L$prefix/lib -Wl,-rpath,$prefix/lib -llsecompat -llsenet" CLDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib -llsecompat -llsenet" CPPFLAGS="-include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h"
 }
 
 reg check

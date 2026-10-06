@@ -20,12 +20,26 @@ patch[0]=getentropy.c.patch
 export LD_RUN_PATH="/usr/local/lse/lib"
 
 # Global settings
-export LIBS="-lposix4"
-export EXTRA_LIBS="-lsecompat"
-# disabling generation of .so binaries; We don't need that stuff for sudo and makes it a little leaner for resource contrained workstations.
-configure_args+=(--enable-static --disable-shared --enable-static-sudoers --disable-poll --disable-hardening --sysconfdir=/usr/local/lse/etc --with-man --with-all-insults)
+export LIBS="$LIBS -lposix4 -llsecompat"
 
-export no_configure=1
+# disabling generation of .so binaries; We don't need that stuff for sudo and makes it a little leaner for resource contrained workstations.
+configure_args+=(
+	--enable-static 
+	--disable-shared 
+	--enable-static-sudoers 
+	--disable-poll 
+	--disable-hardening 
+	--sysconfdir=/usr/local/lse/etc 
+	--with-man 
+	--with-all-insults
+        CPPFLAGS="$CPPFLAGS -I/usr/local/lse/include -include /usr/local/lse/include/lse/snprintf_compat.h"
+        CFLAGS="$CFLAGS"
+        LDFLAGS="$LDFLAGS -lposix4 -llsecompat"
+        SUDO_LDFLAGS="$LDFLAGS -lposix4 -llsecompat"
+        LIBS="-lposix4 -llsecompat"
+)
+#make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h" )
+#make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lse/snprintf_compat.h" )
 
 reg prep
 prep()
@@ -43,26 +57,10 @@ prep()
 
 }
 
-run_configure()
-{
-    local my_ac_overrides="$platform_ac_overrides $ac_overrides"
-    setdir ${srcdir}/${topsrcdir}/$1
-
-    local acvar
-    for acvar in $my_ac_overrides; do
-      	export $acvar
-    done
-    echo $__configure "${configure_args[@]}"
-    $__configure "${configure_args[@]}"
-
-}
-
 reg build
 build()
 {
-	 run_configure
-    ${__make} ${make_build_opts} $(_upls $make_build_target)
-    #generic_build
+    generic_build
 	 
 }
 

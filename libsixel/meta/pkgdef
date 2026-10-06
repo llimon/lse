@@ -1,0 +1,17 @@
+[libsixel]
+pkgname="${pkgprefix}lsixel"
+name="$topdir - nothing"
+pkgcat="library"
+pkgvendor="https://github.com/saitoha/libsixel"
+pkgdesc=" provides encoder/decoder implementation for DEC SIXEL graphics, and some converter programs."
+pkgver="$pkgver"
+files(-,root,bin)
+$_bindir/*
+$_libdir/libsixel*
+$_libdir/pkgconfig/libsixel.pc
+$_libdir/python2.7/site-packages/libsixel/*
+$_includedir/*
+$_sharedir/man/*
+$_sharedir/bash-completion/completions/img2sixel
+$_sharedir/zsh/site-functions/_img2sixel
+$_sharedir/doc/libsixel*/*

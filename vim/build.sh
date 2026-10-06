@@ -20,9 +20,10 @@ patch[0]=sol2.5.1.patch
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
-export CPPFLAGS="$CPPFLAGS -I$prefix/include/ncurses -include $prefix/include/compat/snprintf_compat.h -include $prefix/include/compat/vterm_compat.h -include $prefix/include/compat/mbstowcs_compat.h -include $prefix/include/compat/wcsstr_compat.h -include $prefix/include/compat/socket_compat.h"
 export CFLAGS="$CFLAGS -Wno-implicit-int"
-export LIBS="$LIBS -liconv -lgcc_s -lsnprintf -lw -lsocket"
+#export CPPFLAGS="$CPPFLAGS -I$prefix/include/ncurses -include $prefix/include/compat/snprintf_compat.h -include $prefix/include/compat/vterm_compat.h -include $prefix/include/compat/mbstowcs_compat.h -include $prefix/include/compat/wcsstr_compat.h -include $prefix/include/compat/socket_compat.h"
+#export LIBS="$LIBS -liconv -lgcc_s -lsnprintf -lw -lsocket"
+export LIBS="$LIBS -liconv -llsecompat -llsew -llsenet -lw -lsocket"
 export SHELL=$prefix/bin/bash
 export CONFIG_SHELL=$prefix/bin/bash
 
@@ -47,11 +48,15 @@ reg build
 build()
 {
 
+    ac_overrides="vim_cv_ipv6_networking=no"
+
 	setdir source
 	${__rm} src/gvim src/vim src/vim-small
 
 	 # Build Motif GUI version (Normal features)
     configure_args=("${basic_args[@]}" --with-features=normal --enable-gui=motif)
+
+    make_build_opts=( CPPFLAGS="$CPPFLAGS -include $prefix/include/lsecompat.h -include $prefix/include/lsew.h -include $prefix/include/lsenet.h" )
     generic_build
     setdir source
     ${__cp} src/vim src/gvim
@@ -66,7 +71,7 @@ build()
     # Force preprocessor to define FEAT_SPELL for small build
     ${__rm} -f src/auto/config.cache  # Wipe cached CPPFLAGS so configure won't abort
 
-    configure_args=("${basic_args[@]}" --with-features=small --enable-gui=no --with-x=no)
+    configure_args=("${basic_args[@]}" ${ac_overrides} --with-features=small --enable-gui=no --with-x=no)
     
     $__configure "${configure_args[@]}"
     ${__make}

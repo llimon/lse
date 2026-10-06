@@ -50,11 +50,14 @@ V=1
 prefix=$prefix
 CC=gcc
 ifeq (\$(uname_R),5.5.1)
-  BASIC_CFLAGS += -include $prefix/include/compat/map_compat.h
-  BASIC_CFLAGS += -include $prefix/include/compat/ftello_compat.h
-  BASIC_CFLAGS += -include $prefix/include/compat/socket_compat.h
-  BASIC_CFLAGS += -include $prefix/include/compat/dns_rfc2553_compat.h
-  BASIC_CFLAGS += -include $prefix/include/compat/snprintf_compat.h
+  #BASIC_CFLAGS += -include $prefix/include/lse/map_compat.h
+  #BASIC_CFLAGS += -include $prefix/include/lse/ftello_compat.h
+  #BASIC_CFLAGS += -include $prefix/include/lse/socket_compat.h
+  #BASIC_CFLAGS += -include $prefix/include/lse/dns_rfc2553_compat.h
+  #BASIC_CFLAGS += -include $prefix/include/lse/snprintf_compat.h
+  BASIC_CFLAGS += -include $prefix/include/lsecompat.h
+  BASIC_CFLAGS += -include $prefix/include/lsenet.h
+  BASIC_CFLAGS += -include $prefix/include/lsew.h
 endif
 SHELL=$prefix/bin/bash
 PERL_PATH=$prefix/bin/perl
@@ -65,7 +68,7 @@ BASIC_CFLAGS+=-I$prefix/include
 BASIC_LDFLAGS+=-L$prefix/lib -Wl,-rpath,$prefix/lib
 
 # Appending to EXTLIBS guarantees these link AFTER libgit.a / object files
-EXTLIBS +=$prefix/lib/libsnprintf.a -lgen -lpthread -lgcc_s
+EXTLIBS +=-lgen -lpthread -llsecompat -llsenet -llsew
 
 INSTALL=/usr/local/lse/bin/ginstall
 TAR=/usr/local/lse/bin/gtar

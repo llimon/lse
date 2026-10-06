@@ -27,7 +27,6 @@ __configure="./Configure"
 export GCC_MCPU="-mcpu=${TARGET_CPU:-v7}"
 compat_cflags="-O2 $GCC_MCPU -I$prefix/include \
 -include $prefix/include/lsecompat.h -include $prefix/include/lsenet.h"
-# no-asm
 configure_args=(
     --prefix=$prefix 
     --openssldir=${prefix}/${_sharedir}/ssl 
@@ -36,13 +35,13 @@ configure_args=(
     shared 
     no-dso 
     enable-egd 
-    no-threads
+    threads
     no-asm
     CFLAGS="$CFLAGS $compat_cflags"
     CPPFLAGS="$CPPFLAGS $compat_cflags"
     # OpenSSL 3.0 uses LDLIBS for extra library linkages
     LDFLAGS="$LDFLAGS"
-    LDLIBS="$LIBS -lposix4 -llsecompat -llsenet -lc"
+    LDLIBS="$LIBS -lposix4 -llsecompat -llsenet -lpthread -lthread -lc"
     EX_LIBS="-llsecompat -lc"
     # Clears the version-script mapfile generator variable
     shared_mapfile=""
