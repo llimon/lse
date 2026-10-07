@@ -22,12 +22,16 @@ source[0]=https://download.osgeo.org/libtiff/${topdir}-${version}.tar.gz
 
 # Global settings
 topsrcdir=${topdir}-${version}
-#configure_args+=()
+configure_args+=(
+  --disable-shared
+)
 make_build_opts=( CC="${CC:-gcc}  -include ${prefix}/include/lsecompat.h" )
 
 
 ##
 ## Override or extend globals
+export CFLAGS="$CFLAGS -fPIC"
+export CXXFLAGS="$CXXFLAGS -fPIC"
 export LIBS="$LIBS -llsecompat"
 
 reg prep
@@ -58,6 +62,7 @@ install()
 {
     generic_install DESTDIR
     doc COPYRIGHT README VERSION TODO
+    find ${stagedir} \( -name '*.so' -o -name '*.so.*' -o -name '*.la' \) -exec rm {} \;
 }
 
 reg pack
