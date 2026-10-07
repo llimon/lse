@@ -22,7 +22,10 @@ extern "C" {
 #ifndef _TIMEZONE_T_DEFINED
 #define _TIMEZONE_T_DEFINED
 struct __timezone_type {
+    struct __timezone_type *next;
+    char tz_is_set;
     char *tzname_copy[2];
+    char abbrs[1];
 };
 typedef struct __timezone_type *timezone_t;
 #endif

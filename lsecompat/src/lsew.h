@@ -7,7 +7,7 @@
 #ifndef LSEWCOMPAT_MASTER_H
 #define LSEWCOMPAT_MASTER_H
 
-/* Only process C code if we are NOT compiling assembly */
+/* Only process C/C++ code if we are NOT compiling assembly */
 #ifndef __ASSEMBLER__
 
 /* Standard feature macro overrides for GNU / POSIX compatibility */
@@ -15,10 +15,18 @@
 #  define _GNU_SOURCE 1
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Individual Modular Compatibility Headers */
+#include <lse/wchar_compat.h>
 #include <lse/mbstowcs_compat.h>
 #include <lse/wcsstr_compat.h>
-#include <lse/wchar_compat.h>
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !__ASSEMBLER__ */
 
