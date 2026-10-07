@@ -23,12 +23,12 @@
  * Native SunOS kernel system call. Guaranteed to exist in libc.so.1
  * on EVERY Solaris 2.5.1 installation.
  */
-extern offset_t llseek(int fd, offset_t offset, int whence);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+extern offset_t llseek(int fd, offset_t offset, int whence);
 /* Standard POSIX prototypes for header file */
 offset_t ftello(FILE *stream);
 int fseeko(FILE *stream, offset_t offset, int whence);
