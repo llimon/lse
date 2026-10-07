@@ -20,6 +20,7 @@
 #include <lse/ftello_compat.h>
 #include <lse/snprintf_compat.h>
 #include <lse/getprogname_compat.h>
+#include <lse/unistd_compat.h>
 #include <lse/map_compat.h>
 #include <lse/math_compat.h>
 #include <lse/usleep_compat.h>

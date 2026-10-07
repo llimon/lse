@@ -116,7 +116,8 @@ HEADERS_LSE    = string_compat.h \
                  strerror_r_compat.h \
                  map_compat.h \
                  vterm_compat.h \
-                 wchar_compat.h
+                 wchar_compat.h \
+                 unistd_compat.h
 
 # ------------------------------------------------------------------------------
 # Build Rules
