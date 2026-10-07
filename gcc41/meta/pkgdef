@@ -52,6 +52,8 @@ lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/root/usr/openwin/incl
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/root/usr/openwin/include/X11/nmdefs.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/root/usr/openwin/include/xil/_XilDefines.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/root/usr/openwin/include/xil/xil.h
+lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/root/usr/openwin/include/X11/Xmd.h
+lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/root/usr/openwin/include/X11/Xthreads.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/setjmp.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/signal.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/stdio.h
@@ -102,6 +104,8 @@ lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/sys/utrap.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/sys/utsname.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/sys/varargs.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/sys/vuid_event.h
+lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/sys/ptrace.h
+lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/values.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/thread.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/thread_db.h
 lib/$libsubdir/${arch}-${vendor}-solaris*/$version/include/time.h
@@ -650,6 +654,7 @@ pkgdesc="Runtime support library for C"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libgcc_s.so.1*
+$_libdir/libgcc_s.so
 
 [libstdc++6]
 pkgname="${pkgprefix}lstdc6"
@@ -660,6 +665,7 @@ pkgdesc="Runtime support library for C++"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libstdc++.so.6*
+$_libdir/libstdc++.so
 
 [libobjc1]
 pkgname="${pkgprefix}lobjc1"
@@ -670,6 +676,7 @@ pkgdesc="Runtime support library for Objective-C"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libobjc.so.1*
+$_libdir/libobjc.so
 
 [libgfortran1]
 pkgname="${pkgprefix}lgfrt1"
@@ -680,6 +687,7 @@ pkgdesc="Runtime support library for Fortran"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libgfortran.so.1*
+$_libdir/libgfortran.so
 
 [libgnat41]
 pkgname="${pkgprefix}lgna${abbrev_majorminor}"
@@ -701,4 +709,5 @@ pkgdesc="Runtime support library for Stack Smashing Protection"
 pkgver="$pkgver"
 files(-,root,bin)
 $_libdir/libssp.so.0*
+$_libdir/libssp.so
 

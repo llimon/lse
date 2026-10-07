@@ -23,8 +23,9 @@ patch[1]=gcc-4.1.2-new-gas.patch
 # This compiler is bootstrapped with gcc 3.4.6
 #export PATH=/opt/gnu/gnat/bin:/usr/tgcware/gcc34/bin:/usr/local/bin:$PATH
 export CPPFLAGS="-I/usr/tgcware/include"
-export LDFLAGS="-L/usr/tgcware/lib -R/usr/local/lse"
-export LIBS="-lgcc_s"
+export LDFLAGS="-static-libgcc -L/usr/tgcware/lib -R/usr/local/lse"
+#export LIBS="-lgcc_s"
+unset LIBS
 export SHELL=/usr/local/lse/bin/bash
 
 # This compiler is bootstrapped with gcc 4.0.4
@@ -32,12 +33,20 @@ export PATH=/usr/tgcware/gcc40/bin:$PATH
 
 #LD_LIBRARY_PATH=/usr/local/lse/lib
 
+export LD=/usr/ccs/bin/ld
+export DEFAULT_LINKER=/usr/ccs/bin/ld
 
 
-export LDFLAGS="-lgcc_s"
 configure_args+=(
+   --with-ld=/usr/ccs/bin/ld
+   --without-gnu-ld
+   --disable-nls
    --with-gmp=/usr/local/lse
    --with-mpfr=/usr/local/lse
+   --with-stage1-ldflags="-static-libgcc $LDFLAGS" 
+   --with-boot-ldflags="-static-libgcc $LDFLAGS"
+   --enable-sjlj-exceptions
+   --disable-decimal-float
 )
 configure_args+=(--enable-obsolete)
 
