@@ -9,8 +9,11 @@ extern "C" {
 #endif
 
 /* Provide mbstate_t if missing from system wchar.h */
-#ifndef _MBSTATE_T
+#if !defined(_MBSTATE_T) && !defined(_MBSTATE_T_DEFINED) && !defined(_GLIBCXX_HAVE_MBSTATE_T)
 #define _MBSTATE_T
+#define _MBSTATE_T_DEFINED
+#define _GLIBCXX_HAVE_MBSTATE_T 1
+
 typedef struct {
     int __count;
     unsigned long __value;
