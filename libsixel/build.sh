@@ -21,6 +21,7 @@ source[0]=https://github.com/saitoha/libsixel/releases/download/v${version}/${to
 
 # Global settings
 export CPPFLAGS="$CPPFLAGS -UHAVE_DIAGNOSTIC_SIGN_CONVERSION"
+export LIBS="$LIBS -lz"
 make_build_opts=( CC="${CC:-gcc}  -include ${prefix}/include/lsecompat.h" )
 topsrcdir=${topdir}-${version}
 
