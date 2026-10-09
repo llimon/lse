@@ -20,6 +20,7 @@ source[0]=https://ftp-osl.osuosl.org/pub/libpng/src/libpng12/${topdir}-${version
 . ${BUILDPKG_SCRIPTS}/buildpkg.functions
 
 # Global settings
+export CFLAGS="$CFLAGS -fPIC"
 export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
 topsrcdir=${topdir}-${version}
 #configure_args+=()
@@ -54,6 +55,7 @@ install()
 {
     generic_install DESTDIR
     doc COPYING README AUTHORS
+    find ${stagedir} \( -name '*.so' -o -name '*.so.*' -o -name '*.la' \) -exec rm {} \;
 }
 
 reg pack

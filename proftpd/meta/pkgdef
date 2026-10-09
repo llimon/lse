@@ -1,0 +1,9 @@
+[proftpd]
+pkgname="${pkgprefix}pftpd"
+name="$topdir - Highly configurable GPL-licensed FTP server software "
+pkgcat="application"
+pkgvendor="http://www.proftpd.org/"
+shortdesc="ProFTPD grew out of the desire to have a secure and configurable FTP server, and out of a significant admiration of the Apache web server"
+pkgver="$pkgver"
+files(-,root,bin)
+*
