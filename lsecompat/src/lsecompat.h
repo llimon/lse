@@ -27,6 +27,7 @@
 #include <lse/time_compat.h>
 #include <lse/vterm_compat.h>
 #include <lse/getline_compat.h>
+#include <lse/ctime_r_compat.h>
 
 #endif /* !__ASSEMBLER__ */
 

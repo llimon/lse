@@ -125,7 +125,9 @@ HEADERS_LSE    = string_compat.h \
                  wchar_compat.h \
                  unistd_compat.h \
                  atomic_compat.h \
-                 getline_compat.h 
+                 getline_compat.h \
+                 ctime_r_compat.h
+
 
 # ------------------------------------------------------------------------------
 # Build Rules

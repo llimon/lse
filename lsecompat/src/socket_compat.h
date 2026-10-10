@@ -51,6 +51,32 @@ typedef unsigned long in_addr_t;
 #define INET6_ADDRSTRLEN 46
 #endif
 
+/* POSIX.1-2001 / BSD socket flags missing or limited in Solaris 2.5.1 */
+
+#ifndef MSG_WAITALL
+#  define MSG_WAITALL   0x0    /* Don't block for full buffer; process available bytes */
+#endif
+
+#ifndef MSG_DONTWAIT
+#  define MSG_DONTWAIT  0x0    /* Non-blocking I/O flag (use O_NONBLOCK via fcntl instead) */
+#endif
+
+#ifndef MSG_NOSIGNAL
+#  define MSG_NOSIGNAL  0x0    /* Do not generate SIGPIPE on broken pipe (use signal(SIGPIPE, SIG_IGN)) */
+#endif
+
+#ifndef MSG_EOR
+#  define MSG_EOR       0x8    /* End of record (often used in SOCK_SEQPACKET / OSI) */
+#endif
+
+#ifndef MSG_CONFIRM
+#  define MSG_CONFIRM   0x0    /* Linux link-layer progress hint; no-op on SVR4 */
+#endif
+
+#ifndef MSG_MORE
+#  define MSG_MORE      0x0    /* Linux TCP corking hint; no-op on SVR4 */
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
