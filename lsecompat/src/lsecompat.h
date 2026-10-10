@@ -26,6 +26,7 @@
 #include <lse/usleep_compat.h>
 #include <lse/time_compat.h>
 #include <lse/vterm_compat.h>
+#include <lse/getline_compat.h>
 
 #endif /* !__ASSEMBLER__ */
 

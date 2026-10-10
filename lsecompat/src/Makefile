@@ -47,10 +47,13 @@ COMMON_SRCS = strtoimax_compat.c \
               usleep_compat.c \
               strerror_r_compat.c \
               time_compat.c \
-              math_compat.c
+              math_compat.c \
+              getline_compat.c
 
 W_SRCS      = mbstowcs_compat.c \
               wcsstr_compat.c 
+
+ATOMIC_SRCS = atomic_compat.c
 
 NET_SRCS    = dns_rfc2553_compat.c \
               socket_compat.c
@@ -67,6 +70,7 @@ ifeq ($(UNAME_S),SunOS)
     LIB_LSECOMPAT_SO = liblsecompat.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
     LIB_LSENET_SO    = liblsenet.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
     LIB_LSEW_SO      = liblsew.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
+    LIB_LSEATOMIC_SO      = liblseatomic.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
     
     BUILD_SO_CMD     = ld -assert pure-text
     SHLIB_LDFLAGS    =
@@ -81,6 +85,7 @@ ifeq ($(UNAME_S),SunOS)
     LIB_LSECOMPAT_SO = liblsecompat.so
     LIB_LSENET_SO    = liblsenet.so
     LIB_LSEW_SO      = liblsew.so
+    LIB_LSEATOMIC_SO      = liblseatomic.so
     
     # Solaris ELF shared library creation via GCC with embedded RPATH
     BUILD_SO_CMD     = $(CC) -shared
@@ -93,14 +98,15 @@ endif
 LSECOMPAT_OBJS = $(LSECOMPAT_SRCS:.c=.o)
 LSENET_OBJS    = $(NET_SRCS:.c=.o)
 LSEW_OBJS      = $(W_SRCS:.c=.o)
+LSEATOMIC_OBJS      = $(ATOMIC_SRCS:.c=.o)
 
 # Target Static Libraries
 LIB_LSECOMPAT_A = liblsecompat.a
 LIB_LSENET_A    = liblsenet.a
-LIB_LSEW_A      = liblsew.a
+LIB_LSEATOMIC_A      = liblseatomic.a
 
 # Headers
-HEADERS_TOP    = lsecompat.h lsenet.h lsew.h stdint.h inttypes.h
+HEADERS_TOP    = lsecompat.h lsenet.h lsew.h lseatomic.h stdint.h inttypes.h
 HEADERS_LSE    = string_compat.h \
                  snprintf_compat.h \
                  math_compat.h \
@@ -117,13 +123,16 @@ HEADERS_LSE    = string_compat.h \
                  map_compat.h \
                  vterm_compat.h \
                  wchar_compat.h \
-                 unistd_compat.h
+                 unistd_compat.h \
+                 atomic_compat.h \
+                 getline_compat.h 
 
 # ------------------------------------------------------------------------------
 # Build Rules
 # ------------------------------------------------------------------------------
 
-all: info $(LIB_LSECOMPAT_A) $(LIB_LSENET_A) $(LIB_LSEW_A) $(LIB_LSECOMPAT_SO) $(LIB_LSENET_SO) $(LIB_LSEW_SO)
+all: info $(LIB_LSECOMPAT_A) $(LIB_LSENET_A) $(LIB_LSEW_A) $(LIB_LSEATOMIC_A) \
+     $(LIB_LSECOMPAT_SO) $(LIB_LSENET_SO) $(LIB_LSEW_SO) $(LIB_LSEATOMIC_SO)
 
 info:
 	@echo "=== Building lse-compat for Target OS: $(OS_TYPE) ($(UNAME_S) $(UNAME_R)) ==="
@@ -147,6 +156,12 @@ $(LIB_LSEW_A): $(LSEW_OBJS)
 	$(AR) cr $@ $(LSEW_OBJS)
 	$(RANLIB) $@
 
+$(LIB_LSEATOMIC_A): $(LSEATOMIC_OBJS)
+	@echo "=== Creating Static Archive $@ ==="
+	$(RM) $@
+	$(AR) cr $@ $(LSEATOMIC_OBJS)
+	$(RANLIB) $@
+
 # Shared Objects (.so)
 $(LIB_LSECOMPAT_SO): $(LSECOMPAT_OBJS)
 	@echo "=== Creating Shared Object $@ ==="
@@ -159,6 +174,10 @@ $(LIB_LSENET_SO): $(LSENET_OBJS)
 $(LIB_LSEW_SO): $(LSEW_OBJS)
 	@echo "=== Creating Shared Object $@ ==="
 	$(BUILD_SO_CMD) $(SHLIB_LDFLAGS) $(LDFLAGS) -o $@ $(LSEW_OBJS) $(NET_EXTRA_LIBS)
+
+$(LIB_LSEATOMIC_SO): $(LSEATOMIC_OBJS)
+	@echo "=== Creating Shared Object $@ ==="
+	$(BUILD_SO_CMD) $(SHLIB_LDFLAGS) $(LDFLAGS) -o $@ $(LSEATOMIC_OBJS) $(NET_EXTRA_LIBS)
 
 # Pattern Rule
 %.o: %.c
@@ -196,6 +215,7 @@ install: all
 	$(RANLIB) $(LIBDIR)/$(LIB_LSECOMPAT_A)
 	$(RANLIB) $(LIBDIR)/$(LIB_LSENET_A)
 	$(RANLIB) $(LIBDIR)/$(LIB_LSEW_A)
+	$(RANLIB) $(LIBDIR)/$(LIB_LSEATOMIC_A)
 	@echo "=== Installation complete ==="
 
 clean:

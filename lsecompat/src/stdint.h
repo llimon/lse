@@ -41,10 +41,25 @@
     #endif
 
     /* Standard fixed-width integer types */
+    #ifndef _INT8_T
+    #define _INT8_T
     typedef signed char        int8_t;
+    #endif
+    
+    #ifndef _INT16_T
+    #define _INT16_T
     typedef short              int16_t;
+    #endif
+    
+    #ifndef _INT32_T
+    #define _INT32_T
     typedef int                int32_t;
+    #endif
+    
+    #ifndef _INT64_T
+    #define _INT64_T
     typedef long long          int64_t;
+    #endif
 
     #ifndef _UINT8_T
     #define _UINT8_T
